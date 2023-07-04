@@ -1,8 +1,8 @@
-import { Inter } from 'next/font/google';
 import Head from 'next/head';
-import MyGallery from '@/Components/App';
+import App from '@/Components/App';
+import NavigationBar from '@/Components/NavigationBar';
 
-export default function Home() {
+const Home = () => {
   return (
     <>
       <Head>
@@ -12,8 +12,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <MyGallery />
+        <NavigationBar />
+        <App />
       </main>
     </>
   );
-}
+};
+
+export default Home;

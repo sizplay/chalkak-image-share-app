@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
-import { images, CustomImage } from './images';
+import { images } from './images';
 
-export default function App() {
+const App = () => {
   const [index, setIndex] = useState(-1);
   const [selectedImages, setSelectedImages] = useState(images);
 
@@ -14,7 +14,7 @@ export default function App() {
   const prevIndex = (index + images.length - 1) % images.length;
   const prevImage = images[prevIndex] || currentImage;
 
-  const handleClick = (index: number, item: CustomImage) => setIndex(index);
+  const handleClick = (index: number) => setIndex(index);
   const handleClose = () => setIndex(-1);
   const handleMovePrev = () => setIndex(prevIndex);
   const handleMoveNext = () => setIndex(nextIndex);
@@ -29,7 +29,6 @@ export default function App() {
     <div>
       <Gallery images={images} onClick={handleClick} enableImageSelection={false} onSelect={handleSelect} />
       {!!currentImage && (
-        /* @ts-ignore */
         <Lightbox
           mainSrc={currentImage.original}
           imageTitle={currentImage.caption}
@@ -45,4 +44,6 @@ export default function App() {
       )}
     </div>
   );
-}
+};
+
+export default App;
