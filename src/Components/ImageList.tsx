@@ -1,12 +1,23 @@
+import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
-import { images } from './images';
+import { CustomImage, images } from './images';
 
-const App = () => {
+interface IImage {
+  data: IImageData;
+}
+
+interface IImageData {
+  title: string;
+  description: string;
+  album: CustomImage[];
+}
+
+const ImageList = (props: IImage) => {
+  const { data } = props;
   const [index, setIndex] = useState(-1);
-  const [selectedImages, setSelectedImages] = useState(images);
 
   const currentImage = images[index];
   const nextIndex = (index + 1) % images.length;
@@ -19,15 +30,13 @@ const App = () => {
   const handleMovePrev = () => setIndex(prevIndex);
   const handleMoveNext = () => setIndex(nextIndex);
 
-  const handleSelect = (idx: number) => {
-    const nextImages = selectedImages.map((image, i) =>
-      i === idx ? { ...image, isSelected: !image.isSelected } : image,
-    );
-    setSelectedImages(nextImages);
-  };
   return (
     <div>
-      <Gallery images={images} onClick={handleClick} enableImageSelection={false} onSelect={handleSelect} />
+      <TitleWrapper>
+        <h1>{data?.title}</h1>
+        <p>{data?.description}</p>
+      </TitleWrapper>
+      <Gallery images={images} onClick={handleClick} enableImageSelection={false} />
       {!!currentImage && (
         <Lightbox
           mainSrc={currentImage.original}
@@ -46,4 +55,8 @@ const App = () => {
   );
 };
 
-export default App;
+export default ImageList;
+
+const TitleWrapper = styled.div`
+  margin: 10px 16px;
+`;

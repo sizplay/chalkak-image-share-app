@@ -64,26 +64,27 @@
     "import/extensions": [
       "off"
     ],
-    "import/order": [
-      "error",
-      {
-        "groups": [
-          [
-            "external",
-            "builtin"
-          ],
-          "internal",
-          [
-            "parent",
-            "sibling",
-            "index"
-          ]
-        ],
-        "alphabetize": {
-          "order": "asc"
-        }
-      }
-    ],
+    // "import/order": [
+    //   "error",
+    //   {
+    //     "groups": [
+    //       [
+    //         "external",
+    //         "builtin"
+    //       ],
+    //       "internal",
+    //       [
+    //         "parent",
+    //         "sibling",
+    //         "index"
+    //       ]
+    //     ],
+    //     "alphabetize": {
+    //       "order": "asc"
+    //     }
+    //   }
+    // ],
+    "react/prop-types": "off",
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off",
     "no-use-before-define": "off",

@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.4.7",
+    "@svgr/webpack": "^8.0.1",
     "@types/eslint": "^8.40.2",
     "@types/eslint-plugin-prettier": "^3.1.0",
     "@types/node": "^20.3.3",

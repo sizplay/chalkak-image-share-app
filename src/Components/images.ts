@@ -2,6 +2,12 @@ import { Image } from 'react-grid-gallery';
 
 export interface CustomImage extends Image {
   original: string;
+  src: string;
+  width: number;
+  height: number;
+  tags?: { value: string; title: string }[];
+  caption?: string;
+  alt?: string;
 }
 
 export const images: CustomImage[] = [
