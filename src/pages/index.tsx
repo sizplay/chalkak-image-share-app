@@ -12,11 +12,10 @@ const Home = () => {
       <NavBar />
       <HomeContainer>
         <Album />
-        <FloatingButtonWrapper>
-          <FloatingButton>
-            <PlusCircle width={50} height={50} />
-          </FloatingButton>
-        </FloatingButtonWrapper>
+        <FloatingButton>
+          <Input id="images" type="file" multiple accept="image/*" />
+          <PlusCircle width={50} height={50} />
+        </FloatingButton>
       </HomeContainer>
     </>
   );
@@ -34,12 +33,8 @@ const EmptySpace = styled.div`
   height: 50px;
 `;
 
-const FloatingButtonWrapper = styled.div`
-  position: relative;
-`;
-
 const FloatingButton = styled.button`
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   right: 20px;
   width: 50px;
@@ -53,4 +48,15 @@ const FloatingButton = styled.button`
   &:active {
     opacity: 0.8;
   }
+`;
+
+const Input = styled.input`
+  opacity: 0;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  z-index: 1;
 `;
