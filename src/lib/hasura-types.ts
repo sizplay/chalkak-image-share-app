@@ -163,7 +163,7 @@ export type IGetAlbumQuery = {
 
 export type IGetImagesQuery = {
     __typename?: "query_root";
-    album: Array<{
+    image: Array<{
         __typename?: "image";
         image_id: number;
         path: string;
@@ -180,13 +180,28 @@ export type IAlbum_Insert_Input = {
     subtitle?: InputMaybe<Scalars["String"]>;
 };
 
+
+export type IAlbum_Insert_Variables = Exact<{
+    object: IAlbum_Insert_Input;
+}>;
+
+
+
 export type IAlbum_Update_Input = {
-    album_id: InputMaybe<Scalars["Int"]>;
     title?: InputMaybe<Scalars["String"]>;
     subtitle?: InputMaybe<Scalars["String"]>;
     main_image_id?: InputMaybe<Scalars["Int"]>;
     is_shared?: InputMaybe<Scalars["Boolean"]>;
 };
+
+
+export type IAlbum_Update_Variables = Exact<{
+    album_id: InputMaybe<Scalars["Int"]>;
+    _set: IAlbum_Update_Input;
+}>;
+
+
+
 
 export type IInsertAlbumMutation = {
     __typename?: "mutation_root";
@@ -225,7 +240,7 @@ export type IDeleteAlbumMutation = {
 
 export type IDeleteImageByPkMutation = {
     __typename?: "mutation_root";
-    delete_album_by_pk?: {
+    delete_image_by_pk?: {
         __typename?: "image";
         image_id: number;
         album_id: number;

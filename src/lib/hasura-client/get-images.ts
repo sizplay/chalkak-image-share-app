@@ -15,21 +15,21 @@ const query = gql`
   }
   `;
 
-export default async function getMyAlbums(album_id: number) {
-    const res = await client.query<IGetImagesQuery>({
-        query,
-        variables: {
-            album_id
-        },
-    });
+export default async function getAlbumImageList(album_id: number) {
+  const res = await client.query<IGetImagesQuery>({
+    query,
+    variables: {
+      album_id
+    },
+  });
 
-    if (res.errors) {
-        // eslint-disable-next-line no-console
-        console.error(res.errors);
-        throw res.errors;
-    }
+  if (res.errors) {
+    // eslint-disable-next-line no-console
+    console.error(res.errors);
+    throw res.errors;
+  }
 
-    return res.data.album;
+  return res.data.image;
 }
 
 

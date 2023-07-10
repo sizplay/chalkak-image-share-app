@@ -1,5 +1,3 @@
-"use server";
-
 import gql from "graphql-tag";
 import {
     IInsertImageMutation,
@@ -8,7 +6,7 @@ import {
 import client from "./client";
 
 const mutation = gql`
-  mutation insertImage($objects: [image_insert_input!]) {
+  mutation insertImage($objects: [image_insert_input!]!) {
     insert_image(objects: $objects) {
       affected_rows
       returning {

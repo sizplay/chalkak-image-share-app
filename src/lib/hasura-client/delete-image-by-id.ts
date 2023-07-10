@@ -1,5 +1,3 @@
-"use server";
-
 import gql from "graphql-tag";
 import {
   IImage_Delete_Input,
@@ -29,11 +27,14 @@ export default async function deleteImageById(image_id: number) {
     context: { fetchOptions: { cache: "no-store" } },
   });
 
-  if (res.errors || !res.data?.delete_album_by_pk) {
+  console.log(res);
+
+  if (res.errors || !res.data?.delete_image_by_pk) {
     // eslint-disable-next-line no-console
     console.error(res.errors);
     throw res.errors;
   }
 
-  return res.data.delete_album_by_pk;
+
+  return res.data.delete_image_by_pk;
 }

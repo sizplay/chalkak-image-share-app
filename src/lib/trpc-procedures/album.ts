@@ -8,7 +8,7 @@ import deleteAlbum from "../hasura-client/delete-album";
 import { IAlbum_Insert_Input, IAlbum_Update_Input } from "../hasura-types";
 
 
-const t = initTRPC.create();
+const t = initTRPC.context().create();
 const procedure = t.procedure;
 
 export const albumProcedure = {
@@ -38,7 +38,7 @@ export const albumProcedure = {
                 object.subtitle = input.subtitle;
             }
 
-            const res = await insertAlbum(object);
+            const res = await insertAlbum({ object });
 
             return res;
         }),
@@ -53,7 +53,7 @@ export const albumProcedure = {
             })
         )
         .mutation(async ({ input }) => {
-            const object: IAlbum_Update_Input = { album_id: input.albumId };
+            const object: IAlbum_Update_Input = {};
             if (input?.title) {
                 object.title = input.title;
             }
@@ -67,7 +67,7 @@ export const albumProcedure = {
             if (input?.isShared) {
                 object.is_shared = input.isShared;
             }
-            const res = await updateAlbum(object);
+            const res = await updateAlbum({ album_id: input.albumId, _set: object });
 
             return res;
         }),

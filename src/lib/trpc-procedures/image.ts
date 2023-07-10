@@ -6,7 +6,7 @@ import deleteImageByAlbumId from "../hasura-client/delete-image-by-album";
 import { IImage_Insert_Input } from "../hasura-types";
 import insertImage from "../hasura-client/insert-image";
 
-const t = initTRPC.create();
+const t = initTRPC.context().create();
 const procedure = t.procedure;
 
 export const imageProcedure = {
@@ -25,9 +25,10 @@ export const imageProcedure = {
                 width: z.number().optional(),
                 height: z.number().optional(),
             })
-            .array()
+                .array()
         )
         .mutation(async ({ input }) => {
+            console.log(input);
             const res = await insertImage({
                 objects: input.map((item) => ({
                     album_id: item.albumId,

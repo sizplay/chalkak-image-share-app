@@ -1,14 +1,12 @@
-"use server";
-
 import gql from "graphql-tag";
 import {
     IInsertAlbumMutation,
-    IAlbum_Insert_Input,
+    IAlbum_Insert_Variables,
 } from "../hasura-types";
 import client from "./client";
 
 const mutation = gql`
-  mutation insertAlbum($object: album_insert_input) {
+  mutation insertAlbum($object: album_insert_input!) {
     insert_album_one(object: $object) {
       album_id
       created_at
@@ -17,11 +15,11 @@ const mutation = gql`
 `;
 
 const insertAlbum = async (
-    variables: IAlbum_Insert_Input
+    variables: IAlbum_Insert_Variables
 ) => {
     const res = await client.mutate<
         IInsertAlbumMutation,
-        IAlbum_Insert_Input
+        IAlbum_Insert_Variables
     >({
         mutation,
         variables,

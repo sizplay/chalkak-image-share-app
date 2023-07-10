@@ -6,7 +6,7 @@ import { appRouter } from '@/lib/trpc-server';
 
 const nextApiHandler = createNextApiHandler({
     router: appRouter,
-    createContext:()=>({}),
+    createContext: () => ({}),
 });
 
 export default async function handler(

@@ -1,5 +1,3 @@
-"use server";
-
 import gql from "graphql-tag";
 import {
   IImage_Delete_Input,
