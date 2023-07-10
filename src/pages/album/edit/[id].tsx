@@ -1,7 +1,7 @@
 // import { useRouter } from 'next/router';
 import HeadComponent from '@/Components/HeadComponent';
 import styled from '@emotion/styled';
-import EditAlbum from '@/Components/album/editAlbum';
+import EditAlbum from '@/Components/album/EditAlbum';
 
 const EditAlbumPage = () => {
   // const router = useRouter();
