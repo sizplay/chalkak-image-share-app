@@ -1,33 +1,69 @@
 import styled from '@emotion/styled';
 import LeftArrow from '@public/icon/left-arrow.svg';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import Logout from '@public/icon/logout.svg';
 
 interface NavBarProps {
   leftArrow?: boolean;
+  isScrolledOn?: boolean;
 }
 
-const NavBar = ({ leftArrow }: NavBarProps) => {
+const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
   const router = useRouter();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isScrolledOn && window.scrollY > 40) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  interface isNavBarVisibleProps {
+    isScrolled: boolean;
+    leftArrow?: boolean;
+  }
+
+  const isNavBarVisible = ({ isScrolled, leftArrow = false }: isNavBarVisibleProps) => {
+    if (leftArrow && isScrolled) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
-    <StyledNavigationBar>
-      {leftArrow ? (
-        <LeftArrowButton type="button" onClick={() => router.push('/')}>
-          <LeftArrow width={24} height={24} fill="#001C30" />
-        </LeftArrowButton>
-      ) : (
-        <div />
+    <>
+      {isNavBarVisible({ isScrolled, leftArrow }) && (
+        <StyledNavigationBar>
+          {leftArrow ? (
+            <LeftSideWrapper>
+              <button type="button" onClick={() => router.push('/')}>
+                <LeftArrow width={24} height={24} fill="#DAFFFB" />
+              </button>
+            </LeftSideWrapper>
+          ) : (
+            <div />
+          )}
+          <RightSideWrapper>
+            <button type="button" onClick={() => signOut({ callbackUrl: '/login' })}>
+              <Logout width={24} height={24} fill="#DAFFFB" />
+            </button>
+          </RightSideWrapper>
+        </StyledNavigationBar>
       )}
-      <RightSideWrapper>
-        <button type="button">
-          <Image width={30} height={30} src="/icon/user-info-icon.png" alt="user_info_icon" />
-        </button>
-        <button type="button" onClick={() => signOut({ callbackUrl: '/login' })}>
-          <Image width={25} height={25} src="/icon/logout.png" alt="logout" />
-        </button>
-      </RightSideWrapper>
-    </StyledNavigationBar>
+    </>
   );
 };
 
@@ -43,10 +79,7 @@ const StyledNavigationBar = styled.section`
   align-items: center;
   background: #176b87;
   height: 50px;
-
-  .user-info {
-    margin: 0 10px;
-  }
+  z-index: 100;
 
   button {
     background: none;
@@ -54,18 +87,12 @@ const StyledNavigationBar = styled.section`
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
-
-  button:first-of-type {
-    margin-right: 10px;
-  }
 `;
 
-const LeftArrowButton = styled.button`
+const LeftSideWrapper = styled.div`
   margin-left: 16px;
 `;
 
 const RightSideWrapper = styled.div`
-  display: flex;
-  align-items: center;
   margin-right: 16px;
 `;

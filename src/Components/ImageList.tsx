@@ -59,4 +59,16 @@ export default ImageList;
 
 const TitleWrapper = styled.div`
   margin: 10px 16px;
+
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #001c30;
+  }
+
+  p {
+    margin-top: 6px;
+    font-size: 16px;
+    color: #001c30;
+  }
 `;

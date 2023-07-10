@@ -41,8 +41,42 @@ interface Album {
   title: string;
 }
 
-const Album: React.FC = () => {
+interface AlbumProps {
+  isEditToggleOn: boolean;
+  isDeleteToggleOn: boolean;
+}
+
+interface onClickToggleProps {
+  isEditToggleOn: boolean;
+  isDeleteToggleOn: boolean;
+  id: number;
+}
+
+const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
   const router = useRouter();
+  const onClickToggle = ({ isEditToggleOn, isDeleteToggleOn, id }: onClickToggleProps) => {
+    if (isEditToggleOn && !isDeleteToggleOn) {
+      router.push({
+        pathname: `/album/edit/${id}`,
+      });
+      return;
+    }
+    if (isDeleteToggleOn && !isEditToggleOn) {
+      // eslint-disable-next-line no-restricted-globals, no-alert
+      const result = confirm('정말로 삭제하시겠습니까?');
+      console.log(result);
+      if (result) {
+        router.push({
+          // pathname: `/album/delete/${id}`,
+        });
+      }
+    } else {
+      router.push({
+        pathname: `/album/${id}`,
+      });
+    }
+  };
+
   return (
     <>
       <HeadComponent />
@@ -52,11 +86,7 @@ const Album: React.FC = () => {
             <button
               key={item.id}
               type="button"
-              onClick={() => {
-                router.push({
-                  pathname: `/album/${item.id}`,
-                });
-              }}
+              onClick={() => onClickToggle({ isEditToggleOn, isDeleteToggleOn, id: item.id })}
             >
               <AlbumItem>
                 <AlbumImageWrapper>
@@ -117,9 +147,9 @@ const AlbumItem = styled.div`
   align-items: center;
   word-break: keep-all;
   width: 170px;
-  height: 50px;
+  height: 56px;
   border-radius: 6px;
-  padding: 10px;
+  padding: 13px;
   gap: 10px;
 
   p {

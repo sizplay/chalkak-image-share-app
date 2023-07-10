@@ -3,19 +3,48 @@ import PlusCircle from '@public/icon/plus-circle.svg';
 import HeadComponent from '@/Components/HeadComponent';
 import NavBar from '@/Components/NavBar';
 import Album from '@/Components/album';
+import { useRouter } from 'next/router';
+import Toggle from '@/Components/utils/toggle';
+import { useState } from 'react';
 
 const Home = () => {
+  const router = useRouter();
+  const [isEditToggleOn, setIsEditToggleOn] = useState(false);
+  const [isDeleteToggleOn, setIsDeleteToggleOn] = useState(false);
+
+  const handleClick = () => {
+    router.push('/album/create');
+  };
+
+  const handleEditToggle = (isToggleOn: boolean) => {
+    if (isDeleteToggleOn) setIsDeleteToggleOn(false);
+    setIsEditToggleOn(!isToggleOn);
+  };
+
+  const handleDeleteToggle = (isToggleOn: boolean) => {
+    if (isEditToggleOn) setIsEditToggleOn(false);
+    setIsDeleteToggleOn(!isToggleOn);
+  };
+
   return (
     <>
       <HeadComponent />
       <EmptySpace />
       <NavBar />
       <HomeContainer>
-        <Album />
-        <FloatingButton>
-          <Input id="images" type="file" multiple accept="image/*" />
-          <PlusCircle width={50} height={50} />
-        </FloatingButton>
+        <Album isEditToggleOn={isEditToggleOn} isDeleteToggleOn={isDeleteToggleOn} />
+        <FloatingButtonWrapper>
+          <FloatingAddButton>
+            <Input onClick={handleClick} />
+            <PlusCircle width={50} height={50} />
+          </FloatingAddButton>
+          <FloatingEeitToggleButton>
+            <Toggle handleToggleOn={handleEditToggle} isToggleOn={isEditToggleOn} toggleName="수정" />
+          </FloatingEeitToggleButton>
+          <FloatingDeleteToggleButton>
+            <Toggle handleToggleOn={handleDeleteToggle} isToggleOn={isDeleteToggleOn} toggleName="삭제" />
+          </FloatingDeleteToggleButton>
+        </FloatingButtonWrapper>
       </HomeContainer>
     </>
   );
@@ -33,10 +62,7 @@ const EmptySpace = styled.div`
   height: 50px;
 `;
 
-const FloatingButton = styled.button`
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+const FloatingAddButton = styled.button`
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -59,4 +85,24 @@ const Input = styled.input`
   height: 50px;
   border-radius: 50%;
   z-index: 1;
+`;
+
+const FloatingButtonWrapper = styled.div`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50%;
+  z-index: 1;
+`;
+
+const FloatingEeitToggleButton = styled.div`
+  position: fixed;
+  bottom: 32px;
+  right: 110px;
+`;
+
+const FloatingDeleteToggleButton = styled.div`
+  position: fixed;
+  bottom: 32px;
+  right: 200px;
 `;
