@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import PlusCircle from '@public/icon/plus-circle.svg';
 import HeadComponent from '@/Components/HeadComponent';
 import NavBar from '@/Components/NavBar';
 import Album from '@/Components/album';
 import { useRouter } from 'next/router';
 import Toggle from '@/Components/utils/toggle';
 import { useState } from 'react';
+import { PlusCircle } from 'lucide-react';
 
 const Home = () => {
   const router = useRouter();
@@ -36,7 +36,7 @@ const Home = () => {
         <FloatingButtonWrapper>
           <FloatingAddButton>
             <Input onClick={handleClick} />
-            <PlusCircle width={50} height={50} />
+            <PlusCircle color="#001C30" size={48} />
           </FloatingAddButton>
           <FloatingEeitToggleButton>
             <Toggle handleToggleOn={handleEditToggle} isToggleOn={isEditToggleOn} toggleName="수정" />
@@ -54,7 +54,6 @@ export default Home;
 
 const HomeContainer = styled.main`
   padding-top: 20px;
-  background: #dafffb;
   height: 100vh;
 `;
 
@@ -69,7 +68,7 @@ const FloatingAddButton = styled.button`
   border: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  background: #dafffb;
+  background: #fff;
 
   &:active {
     opacity: 0.8;

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import AlbumImage from '@public/icon/album-image.svg';
+import { Image } from 'lucide-react';
 import { useRouter } from 'next/router';
 import HeadComponent from '@/Components/HeadComponent';
 
@@ -90,7 +90,7 @@ const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
             >
               <AlbumItem>
                 <AlbumImageWrapper>
-                  <AlbumImage width={30} height={30} />
+                  <Image size={24} />
                 </AlbumImageWrapper>
                 <p>{item.title}</p>
               </AlbumItem>
@@ -107,7 +107,7 @@ export default Album;
 const StyledAlbum = styled.main`
   width: 100%;
   height: 90vh;
-  color: #dafffb;
+  color: #fff;
 `;
 
 const AlbumList = styled.section`
@@ -142,7 +142,7 @@ const AlbumImageWrapper = styled.div`
 `;
 
 const AlbumItem = styled.div`
-  background-color: #64ccc5;
+  background-color: #fff;
   display: flex;
   align-items: center;
   word-break: keep-all;
@@ -151,6 +151,8 @@ const AlbumItem = styled.div`
   border-radius: 6px;
   padding: 13px;
   gap: 10px;
+  border: 2.5px solid #001c30;
+  border-radius: 16px;
 
   p {
     color: #001c30;

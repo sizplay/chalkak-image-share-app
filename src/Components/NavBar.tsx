@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
-import LeftArrow from '@public/icon/left-arrow.svg';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import Logout from '@public/icon/logout.svg';
+import { LogOut, MoveLeft } from 'lucide-react';
 
 interface NavBarProps {
   leftArrow?: boolean;
@@ -50,7 +49,7 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
           {leftArrow ? (
             <LeftSideWrapper>
               <button type="button" onClick={() => router.push('/')}>
-                <LeftArrow width={24} height={24} fill="#DAFFFB" />
+                <MoveLeft size={24} color="#FFF" />
               </button>
             </LeftSideWrapper>
           ) : (
@@ -58,7 +57,7 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
           )}
           <RightSideWrapper>
             <button type="button" onClick={() => signOut({ callbackUrl: '/login' })}>
-              <Logout width={24} height={24} fill="#DAFFFB" />
+              <LogOut color="#FFF" size={24} />
             </button>
           </RightSideWrapper>
         </StyledNavigationBar>
@@ -77,7 +76,7 @@ const StyledNavigationBar = styled.section`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #176b87;
+  background: #001c30;
   height: 50px;
   z-index: 100;
 

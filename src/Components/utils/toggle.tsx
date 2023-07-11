@@ -58,7 +58,7 @@ const ToggleContainer = styled.div`
     width: 33px;
     height: 33px;
     border-radius: 50%;
-    background-color: #176b87;
+    background-color: #001c30;
     transition: 0.5s;
   }
   > .toggle--checked {

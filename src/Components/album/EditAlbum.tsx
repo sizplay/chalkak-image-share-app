@@ -3,7 +3,7 @@
 import NavBar from '@/Components/NavBar';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import CancelButtonImage from '@public/icon/cancel-circle-close.svg';
+import { X } from 'lucide-react';
 
 interface EditAlbumProps {
   albumData: {
@@ -84,7 +84,7 @@ const EditAlbum = ({ albumData: { title, description } }: EditAlbumProps) => {
                   <img key={image.name} src={URL.createObjectURL(image)} alt="album" />
                   <CancelButtonWrapper>
                     <CancelButton type="button" onClick={() => handleCancelImage(image.name)}>
-                      <CancelButtonImage width="24px" height="24px" />
+                      <X color="#FFF" size={24} />
                     </CancelButton>
                   </CancelButtonWrapper>
                 </ImageWrapper>
@@ -106,7 +106,6 @@ export default EditAlbum;
 
 const StyledAlbumCreate = styled.main`
   padding-top: 70px;
-  background: #dafffb;
   height: 100vh;
   margin: 0 16px;
 
@@ -158,7 +157,6 @@ const SubmitButtonWrapper = styled.div`
   left: 0;
   width: 100%;
   padding: 0 16px 16px;
-  background: #dafffb;
 `;
 
 const SubmitButton = styled.button`
@@ -166,8 +164,8 @@ const SubmitButton = styled.button`
   height: 50px;
   border: none;
   border-radius: 6px;
-  background: #176b87;
-  color: #dafffb;
+  background: #001c30;
+  color: #fff;
   font-size: 16px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;

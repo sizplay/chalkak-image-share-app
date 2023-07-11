@@ -24,13 +24,13 @@ const login = () => {
 export default login;
 
 const LoginContainer = styled.section`
-  background: #176b87;
+  background: #001c30;
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  color: #dafffb;
+  color: #fff;
 `;
 
 const TextWrapper = styled.div`
@@ -40,7 +40,7 @@ const TextWrapper = styled.div`
   margin-bottom: 100px;
 
   h1 {
-    color: #dafffb;
+    color: #fff;
   }
 `;
 
