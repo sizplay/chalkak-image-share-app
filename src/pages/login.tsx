@@ -19,7 +19,6 @@ const login = () => {
         />
       </ImageWrapper>
       <TrcpClientSample />
-
     </LoginContainer>
   );
 };

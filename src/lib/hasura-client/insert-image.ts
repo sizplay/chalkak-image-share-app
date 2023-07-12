@@ -1,9 +1,6 @@
-import gql from "graphql-tag";
-import {
-    IInsertImageMutation,
-    IInsertImageMutationVariables,
-} from "../hasura-types";
-import client from "./client";
+import gql from 'graphql-tag';
+import { IInsertImageMutation, IInsertImageMutationVariables } from '../hasura-types';
+import client from './client';
 
 const mutation = gql`
   mutation insertImage($objects: [image_insert_input!]!) {
@@ -17,29 +14,23 @@ const mutation = gql`
       }
     }
   }
-  
 `;
 
-const insertImage = async (
-    variables: IInsertImageMutationVariables
-) => {
-    const res = await client.mutate<
-        IInsertImageMutation,
-        IInsertImageMutationVariables
-    >({
-        mutation,
-        variables,
-        fetchPolicy: "network-only",
-        context: { fetchOptions: { cache: "no-store" } },
-    });
+const insertImage = async (variables: IInsertImageMutationVariables) => {
+  const res = await client.mutate<IInsertImageMutation, IInsertImageMutationVariables>({
+    mutation,
+    variables,
+    fetchPolicy: 'network-only',
+    context: { fetchOptions: { cache: 'no-store' } },
+  });
 
-    if (res.errors || !res.data?.insert_image) {
-        // eslint-disable-next-line no-console
-        console.error(res.errors);
-        throw res.errors;
-    }
+  if (res.errors || !res.data?.insert_image) {
+    // eslint-disable-next-line no-console
+    console.error(res.errors);
+    throw res.errors;
+  }
 
-    return res.data.insert_image;
+  return res.data.insert_image;
 };
 
 export default insertImage;

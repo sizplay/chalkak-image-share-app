@@ -64,6 +64,7 @@
     "import/extensions": [
       "off"
     ],
+    "camelcase": "off",
     "@typescript-eslint/ban-types": "off",
     "react/prop-types": "off",
     "import/no-unresolved": "off",

@@ -1,6 +1,6 @@
-import gql from "graphql-tag";
-import { IGetAlbumQuery } from "../hasura-types";
-import client from "./client";
+import gql from 'graphql-tag';
+import { IGetAlbumQuery } from '../hasura-types';
+import client from './client';
 
 const query = gql`
   query album($album_id: Int!) {
@@ -19,13 +19,13 @@ const query = gql`
       }
     }
   }
-  `;
+`;
 
 export default async function getAlbum(album_id: number) {
   const res = await client.query<IGetAlbumQuery>({
     query,
     variables: {
-      album_id
+      album_id,
     },
   });
 

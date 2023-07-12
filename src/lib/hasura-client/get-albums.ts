@@ -1,10 +1,10 @@
-import gql from "graphql-tag";
-import { IGetAlbumsQuery } from "../hasura-types";
-import client from "./client";
+import gql from 'graphql-tag';
+import { IGetAlbumsQuery } from '../hasura-types';
+import client from './client';
 
 const query = gql`
   query myAlbums($user_id: Int) {
-    album(order_by: {created_at: desc}, where: {created_by: {_eq: $user_id}}) {
+    album(order_by: { created_at: desc }, where: { created_by: { _eq: $user_id } }) {
       album_id
       created_at
       is_shared
@@ -19,13 +19,13 @@ const query = gql`
       }
     }
   }
-  `;
+`;
 
 export default async function getAlbums(user_id: number) {
   const res = await client.query<IGetAlbumsQuery>({
     query,
     variables: {
-      user_id
+      user_id,
     },
   });
 

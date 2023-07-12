@@ -2,44 +2,40 @@ import styled from '@emotion/styled';
 import { Image } from 'lucide-react';
 import { useRouter } from 'next/router';
 import HeadComponent from '@/Components/HeadComponent';
+import { trpc } from '../utils/trpc';
 
-const albumData = [
-  {
-    id: 1,
-    title: '가족 이야기',
-    description: '가족들과 함께한 추억들을 모아놓은 앨범입니다.',
-  },
-  {
-    id: 2,
-    title: '여행 이야기',
-    description: '여행을 다녀온 추억들을 모아놓은 앨범입니다.',
-  },
-  {
-    id: 3,
-    title: '친구 이야기',
-    description: '친구들과 함께한 추억들을 모아놓은 앨범입니다.',
-  },
-  {
-    id: 4,
-    title: '연인 이야기',
-    description: '연인과 함께한 추억들을 모아놓은 앨범입니다.',
-  },
-  {
-    id: 5,
-    title: '졸업 이야기가 길게 나오면 어떻게 될까요?',
-    description: '졸업을 하고 남은 추억들을 모아놓은 앨범입니다.',
-  },
-  {
-    id: 6,
-    title: '기타 이야기',
-    description: '기타 추억들을 모아놓은 앨범입니다.',
-  },
-];
-
-interface Album {
-  id: number;
-  title: string;
-}
+// const albumData = [
+//   {
+//     id: 1,
+//     title: '가족 이야기',
+//     description: '가족들과 함께한 추억들을 모아놓은 앨범입니다.',
+//   },
+//   {
+//     id: 2,
+//     title: '여행 이야기',
+//     description: '여행을 다녀온 추억들을 모아놓은 앨범입니다.',
+//   },
+//   {
+//     id: 3,
+//     title: '친구 이야기',
+//     description: '친구들과 함께한 추억들을 모아놓은 앨범입니다.',
+//   },
+//   {
+//     id: 4,
+//     title: '연인 이야기',
+//     description: '연인과 함께한 추억들을 모아놓은 앨범입니다.',
+//   },
+//   {
+//     id: 5,
+//     title: '졸업 이야기가 길게 나오면 어떻게 될까요?',
+//     description: '졸업을 하고 남은 추억들을 모아놓은 앨범입니다.',
+//   },
+//   {
+//     id: 6,
+//     title: '기타 이야기',
+//     description: '기타 추억들을 모아놓은 앨범입니다.',
+//   },
+// ];
 
 interface AlbumProps {
   isEditToggleOn: boolean;
@@ -54,6 +50,11 @@ interface onClickToggleProps {
 
 const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
   const router = useRouter();
+
+  const { data } = trpc.getAlbumList.useQuery(1);
+
+  console.log(data);
+
   const onClickToggle = ({ isEditToggleOn, isDeleteToggleOn, id }: onClickToggleProps) => {
     if (isEditToggleOn && !isDeleteToggleOn) {
       router.push({
@@ -82,20 +83,22 @@ const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
       <HeadComponent />
       <StyledAlbum>
         <AlbumList>
-          {albumData.map((item: Album) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => onClickToggle({ isEditToggleOn, isDeleteToggleOn, id: item.id })}
-            >
-              <AlbumItem>
-                <AlbumImageWrapper>
-                  <Image size={24} />
-                </AlbumImageWrapper>
-                <p>{item.title}</p>
-              </AlbumItem>
-            </button>
-          ))}
+          {data?.map((item) => {
+            return (
+              <button
+                key={item.created_at}
+                type="button"
+                onClick={() => onClickToggle({ isEditToggleOn, isDeleteToggleOn, id: item.album_id })}
+              >
+                <AlbumItem>
+                  <AlbumImageWrapper>
+                    <Image size={24} />
+                  </AlbumImageWrapper>
+                  <p>{item.title}</p>
+                </AlbumItem>
+              </button>
+            );
+          })}
         </AlbumList>
       </StyledAlbum>
     </>

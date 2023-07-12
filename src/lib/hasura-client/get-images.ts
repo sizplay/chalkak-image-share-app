@@ -1,10 +1,10 @@
-import gql from "graphql-tag";
-import { IGetImagesQuery } from "../hasura-types";
-import client from "./client";
+import gql from 'graphql-tag';
+import { IGetImagesQuery } from '../hasura-types';
+import client from './client';
 
 const query = gql`
   query getImages($album_id: Int) {
-    image(where: {album_id: {_eq: $album_id}}, order_by: {created_at: asc}) {
+    image(where: { album_id: { _eq: $album_id } }, order_by: { created_at: asc }) {
       image_id
       path
       size
@@ -13,13 +13,13 @@ const query = gql`
       created_at
     }
   }
-  `;
+`;
 
 export default async function getAlbumImageList(album_id: number) {
   const res = await client.query<IGetImagesQuery>({
     query,
     variables: {
-      album_id
+      album_id,
     },
   });
 
@@ -31,6 +31,3 @@ export default async function getAlbumImageList(album_id: number) {
 
   return res.data.image;
 }
-
-
-
