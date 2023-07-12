@@ -24,6 +24,8 @@
     "@trpc/react": "^9.27.4",
     "@trpc/react-query": "^10.33.0",
     "@trpc/server": "^10.33.0",
+    "aws-sdk": "^2.1414.0",
+    "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "emoji-picker-react": "^4.4.9",
     "graphql": "^16.7.1",

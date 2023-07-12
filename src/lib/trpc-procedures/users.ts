@@ -6,11 +6,8 @@ const t = initTRPC.create();
 const { procedure } = t;
 
 export const usersProcedure = {
-  users: procedure.input(z.object({ id: z.string().optional() }).optional()).query(async () =>
-    // { input }
-    {
-      const res = await getUsers();
-      return res;
-    },
-  ),
+  users: procedure.input(z.object({ id: z.string().optional() }).optional()).query(async () => {
+    const res = await getUsers();
+    return res;
+  }),
 };

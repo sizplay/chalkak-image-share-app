@@ -2,10 +2,16 @@
 /* eslint-disable no-alert */
 import NavBar from '@/Components/NavBar';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Smile, X, Image } from 'lucide-react';
 import ReactModal from 'react-modal';
 import EmojiPicker from 'emoji-picker-react';
+import { trpcClient } from '@/lib/trpc-client';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import { trpc } from '@/Components/utils/trpc';
+// import { useS3Upload } from 'next-s3-upload';
+import axios from 'axios';
 
 const AlbumCreate = () => {
   const [images, setImages] = useState<FileList | null>(null);
@@ -14,6 +20,19 @@ const AlbumCreate = () => {
   const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [icon, setIcon] = useState<string>('');
   const [backgroundImage, setBackgroundImage] = useState<string>('');
+  const [userId, setUserId] = useState<number>(0);
+  // const [imagesUrl, setImagesUrl] = useState<string[]>([]);
+
+  const router = useRouter();
+  // const { uploadToS3 } = useS3Upload();
+  const { data: sessionData } = useSession();
+  const { data: users } = trpc.users.useQuery();
+
+  useEffect(() => {
+    const user = users?.find((user) => user.email === sessionData?.user?.email);
+    setUserId(user?.user_id || 0);
+    sessionStorage.setItem('userId', String(user?.user_id));
+  }, [users, sessionData]);
 
   const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAlbumName(e.target.value);
@@ -23,8 +42,30 @@ const AlbumCreate = () => {
     setAlbumDescription(e.target.value);
   };
 
-  const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImages(e.target.files);
+  const handleImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log('e', e?.target);
+    if (e?.target?.files?.[0]) {
+      // const { url } = await uploadToS3(e.target.files[0]);
+      // console.log('url', url);
+
+      const { data } = await axios.post('/api/upload', {
+        name: e.target.files[0].name,
+        type: e.target.files[0].type,
+      });
+
+      console.log('data', data);
+
+      const { url } = data;
+      await axios.put(url, e.target.files[0], {
+        headers: {
+          'Content-Type': e.target.files[0].type,
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+
+      console.log('url', url);
+    }
+    // setImages(e.target.files);
   };
 
   const handleCancelImage = (imageName: string) => {
@@ -63,6 +104,7 @@ const AlbumCreate = () => {
     setBackgroundImage('');
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEmojiClick = (emojiObject: any) => {
     setIcon(emojiObject.getImageUrl());
     setIsIconModalOpen(false);
@@ -73,7 +115,7 @@ const AlbumCreate = () => {
     setIsIconModalOpen(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!images) {
       alert('이미지를 선택해주세요.');
       return;
@@ -86,7 +128,25 @@ const AlbumCreate = () => {
       alert('앨범 설명을 입력해주세요.');
       return;
     }
-    alert('앨범을 생성합니다.');
+    try {
+      // const files = Array.from(images);
+
+      // files.forEach(async (file) => {
+      //   const { url } = await uploadToS3(file);
+      //   setImagesUrl((prev) => [...prev, url]);
+      //   console.log('url', url, imagesUrl);
+      // });
+
+      trpcClient.insertAlbum
+        .mutate({ title: albumName, subtitle: albumDescription, userId, icon, backgroundImage })
+        .then(() => {
+          alert('앨범을 생성하였습니다.');
+          router.push('/');
+        });
+    } catch (error) {
+      console.error(error);
+      alert('에러가 발생하였습니다. 다시 이용해주세요.');
+    }
   };
 
   return (
@@ -150,7 +210,7 @@ const AlbumCreate = () => {
 
         <label htmlFor="images">이미지를 선택해주세요.</label>
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
-
+        {/* <FileInput onChange={handleImages} /> */}
         {images && (
           <AlbumImageWrapper>
             {Array.from(images).map((image) => (

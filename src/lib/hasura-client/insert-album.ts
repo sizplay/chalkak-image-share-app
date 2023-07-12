@@ -7,6 +7,9 @@ const mutation = gql`
     insert_album_one(object: $object) {
       album_id
       created_at
+      title
+      subtitle
+      is_shared
     }
   }
 `;

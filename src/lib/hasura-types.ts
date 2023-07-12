@@ -174,6 +174,8 @@ export type IAlbum_Insert_Input = {
   created_by: InputMaybe<Scalars['Int']>;
   title: InputMaybe<Scalars['String']>;
   subtitle?: InputMaybe<Scalars['String']>;
+  icon?: InputMaybe<Scalars['String']>;
+  backgroundImage?: InputMaybe<Scalars['String']>;
 };
 
 export type IAlbum_Insert_Variables = Exact<{

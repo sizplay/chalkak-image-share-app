@@ -53,8 +53,6 @@ const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
 
   const { data } = trpc.getAlbumList.useQuery(1);
 
-  console.log(data);
-
   const onClickToggle = ({ isEditToggleOn, isDeleteToggleOn, id }: onClickToggleProps) => {
     if (isEditToggleOn && !isDeleteToggleOn) {
       router.push({

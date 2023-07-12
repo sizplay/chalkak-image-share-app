@@ -26,6 +26,8 @@ export const albumProcedure = {
         title: z.string(),
         subtitle: z.string().optional(),
         userId: z.number(),
+        icon: z.string().optional(),
+        backgroundImage: z.string().optional(),
       }),
     )
     .mutation(async ({ input }) => {
