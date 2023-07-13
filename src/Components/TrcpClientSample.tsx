@@ -65,8 +65,8 @@ const TrcpClientSample = () => {
       <button
         type="button"
         onClick={async () => {
-          const data1 = await trpcClient.insertImage.mutate([
-            { albumId: 4, path: '/test/is/test', size: 102400, width: 100, height: 100 },
+          const data1 = await trpcClient.insertImages.mutate([
+            { album_id: 4, path: '/test/is/test', size: 102400, width: 100, height: 100 },
           ]);
           console.log(data1);
         }}
