@@ -6,11 +6,9 @@ import { useEffect, useState } from 'react';
 import { Smile, X, Image as LucideImage } from 'lucide-react';
 import ReactModal from 'react-modal';
 import EmojiPicker from 'emoji-picker-react';
-import { trpcClient } from '@/lib/trpc-client';
+import { trpcClient, trpcReactClient } from '@/lib/trpc-client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { trpc } from '@/Components/utils/trpc';
-// import { useS3Upload } from 'next-s3-upload';
 import axios from 'axios';
 import { getHeightAndWidthFromDataUrl } from '@/Components/utils/getHeightAndWidthFromDataUrl';
 import { getDate } from '@/Components/utils/getDate';
@@ -35,12 +33,11 @@ const AlbumCreate = () => {
   const router = useRouter();
 
   const { data: sessionData } = useSession();
-  const { data: users } = trpc.users.useQuery();
+  const { data: users } = trpcReactClient.users.useQuery();
 
   useEffect(() => {
     const user = users?.find((user) => user.email === sessionData?.user?.email);
     setUserId(user?.user_id || 0);
-    sessionStorage.setItem('userId', String(user?.user_id));
   }, [users, sessionData]);
 
   const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
