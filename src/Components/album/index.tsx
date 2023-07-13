@@ -6,18 +6,7 @@ import { trpcReactClient } from '@/lib/trpc-client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
-interface AlbumProps {
-  isEditToggleOn: boolean;
-  isDeleteToggleOn: boolean;
-}
-
-interface onClickToggleProps {
-  isEditToggleOn: boolean;
-  isDeleteToggleOn: boolean;
-  id: number;
-}
-
-const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
+const Album = () => {
   const [userId, setUserId] = useState(0);
   const router = useRouter();
 
@@ -31,27 +20,10 @@ const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
 
   const { data } = trpcReactClient.getAlbumList.useQuery(userId);
 
-  const onClickToggle = ({ isEditToggleOn, isDeleteToggleOn, id }: onClickToggleProps) => {
-    if (isEditToggleOn && !isDeleteToggleOn) {
-      router.push({
-        pathname: `/album/edit/${id}`,
-      });
-      return;
-    }
-    if (isDeleteToggleOn && !isEditToggleOn) {
-      // eslint-disable-next-line no-restricted-globals, no-alert
-      const result = confirm('정말로 삭제하시겠습니까?');
-      console.log(result);
-      if (result) {
-        router.push({
-          // pathname: `/album/delete/${id}`,
-        });
-      }
-    } else {
-      router.push({
-        pathname: `/album/${id}`,
-      });
-    }
+  const onClickToggle = (id: number) => {
+    router.push({
+      pathname: `/album/${id}`,
+    });
   };
 
   return (
@@ -61,11 +33,7 @@ const Album = ({ isEditToggleOn, isDeleteToggleOn }: AlbumProps) => {
         <AlbumList>
           {data?.map((item) => {
             return (
-              <button
-                key={item.created_at}
-                type="button"
-                onClick={() => onClickToggle({ isEditToggleOn, isDeleteToggleOn, id: item.album_id })}
-              >
+              <button key={item.created_at} type="button" onClick={() => onClickToggle(item.album_id)}>
                 <AlbumItem>
                   <AlbumImageWrapper>
                     <Image size={24} />

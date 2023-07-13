@@ -1,14 +1,17 @@
+/* eslint-disable no-alert */
+import { trpcClient } from '@/lib/trpc-client';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 
-interface IImage {
-  data: IImageData;
+interface ImageListProps {
+  data: ImageDataProps;
 }
 
-interface ImageProps {
+interface ImagesArrayProps {
   original: string;
   src: string;
   width: number;
@@ -16,13 +19,14 @@ interface ImageProps {
   imageId: number;
 }
 
-interface IImageData {
+interface ImageDataProps {
   title: string;
   description: string;
-  album: ImageProps[];
+  album: ImagesArrayProps[];
 }
 
-const ImageList = (props: IImage) => {
+const ImageList = (props: ImageListProps) => {
+  const router = useRouter();
   const { data } = props;
   const [index, setIndex] = useState(-1);
   const images = data?.album || [];
@@ -38,11 +42,38 @@ const ImageList = (props: IImage) => {
   const handleMovePrev = () => setIndex(prevIndex);
   const handleMoveNext = () => setIndex(nextIndex);
 
+  const handleEditAlbum = () => {
+    router.push(`/album/edit/${router.query.id}`);
+  };
+
+  const handleDeleteAlbum = async () => {
+    try {
+      await trpcClient.deleteAlbum.mutate(Number(router.query.id));
+      alert('앨범을 삭제했습니다.');
+      router.push('/');
+    } catch (error) {
+      console.log(error);
+      alert('앨범 삭제에 실패했습니다.');
+    }
+  };
+
   return (
     <div>
       <TitleWrapper>
-        <h1>{data?.title}</h1>
-        <p>{data?.description}</p>
+        <div>
+          <h1>{data?.title}</h1>
+          <p>{data?.description}</p>
+        </div>
+        {data && (
+          <div className="button-wrapper">
+            <button type="button" onClick={handleEditAlbum}>
+              앨범 수정
+            </button>
+            <button type="button" onClick={handleDeleteAlbum}>
+              앨범 삭제
+            </button>
+          </div>
+        )}
       </TitleWrapper>
       <Gallery images={images} onClick={handleClick} enableImageSelection={false} />
       {!!currentImage && (
@@ -65,7 +96,9 @@ const ImageList = (props: IImage) => {
 export default ImageList;
 
 const TitleWrapper = styled.div`
-  margin: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 16px 20px;
 
   h1 {
     font-size: 24px;
@@ -74,8 +107,32 @@ const TitleWrapper = styled.div`
   }
 
   p {
-    margin-top: 6px;
+    margin-top: 10px;
     font-size: 16px;
     color: #001c30;
+  }
+
+  .button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  button {
+    background: #001c30;
+    border: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    text-align: right;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  button:active {
+    opacity: 0.8;
   }
 `;
