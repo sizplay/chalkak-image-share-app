@@ -1,21 +1,35 @@
 import styled from '@emotion/styled';
 import ImageList from '@/Components/ImageList';
 import NavBar from '@/Components/NavBar';
-import { images, CustomImage } from '@/Components/images';
-
-interface ImageDataProps {
-  title: string;
-  description: string;
-  album: CustomImage[];
-}
-
-const albumData: ImageDataProps = {
-  title: '가족 이야기',
-  description: '가족들과 함께한 추억들을 모아놓은 앨범입니다.',
-  album: images,
-};
+// import {  CustomImage } from '@/Components/images';
+import { useRouter } from 'next/router';
+import { trpcReactClient } from '@/lib/trpc-client';
 
 const OneAlbum = () => {
+  const router = useRouter();
+
+  const { id } = router.query;
+
+  const albumDetail = trpcReactClient.getAlbum.useQuery(Number(id));
+  const images = trpcReactClient.getAlbumImageList.useQuery(Number(id));
+
+  const newImages = images.data?.map((image) => {
+    return {
+      original: image.path,
+      src: image.path,
+      width: image.width,
+      height: image.height,
+      imageId: image.image_id,
+    };
+  });
+
+  const albumData = {
+    title: albumDetail.data?.title || '',
+    description: albumDetail.data?.subtitle || '',
+    albumId: albumDetail.data?.album_id || 0,
+    album: newImages || [],
+  };
+
   return (
     <>
       <NavBar leftArrow={true} isScrolledOn={true} />

@@ -3,21 +3,29 @@ import { useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
-import { CustomImage, images } from './images';
 
 interface IImage {
   data: IImageData;
 }
 
+interface ImageProps {
+  original: string;
+  src: string;
+  width: number;
+  height: number;
+  imageId: number;
+}
+
 interface IImageData {
   title: string;
   description: string;
-  album: CustomImage[];
+  album: ImageProps[];
 }
 
 const ImageList = (props: IImage) => {
   const { data } = props;
   const [index, setIndex] = useState(-1);
+  const images = data?.album || [];
 
   const currentImage = images[index];
   const nextIndex = (index + 1) % images.length;
@@ -40,7 +48,6 @@ const ImageList = (props: IImage) => {
       {!!currentImage && (
         <Lightbox
           mainSrc={currentImage.original}
-          imageTitle={currentImage.caption}
           mainSrcThumbnail={currentImage.src}
           nextSrc={nextImage.original}
           nextSrcThumbnail={nextImage.src}
