@@ -3,7 +3,7 @@ import { IInsertImageMutation, IInsertImageMutationVariables } from '../hasura-t
 import client from './client';
 
 const mutation = gql`
-  mutation insertImage($objects: [image_insert_input!]!) {
+  mutation insertImages($objects: [image_insert_input!]!) {
     insert_image(objects: $objects) {
       affected_rows
       returning {
@@ -16,7 +16,7 @@ const mutation = gql`
   }
 `;
 
-const insertImage = async (variables: IInsertImageMutationVariables) => {
+const insertImages = async (variables: IInsertImageMutationVariables) => {
   const res = await client.mutate<IInsertImageMutation, IInsertImageMutationVariables>({
     mutation,
     variables,
@@ -33,4 +33,4 @@ const insertImage = async (variables: IInsertImageMutationVariables) => {
   return res.data.insert_image;
 };
 
-export default insertImage;
+export default insertImages;

@@ -3,7 +3,7 @@
 import NavBar from '@/Components/NavBar';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { Smile, X, Image } from 'lucide-react';
+import { Smile, X, Image as LucideImage } from 'lucide-react';
 import ReactModal from 'react-modal';
 import EmojiPicker from 'emoji-picker-react';
 import { trpcClient } from '@/lib/trpc-client';
@@ -12,19 +12,28 @@ import { useSession } from 'next-auth/react';
 import { trpc } from '@/Components/utils/trpc';
 // import { useS3Upload } from 'next-s3-upload';
 import axios from 'axios';
+import { getHeightAndWidthFromDataUrl } from '@/Components/utils/getHeightAndWidthFromDataUrl';
+import { getDate } from '@/Components/utils/getDate';
+
+interface imageProps {
+  album_id: number;
+  path: string;
+  width: number;
+  height: number;
+  size: number;
+}
 
 const AlbumCreate = () => {
-  const [images, setImages] = useState<FileList | null>(null);
+  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const [albumName, setAlbumName] = useState<string>('');
   const [albumDescription, setAlbumDescription] = useState<string>('');
   const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [icon, setIcon] = useState<string>('');
   const [backgroundImage, setBackgroundImage] = useState<string>('');
   const [userId, setUserId] = useState<number>(0);
-  // const [imagesUrl, setImagesUrl] = useState<string[]>([]);
 
   const router = useRouter();
-  // const { uploadToS3 } = useS3Upload();
+
   const { data: sessionData } = useSession();
   const { data: users } = trpc.users.useQuery();
 
@@ -43,35 +52,13 @@ const AlbumCreate = () => {
   };
 
   const handleImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log('e', e?.target);
-    if (e?.target?.files?.[0]) {
-      // const { url } = await uploadToS3(e.target.files[0]);
-      // console.log('url', url);
-
-      const { data } = await axios.post('/api/upload', {
-        name: e.target.files[0].name,
-        type: e.target.files[0].type,
-      });
-
-      console.log('data', data);
-
-      const { url } = data;
-      await axios.put(url, e.target.files[0], {
-        headers: {
-          'Content-Type': e.target.files[0].type,
-          'Access-Control-Allow-Origin': '*',
-        },
-      });
-
-      console.log('url', url);
-    }
-    // setImages(e.target.files);
+    setImageFiles(e.target.files);
   };
 
   const handleCancelImage = (imageName: string) => {
     const dataTranster = new DataTransfer();
-    if (images) {
-      Array.from(images)
+    if (imageFiles) {
+      Array.from(imageFiles)
         .filter((image) => {
           return imageName !== image.name;
         })
@@ -79,7 +66,7 @@ const AlbumCreate = () => {
           dataTranster.items.add(image);
         });
     }
-    setImages(dataTranster.files);
+    setImageFiles(dataTranster.files);
   };
 
   const handleIconModalOpen = () => {
@@ -116,7 +103,7 @@ const AlbumCreate = () => {
   };
 
   const handleSubmit = async () => {
-    if (!images) {
+    if (!imageFiles) {
       alert('이미지를 선택해주세요.');
       return;
     }
@@ -129,20 +116,70 @@ const AlbumCreate = () => {
       return;
     }
     try {
-      // const files = Array.from(images);
+      // 1. 앨범 생성
+      const returnedAlbumData = await trpcClient.insertAlbum.mutate({
+        title: albumName,
+        subtitle: albumDescription,
+        userId,
+        icon,
+        backgroundImage,
+      });
+      const albumId = returnedAlbumData?.album_id;
 
-      // files.forEach(async (file) => {
-      //   const { url } = await uploadToS3(file);
-      //   setImagesUrl((prev) => [...prev, url]);
-      //   console.log('url', url, imagesUrl);
-      // });
+      const newImages: imageProps[] = [];
 
-      trpcClient.insertAlbum
-        .mutate({ title: albumName, subtitle: albumDescription, userId, icon, backgroundImage })
-        .then(() => {
-          alert('앨범을 생성하였습니다.');
-          router.push('/');
+      console.log('albumId', albumId);
+      // 2. 이미지 업로드
+      if (albumId !== 0 && imageFiles) {
+        const date = getDate();
+
+        Array.from(imageFiles).forEach(async (imageFile: File) => {
+          const fileAsDataURL = window.URL.createObjectURL(imageFile);
+          const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
+          let width = 0;
+          let height = 0;
+          if (dimension) {
+            width = dimension.width;
+            height = dimension.height;
+          }
+
+          const s3uploadData = await axios.post('/api/upload', {
+            name: `${date}/${imageFile.name}`,
+            type: imageFile.type,
+          });
+
+          console.log('data', s3uploadData);
+
+          const { url } = s3uploadData.data;
+
+          await axios.put(url, imageFile, {
+            headers: {
+              'Content-Type': imageFile.type,
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+
+          const newUrl = new URL(url);
+
+          // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
+          const imageData = {
+            album_id: albumId,
+            path: `${newUrl.origin}${newUrl.pathname}`,
+            width: width || 0,
+            height: height || 0,
+            size: imageFile.size || 0,
+          };
+          newImages.push(imageData);
+
+          if (newImages.length === imageFiles.length) {
+            const response = await trpcClient.insertImages.mutate(newImages);
+            if (response.affected_rows === imageFiles.length) {
+              alert('앨범이 생성되었습니다.');
+              router.push(`/album/${albumId}`);
+            }
+          }
         });
+      }
     } catch (error) {
       console.error(error);
       alert('에러가 발생하였습니다. 다시 이용해주세요.');
@@ -184,7 +221,7 @@ const AlbumCreate = () => {
         {!backgroundImage && (
           <li>
             <button type="button" onClick={handleCoverImageModalOpen}>
-              <Image size={24} color="#798187" />
+              <LucideImage size={24} color="#798187" />
               <p>커버 추가</p>
             </button>
           </li>
@@ -211,9 +248,9 @@ const AlbumCreate = () => {
         <label htmlFor="images">이미지를 선택해주세요.</label>
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
         {/* <FileInput onChange={handleImages} /> */}
-        {images && (
+        {imageFiles && (
           <AlbumImageWrapper>
-            {Array.from(images).map((image) => (
+            {Array.from(imageFiles).map((image) => (
               <ImageWrapper key={image.name}>
                 <img src={URL.createObjectURL(image)} alt="album" />
                 <CancelButtonWrapper>

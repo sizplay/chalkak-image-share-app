@@ -3,7 +3,7 @@ import { z } from 'zod';
 import getImages from '../hasura-client/get-images';
 import deleteImageById from '../hasura-client/delete-image-by-id';
 import deleteImageByAlbumId from '../hasura-client/delete-image-by-album';
-import insertImage from '../hasura-client/insert-image';
+import insertImages from '../hasura-client/insert-image';
 
 const t = initTRPC.context().create();
 const { procedure } = t;
@@ -13,11 +13,11 @@ export const imageProcedure = {
     const res = await getImages(input);
     return res;
   }),
-  insertImage: procedure
+  insertImages: procedure
     .input(
       z
         .object({
-          albumId: z.number(),
+          album_id: z.number(),
           path: z.string(),
           size: z.number().optional(),
           width: z.number().optional(),
@@ -27,13 +27,13 @@ export const imageProcedure = {
     )
     .mutation(async ({ input }) => {
       console.log(input);
-      const res = await insertImage({
+      const res = await insertImages({
         objects: input.map((item) => ({
-          album_id: item.albumId,
+          album_id: item.album_id,
           path: item.path,
-          size: item?.size ? item.size : null,
-          width: item?.width ? item.width : null,
-          height: item?.height ? item.height : null,
+          size: item.size || 0,
+          width: item.width || 0,
+          height: item.height || 0,
         })),
       });
 

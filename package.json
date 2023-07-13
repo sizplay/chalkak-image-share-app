@@ -8,8 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "hasura": "hasura console --admin-secret $HASURA_ADMIN_SECRET --project hasura",
-    "gen": "yarn hasura-codegen",
-    "hasura-codegen": "graphql-codegen --config ./hasura-codegen.ts",
     "codegen": "graphql-codegen --r dotenv/config -config codegen.yml dotenv-config-path=.env"
   },
   "dependencies": {
