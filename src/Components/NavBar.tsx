@@ -27,7 +27,7 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isScrolledOn]);
 
   interface isNavBarVisibleProps {
     isScrolled: boolean;

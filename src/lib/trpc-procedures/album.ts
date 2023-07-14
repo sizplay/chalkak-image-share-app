@@ -35,6 +35,12 @@ export const albumProcedure = {
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
       }
+      if (input?.icon) {
+        object.icon = input.icon;
+      }
+      if (input?.backgroundImage) {
+        object.background = input.backgroundImage;
+      }
 
       const res = await insertAlbum({ object });
 
@@ -48,6 +54,8 @@ export const albumProcedure = {
         subtitle: z.string().optional(),
         mainImageId: z.number().optional(),
         isShared: z.boolean().optional(),
+        icon: z.string().optional(),
+        backgroundImage: z.string().optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -64,6 +72,12 @@ export const albumProcedure = {
       }
       if (input?.isShared) {
         object.is_shared = input.isShared;
+      }
+      if (input?.icon) {
+        object.icon = input.icon;
+      }
+      if (input?.backgroundImage) {
+        object.background = input.backgroundImage;
       }
       const res = await updateAlbum({ album_id: input.albumId, _set: object });
 

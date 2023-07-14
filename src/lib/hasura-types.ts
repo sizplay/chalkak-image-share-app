@@ -146,6 +146,8 @@ export type IGetAlbumQuery = {
     is_shared: boolean;
     title: string;
     subtitle: string;
+    icon: string;
+    background: string;
     main_image: {
       __typename?: 'image';
       image_id: number;
@@ -175,7 +177,7 @@ export type IAlbum_Insert_Input = {
   title: InputMaybe<Scalars['String']>;
   subtitle?: InputMaybe<Scalars['String']>;
   icon?: InputMaybe<Scalars['String']>;
-  backgroundImage?: InputMaybe<Scalars['String']>;
+  background?: InputMaybe<Scalars['String']>;
 };
 
 export type IAlbum_Insert_Variables = Exact<{
@@ -187,6 +189,8 @@ export type IAlbum_Update_Input = {
   subtitle?: InputMaybe<Scalars['String']>;
   main_image_id?: InputMaybe<Scalars['Int']>;
   is_shared?: InputMaybe<Scalars['Boolean']>;
+  icon?: InputMaybe<Scalars['String']>;
+  background?: InputMaybe<Scalars['String']>;
 };
 
 export type IAlbum_Update_Variables = Exact<{

@@ -43,6 +43,8 @@
     "react/require-default-props": "off",
     "react/no-danger": "off",
     "react/jsx-no-useless-fragment": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [
       "error",
       {

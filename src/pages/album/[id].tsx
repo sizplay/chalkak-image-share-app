@@ -5,29 +5,32 @@ import NavBar from '@/Components/NavBar';
 import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';
 
+import { useMemo } from 'react';
+
 const OneAlbum = () => {
   const router = useRouter();
-
   const { id } = router.query;
 
-  const albumDetail = trpcReactClient.getAlbum.useQuery(Number(id));
-  const images = trpcReactClient.getAlbumImageList.useQuery(Number(id));
+  const { data: albumDetail } = trpcReactClient.getAlbum.useQuery(Number(id));
+  const { data: images } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
 
-  const newImages = images.data?.map((image) => {
-    return {
+  const newImages = useMemo(() => {
+    return images?.map((image) => ({
       original: image.path,
       src: image.path,
       width: image.width,
       height: image.height,
       imageId: image.image_id,
-    };
-  });
+    }));
+  }, [images]);
 
   const albumData = {
-    title: albumDetail.data?.title || '',
-    description: albumDetail.data?.subtitle || '',
-    albumId: albumDetail.data?.album_id || 0,
+    title: albumDetail?.title || '',
+    description: albumDetail?.subtitle || '',
+    albumId: albumDetail?.album_id || 0,
     album: newImages || [],
+    icon: albumDetail?.icon || '',
+    backgroundImage: albumDetail?.background || '',
   };
 
   return (
@@ -43,5 +46,5 @@ const OneAlbum = () => {
 export default OneAlbum;
 
 const ImageListContainer = styled.main`
-  margin-top: 70px;
+  margin-top: 50px;
 `;

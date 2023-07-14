@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
+import AlbumHeader from './AlbumHeader';
 
 interface ImageListProps {
   data: ImageDataProps;
@@ -23,11 +24,14 @@ interface ImageDataProps {
   title: string;
   description: string;
   album: ImagesArrayProps[];
+  icon?: string;
+  backgroundImage?: string;
 }
 
 const ImageList = (props: ImageListProps) => {
   const router = useRouter();
   const { data } = props;
+  const { icon, backgroundImage } = data;
   const [index, setIndex] = useState(-1);
   const images = data?.album || [];
 
@@ -59,6 +63,7 @@ const ImageList = (props: ImageListProps) => {
 
   return (
     <div>
+      <AlbumHeader icon={icon || ''} backgroundImage={backgroundImage || ''} />
       <TitleWrapper>
         <div>
           <h1>{data?.title}</h1>
