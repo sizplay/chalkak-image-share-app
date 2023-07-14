@@ -10,6 +10,8 @@ const query = gql`
       is_shared
       title
       subtitle
+      icon
+      background
       main_image {
         image_id
         path
