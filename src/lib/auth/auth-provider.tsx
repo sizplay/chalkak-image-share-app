@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import { useRouter } from 'next/router';
 import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
@@ -14,15 +15,20 @@ interface IAuthContext {
 export const AuthContext = createContext<IAuthContext | null>(null);
 
 export function useAuth() {
+  const router = useRouter();
   const result = useContext(AuthContext);
-  if (!result?.initialized) {
+  if (!result?.initialized && !isAllowedPage(router.pathname)) {
     throw new Error('Auth context must be used within a AuthProvider!');
   }
   return result;
 }
 
-const publicPageList = ['/login'];
+const allowedPageList = ['/album/[id]'];
+const isAllowedPage = (pathname: string) => {
+  return allowedPageList.includes(pathname);
+};
 
+const publicPageList = ['/login'];
 const isPublicPage = (pathname: string) => {
   return publicPageList.includes(pathname);
 };
@@ -31,6 +37,7 @@ const AuthProvider = ({ children }: PropsWithChildren<IAuthProviderProps>) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const loading = status === 'loading';
+  const { pathname } = router;
 
   useEffect(() => {
     if (loading) {
@@ -39,13 +46,20 @@ const AuthProvider = ({ children }: PropsWithChildren<IAuthProviderProps>) => {
 
     if (session && isPublicPage(router.pathname)) {
       router.push('/');
-    } else if (!session && !isPublicPage(router.pathname)) {
+    } else if (!session && !isPublicPage(router.pathname) && !isAllowedPage(router.pathname)) {
       router.push('/login');
     }
-  }, [loading, router, session]);
+  }, [loading, pathname, router, session]);
 
   if (loading || (session && isPublicPage(router.pathname))) {
     return <Spinner />;
+  }
+
+  if (isAllowedPage(router.pathname)) {
+    if (session) {
+      return <AuthContext.Provider value={{ initialized: true, session }}>{children}</AuthContext.Provider>;
+    }
+    return <>{children}</>;
   }
 
   if (isPublicPage(router.pathname)) {
@@ -56,7 +70,6 @@ const AuthProvider = ({ children }: PropsWithChildren<IAuthProviderProps>) => {
     return <Spinner />;
   }
 
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
   return <AuthContext.Provider value={{ initialized: true, session }}>{children}</AuthContext.Provider>;
 };
 

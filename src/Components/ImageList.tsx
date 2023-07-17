@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
+import { useAuth } from '@/lib/auth/auth-provider';
 import AlbumHeader from './AlbumHeader';
 
 interface ImageListProps {
@@ -36,6 +37,8 @@ const ImageList = (props: ImageListProps) => {
   const [index, setIndex] = useState(-1);
   const images = data?.album || [];
 
+  const userInfo = useAuth();
+
   const deleteAlbumMutation = trpcReactClient.deleteAlbum.useMutation();
   const deleteImagesMutation = trpcReactClient.deleteAllAlbumImages.useMutation();
 
@@ -51,7 +54,7 @@ const ImageList = (props: ImageListProps) => {
   const handleMoveNext = () => setIndex(nextIndex);
 
   const handleEditAlbum = () => {
-    router.push(`/album/${router.query.id}/edit`);
+    router.push(`/edit/${router.query.id}`);
   };
 
   const handleDeleteAlbum = async () => {
@@ -79,7 +82,7 @@ const ImageList = (props: ImageListProps) => {
               <h1>{data?.title}</h1>
               <p>{data?.description}</p>
             </div>
-            {data && (
+            {userInfo?.initialized && data && (
               <div className="button-wrapper">
                 <button type="button" onClick={handleEditAlbum}>
                   앨범 수정

@@ -9,7 +9,7 @@ import ReactModal from 'react-modal';
 import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { trpcReactClient } from '@/lib/trpc-client';
 import axios from 'axios';
-import { imageProps } from '@/pages/album/create';
+import { imageProps } from '@/pages/create';
 import AlbumHeader from '../AlbumHeader';
 import EmojiPickerComponent from '../EmojiPicker';
 import { convertURLtoFile } from '../utils/convertURLtoFile';

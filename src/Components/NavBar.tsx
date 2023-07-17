@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { LogOut, MoveLeft } from 'lucide-react';
+import { LogOut, MoveLeft, UserCircle } from 'lucide-react';
+import { useAuth } from '@/lib/auth/auth-provider';
 
 interface NavBarProps {
   leftArrow?: boolean;
@@ -12,6 +13,8 @@ interface NavBarProps {
 const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const userInfo = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,7 +49,7 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
     <>
       {isNavBarVisible({ isScrolled, leftArrow }) && (
         <StyledNavigationBar>
-          {leftArrow ? (
+          {userInfo?.initialized && leftArrow ? (
             <LeftSideWrapper>
               <button type="button" onClick={() => router.back()}>
                 <MoveLeft size={24} color="#FFF" />
@@ -64,7 +67,7 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
           </CenterWrapper>
           <RightSideWrapper>
             <button type="button" onClick={() => signOut({ callbackUrl: '/login' })}>
-              <LogOut color="#FFF" size={24} />
+              {userInfo?.initialized ? <LogOut color="#FFF" size={24} /> : <UserCircle color="#FFF" size={24} />}
             </button>
           </RightSideWrapper>
         </StyledNavigationBar>

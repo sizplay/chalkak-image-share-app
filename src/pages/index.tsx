@@ -5,6 +5,7 @@ import Album from '@/Components/album';
 import { useRouter } from 'next/router';
 import { PlusCircle } from 'lucide-react';
 import { useEffect } from 'react';
+import { useAuth } from '@/lib/auth/auth-provider';
 
 const Home = () => {
   const router = useRouter();
@@ -14,8 +15,10 @@ const Home = () => {
   }, []);
 
   const handleClick = () => {
-    router.push('/album/create');
+    router.push('/create');
   };
+
+  const data = useAuth();
 
   return (
     <>
@@ -24,10 +27,12 @@ const Home = () => {
       <HomeContainer>
         <Album />
         <FloatingButtonWrapper>
-          <FloatingAddButton>
-            <Input onClick={handleClick} />
-            <PlusCircle color="#001C30" size={50} />
-          </FloatingAddButton>
+          {data?.initialized && (
+            <FloatingAddButton>
+              <Input onClick={handleClick} />
+              <PlusCircle color="#001C30" size={50} />
+            </FloatingAddButton>
+          )}
         </FloatingButtonWrapper>
       </HomeContainer>
     </>
