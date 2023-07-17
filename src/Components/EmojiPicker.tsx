@@ -20,7 +20,7 @@ const EmojiPickerComponent = ({ onIconModalClose, onDeleteIcon, onEmojiClick }: 
             제거
           </button>
         </DeleteEmojiWrapper>
-        <EmojiPicker onEmojiClick={onEmojiClick} />
+        <EmojiPicker onEmojiClick={onEmojiClick} autoFocusSearch={false} />
       </EmojiPickerWrapper>
     </EmojiPickerContainer>
   );
