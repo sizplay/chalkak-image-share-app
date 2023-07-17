@@ -33,6 +33,10 @@ const OneAlbum = () => {
     backgroundImage: albumDetail?.background || '',
   };
 
+  if (albumDetail === null && images?.length === 0 && !isAlbumDetailLoading && !isImagesLoading) {
+    router.replace('/');
+  }
+
   return (
     <>
       <NavBar leftArrow={true} isScrolledOn={true} />
