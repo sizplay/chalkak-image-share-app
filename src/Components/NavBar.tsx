@@ -48,13 +48,20 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
         <StyledNavigationBar>
           {leftArrow ? (
             <LeftSideWrapper>
-              <button type="button" onClick={() => router.push('/')}>
+              <button type="button" onClick={() => router.back()}>
                 <MoveLeft size={24} color="#FFF" />
               </button>
             </LeftSideWrapper>
           ) : (
-            <div />
+            <LeftSideWrapper>
+              <div />
+            </LeftSideWrapper>
           )}
+          <CenterWrapper>
+            <button type="button" onClick={() => router.push('/')}>
+              <p>Grid-Image-App</p>
+            </button>
+          </CenterWrapper>
           <RightSideWrapper>
             <button type="button" onClick={() => signOut({ callbackUrl: '/login' })}>
               <LogOut color="#FFF" size={24} />
@@ -90,8 +97,36 @@ const StyledNavigationBar = styled.section`
 
 const LeftSideWrapper = styled.div`
   margin-left: 16px;
+
+  div {
+    width: 24px;
+  }
 `;
 
 const RightSideWrapper = styled.div`
   margin-right: 16px;
+`;
+
+const CenterWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  p {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    @media (min-width: 768px) {
+      font-size: 20px;
+    }
+  }
 `;

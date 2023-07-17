@@ -4,9 +4,14 @@ import NavBar from '@/Components/NavBar';
 import Album from '@/Components/album';
 import { useRouter } from 'next/router';
 import { PlusCircle } from 'lucide-react';
+import { useEffect } from 'react';
 
 const Home = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleClick = () => {
     router.push('/album/create');

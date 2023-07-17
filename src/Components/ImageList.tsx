@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { trpcClient } from '@/lib/trpc-client';
+import { trpcReactClient } from '@/lib/trpc-client';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -35,6 +35,9 @@ const ImageList = (props: ImageListProps) => {
   const [index, setIndex] = useState(-1);
   const images = data?.album || [];
 
+  const deleteAlbumMutation = trpcReactClient.deleteAlbum.useMutation();
+  const deleteImagesMutation = trpcReactClient.deleteAllAlbumImages.useMutation();
+
   const currentImage = images[index];
   const nextIndex = (index + 1) % images.length;
   const nextImage = images[nextIndex] || currentImage;
@@ -47,14 +50,18 @@ const ImageList = (props: ImageListProps) => {
   const handleMoveNext = () => setIndex(nextIndex);
 
   const handleEditAlbum = () => {
-    router.push(`/album/edit/${router.query.id}`);
+    router.push(`/album/${router.query.id}/edit`);
   };
 
   const handleDeleteAlbum = async () => {
     try {
-      await trpcClient.deleteAlbum.mutate(Number(router.query.id));
-      alert('앨범을 삭제했습니다.');
-      router.push('/');
+      Promise.all([
+        deleteAlbumMutation.mutate(Number(router.query.id)),
+        deleteImagesMutation.mutate(Number(router.query.id)),
+      ]).then(() => {
+        alert('앨범을 삭제했습니다.');
+        router.push('/');
+      });
     } catch (error) {
       console.log(error);
       alert('앨범 삭제에 실패했습니다.');
