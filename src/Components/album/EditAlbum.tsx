@@ -170,9 +170,9 @@ const EditAlbum = ({
       // 2. 앨범 이미지 수정
       const newImages: imageProps[] = [];
 
+      // 2-1. 신규 이미지 업로드
       if (updatingImages && updatingImages?.length > 0) {
         const date = getDate();
-
         Array.from(updatingImages).forEach(async (image) => {
           // width height 구하기
           const fileAsDataURL = window.URL.createObjectURL(image);
@@ -181,7 +181,7 @@ const EditAlbum = ({
 
           // 1. 이미지 파일 s3에 업로드
           const s3uploadData = await axios.post('/api/upload', {
-            name: `${date}/${image.name}`,
+            name: `${date}/${image.name}~${new Date().getTime()}`,
             type: image.type,
           });
           const { url } = s3uploadData.data;
@@ -205,36 +205,32 @@ const EditAlbum = ({
 
           if (newImages.length === updatingImages.length) {
             insertImagesMutation.mutate(newImages);
-            alert('앨범이 수정되었습니다.');
-            router.push(`/album/${albumId}`);
           }
-        }); // 기존 앨범에서 삭제된 이미지가 있는지 확인
-      } else if (album && album.length > 0 && images && images.length > 0 && album.length !== images.length) {
-        const newImages = Array.from(images).map((image) => image.name);
-
-        const newAlbum = album.map((image) => {
-          return {
-            src: image?.src?.slice(image.src.lastIndexOf('/') + 1),
-            imageId: image.imageId,
-          };
         });
+      }
 
-        const deletedImages = newAlbum.filter((image) => {
-          return !newImages.includes(image.src);
-        });
+      // 기존 앨범에서 삭제된 이미지가 있는지 확인
+      const currentImages = Array.from(images).map((image) => image.name);
+      const currentAlbum = album.map((image) => {
+        return {
+          src: image?.src?.slice(image.src.lastIndexOf('/') + 1),
+          imageId: image.imageId,
+        };
+      });
 
+      const deletedImages = currentAlbum.filter((image) => {
+        return !currentImages.includes(image.src);
+      });
+
+      if (deletedImages.length > 0) {
         await Promise.all(
           deletedImages.map(async (image) => {
             deleteImageMutation.mutate(image.imageId);
           }),
-        ).then(() => {
-          alert('앨범이 수정되었습니다.');
-          router.push(`/album/${albumId}`);
-        });
-      } else {
-        alert('앨범이 수정되었습니다.');
-        router.push(`/album/${albumId}`);
+        );
       }
+      alert('앨범이 수정되었습니다.');
+      router.push(`/album/${albumId}`);
     } catch (e) {
       console.log(e);
       alert('앨범 수정에 실패했습니다.');
@@ -251,6 +247,8 @@ const EditAlbum = ({
         onDeleteImage={handleDeleteImage}
         backgroundImage={background}
         icon={iconUrl}
+        showEditButton={true}
+        showDeleteButton={true}
       />
       <h1>앨범을 수정해 주세요</h1>
       <form>

@@ -8,6 +8,8 @@ interface AlbumHeaderProps {
   onDeleteImage?: () => void;
   backgroundImage: string | null;
   icon: string | null;
+  showEditButton?: boolean;
+  showDeleteButton?: boolean;
 }
 
 const AlbumHeader = ({
@@ -17,6 +19,8 @@ const AlbumHeader = ({
   onDeleteImage,
   backgroundImage,
   icon,
+  showEditButton = false,
+  showDeleteButton = false,
 }: AlbumHeaderProps) => {
   return (
     <>
@@ -24,12 +28,16 @@ const AlbumHeader = ({
         <CoverImageWrapper>
           <img src={backgroundImage} alt="cover" />
           <CoverButtonWrapper>
-            <button type="button" onClick={onChangeImage}>
-              커버 변경
-            </button>
-            <button type="button" onClick={onDeleteImage}>
-              커버 삭제
-            </button>
+            {showEditButton && (
+              <button type="button" onClick={onChangeImage}>
+                커버 변경
+              </button>
+            )}
+            {showDeleteButton && (
+              <button type="button" onClick={onDeleteImage}>
+                커버 삭제
+              </button>
+            )}
           </CoverButtonWrapper>
           {icon && (
             <BackgroundIconWrapper>

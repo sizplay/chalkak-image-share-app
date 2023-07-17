@@ -143,7 +143,7 @@ const AlbumCreate = () => {
           const { width, height } = dimension;
 
           const s3uploadData = await axios.post('/api/upload', {
-            name: `${date}/${imageFile.name}`,
+            name: `${date}/${imageFile.name}~${new Date().getTime()}`,
             type: imageFile.type,
           });
           const { url } = s3uploadData.data;
@@ -190,6 +190,8 @@ const AlbumCreate = () => {
         onDeleteImage={handleDeleteImage}
         backgroundImage={backgroundImage}
         icon={icon}
+        showEditButton={true}
+        showDeleteButton={true}
       />
       <h1>앨범을 만들어 주세요</h1>
       <form>
