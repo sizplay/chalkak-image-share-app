@@ -20,14 +20,13 @@ const Home = () => {
   return (
     <>
       <HeadComponent />
-      <EmptySpace />
       <NavBar />
       <HomeContainer>
         <Album />
         <FloatingButtonWrapper>
           <FloatingAddButton>
             <Input onClick={handleClick} />
-            <PlusCircle color="#001C30" size={48} />
+            <PlusCircle color="#001C30" size={50} />
           </FloatingAddButton>
         </FloatingButtonWrapper>
       </HomeContainer>
@@ -38,12 +37,16 @@ const Home = () => {
 export default Home;
 
 const HomeContainer = styled.main`
-  padding-top: 20px;
   height: 100vh;
-`;
-
-const EmptySpace = styled.div`
-  height: 50px;
+  width: 100%;
+  background: #fff;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
 `;
 
 const FloatingAddButton = styled.button`
@@ -63,7 +66,7 @@ const FloatingAddButton = styled.button`
 const Input = styled.input`
   opacity: 0;
   position: fixed;
-  bottom: 20px;
+  bottom: 25px;
   right: 20px;
   width: 50px;
   height: 50px;

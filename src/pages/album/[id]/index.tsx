@@ -11,8 +11,8 @@ const OneAlbum = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: albumDetail } = trpcReactClient.getAlbum.useQuery(Number(id));
-  const { data: images } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
+  const { data: albumDetail, isLoading: isAlbumDetailLoading } = trpcReactClient.getAlbum.useQuery(Number(id));
+  const { data: images, isLoading: isImagesLoading } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
 
   const newImages = useMemo(() => {
     return images?.map((image) => ({
@@ -37,7 +37,7 @@ const OneAlbum = () => {
     <>
       <NavBar leftArrow={true} isScrolledOn={true} />
       <ImageListContainer>
-        <ImageList data={albumData} />
+        <ImageList data={albumData} isLoading={isAlbumDetailLoading || isImagesLoading} />
       </ImageListContainer>
     </>
   );

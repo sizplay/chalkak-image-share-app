@@ -10,6 +10,7 @@ interface AlbumHeaderProps {
   icon: string | null;
   showEditButton?: boolean;
   showDeleteButton?: boolean;
+  isNomalPage?: boolean;
 }
 
 const AlbumHeader = ({
@@ -21,9 +22,10 @@ const AlbumHeader = ({
   icon,
   showEditButton = false,
   showDeleteButton = false,
+  isNomalPage = false,
 }: AlbumHeaderProps) => {
   return (
-    <>
+    <AlbumHeaderContainer>
       {backgroundImage && (
         <CoverImageWrapper>
           <img src={backgroundImage} alt="cover" />
@@ -49,7 +51,7 @@ const AlbumHeader = ({
         </CoverImageWrapper>
       )}
       <StyleComponents>
-        {!icon && (
+        {!isNomalPage && !icon && (
           <li>
             <button type="button" onClick={onIconModalOpen}>
               <Smile size={24} color="#798187" />
@@ -57,7 +59,7 @@ const AlbumHeader = ({
             </button>
           </li>
         )}
-        {!backgroundImage && (
+        {!isNomalPage && !backgroundImage && (
           <li>
             <button type="button" onClick={onCoverImageModalOpen}>
               <LucideImage size={24} color="#798187" />
@@ -74,11 +76,15 @@ const AlbumHeader = ({
           </button>
         </IconWrapper>
       )}
-    </>
+    </AlbumHeaderContainer>
   );
 };
 
 export default AlbumHeader;
+
+const AlbumHeaderContainer = styled.section`
+  width: 100%;
+`;
 
 const StyleComponents = styled.ul`
   display: flex;
@@ -94,6 +100,7 @@ const StyleComponents = styled.ul`
     font-size: 16px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    margin-top: 16px;
 
     p {
       font-size: 15px;

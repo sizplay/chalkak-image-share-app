@@ -10,6 +10,7 @@ import AlbumHeader from './AlbumHeader';
 
 interface ImageListProps {
   data: ImageDataProps;
+  isLoading: boolean;
 }
 
 interface ImagesArrayProps {
@@ -30,7 +31,7 @@ interface ImageDataProps {
 
 const ImageList = (props: ImageListProps) => {
   const router = useRouter();
-  const { data } = props;
+  const { data, isLoading } = props;
   const { icon, backgroundImage } = data;
   const [index, setIndex] = useState(-1);
   const images = data?.album || [];
@@ -69,39 +70,43 @@ const ImageList = (props: ImageListProps) => {
   };
 
   return (
-    <div>
-      <AlbumHeader icon={icon || ''} backgroundImage={backgroundImage || ''} />
-      <TitleWrapper>
-        <div>
-          <h1>{data?.title}</h1>
-          <p>{data?.description}</p>
-        </div>
-        {data && (
-          <div className="button-wrapper">
-            <button type="button" onClick={handleEditAlbum}>
-              앨범 수정
-            </button>
-            <button type="button" onClick={handleDeleteAlbum}>
-              앨범 삭제
-            </button>
-          </div>
-        )}
-      </TitleWrapper>
-      <Gallery images={images} onClick={handleClick} enableImageSelection={false} />
-      {!!currentImage && (
-        <Lightbox
-          mainSrc={currentImage.original}
-          mainSrcThumbnail={currentImage.src}
-          nextSrc={nextImage.original}
-          nextSrcThumbnail={nextImage.src}
-          prevSrc={prevImage.original}
-          prevSrcThumbnail={prevImage.src}
-          onCloseRequest={handleClose}
-          onMovePrevRequest={handleMovePrev}
-          onMoveNextRequest={handleMoveNext}
-        />
+    <>
+      {!isLoading && (
+        <>
+          <AlbumHeader icon={icon || ''} backgroundImage={backgroundImage || ''} isNomalPage={true} />
+          <TitleWrapper>
+            <div>
+              <h1>{data?.title}</h1>
+              <p>{data?.description}</p>
+            </div>
+            {data && (
+              <div className="button-wrapper">
+                <button type="button" onClick={handleEditAlbum}>
+                  앨범 수정
+                </button>
+                <button type="button" onClick={handleDeleteAlbum}>
+                  앨범 삭제
+                </button>
+              </div>
+            )}
+          </TitleWrapper>
+          <Gallery images={images} onClick={handleClick} enableImageSelection={false} />
+          {!!currentImage && (
+            <Lightbox
+              mainSrc={currentImage.original}
+              mainSrcThumbnail={currentImage.src}
+              nextSrc={nextImage.original}
+              nextSrcThumbnail={nextImage.src}
+              prevSrc={prevImage.original}
+              prevSrcThumbnail={prevImage.src}
+              onCloseRequest={handleClose}
+              onMovePrevRequest={handleMovePrev}
+              onMoveNextRequest={handleMoveNext}
+            />
+          )}
+        </>
       )}
-    </div>
+    </>
   );
 };
 
