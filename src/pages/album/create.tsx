@@ -276,10 +276,11 @@ const StyledAlbumCreate = styled.main`
     width: 100%;
     height: 50px;
     border: none;
+    border-radius: 0;
     border-bottom: 1px solid #176b87;
     margin-bottom: 16px;
     background: none;
-    font-size: 18px;
+    font-size: 16px;
     color: #001c30;
 
     &::placeholder {
@@ -298,7 +299,7 @@ const StyledAlbumCreate = styled.main`
     margin-bottom: 20px;
     border-bottom: 1px solid #176b87;
     padding-bottom: 8px;
-    font-size: 18px;
+    font-size: 16px;
   }
 
   #images {

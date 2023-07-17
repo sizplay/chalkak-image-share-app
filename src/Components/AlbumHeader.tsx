@@ -86,6 +86,11 @@ const StyleComponents = styled.ul`
     font-size: 16px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+
+    p {
+      font-size: 15px;
+      color: #001c30;
+    }
   }
 
   button {
@@ -145,10 +150,10 @@ const CoverButtonWrapper = styled.div`
 
   button {
     margin-left: 5px;
-  }
-  button {
     padding: 2px 4px;
     border-radius: 4px;
+    font-size: 14px;
+    color: #001c30;
   }
 `;
 
