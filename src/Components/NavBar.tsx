@@ -62,7 +62,7 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
           )}
           <CenterWrapper>
             <button type="button" onClick={() => router.push('/')}>
-              <p>Grid-Image-App</p>
+              <p>Grid image share app</p>
             </button>
           </CenterWrapper>
           <RightSideWrapper>
