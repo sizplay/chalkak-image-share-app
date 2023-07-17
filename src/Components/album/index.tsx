@@ -36,7 +36,7 @@ const Album = () => {
               <button key={item.created_at} type="button" onClick={() => onClickToggle(item.album_id)}>
                 <AlbumItem>
                   <AlbumImageWrapper>
-                    <Image size={24} />
+                    <Image size={24} color="#001c30" />
                   </AlbumImageWrapper>
                   <p>{item.title}</p>
                 </AlbumItem>
