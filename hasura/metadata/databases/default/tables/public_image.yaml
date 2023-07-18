@@ -1,0 +1,26 @@
+table:
+  name: image
+  schema: public
+object_relationships:
+  - name: album
+    using:
+      manual_configuration:
+        column_mapping:
+          album_id: album_id
+        insertion_order: null
+        remote_table:
+          name: album
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - path
+        - album_id
+        - height
+        - image_id
+        - size
+        - width
+        - created_at
+      filter: {}
+      allow_aggregations: true

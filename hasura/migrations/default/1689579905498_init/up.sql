@@ -6,7 +6,9 @@ CREATE TABLE public.album (
     main_image_id integer,
     created_by integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    is_shared boolean DEFAULT false NOT NULL
+    is_shared boolean DEFAULT false NOT NULL,
+    icon text,
+    background text
 );
 COMMENT ON TABLE public.album IS '사진앨범';
 CREATE SEQUENCE public.album_album_id_seq

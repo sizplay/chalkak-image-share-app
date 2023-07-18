@@ -1,0 +1,3 @@
+- "!include public_album.yaml"
+- "!include public_image.yaml"
+- "!include public_user.yaml"

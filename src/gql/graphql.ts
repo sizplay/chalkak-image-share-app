@@ -80,10 +80,12 @@ export type String_Comparison_Exp = {
 export type Album = {
   __typename?: 'album';
   album_id: Scalars['Int']['output'];
+  background?: Maybe<Scalars['String']['output']>;
   /** An object relationship */
   create_user: User;
   created_at: Scalars['timestamptz']['output'];
   created_by: Scalars['Int']['output'];
+  icon?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
   images: Array<Image>;
   /** An aggregate relationship */
@@ -216,9 +218,11 @@ export type Album_Bool_Exp = {
   _not?: InputMaybe<Album_Bool_Exp>;
   _or?: InputMaybe<Array<Album_Bool_Exp>>;
   album_id?: InputMaybe<Int_Comparison_Exp>;
+  background?: InputMaybe<String_Comparison_Exp>;
   create_user?: InputMaybe<User_Bool_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   created_by?: InputMaybe<Int_Comparison_Exp>;
+  icon?: InputMaybe<String_Comparison_Exp>;
   images?: InputMaybe<Image_Bool_Exp>;
   images_aggregate?: InputMaybe<Image_Aggregate_Bool_Exp>;
   is_shared?: InputMaybe<Boolean_Comparison_Exp>;
@@ -244,9 +248,11 @@ export type Album_Inc_Input = {
 /** input type for inserting data into table "album" */
 export type Album_Insert_Input = {
   album_id?: InputMaybe<Scalars['Int']['input']>;
+  background?: InputMaybe<Scalars['String']['input']>;
   create_user?: InputMaybe<User_Obj_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   created_by?: InputMaybe<Scalars['Int']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<Image_Arr_Rel_Insert_Input>;
   is_shared?: InputMaybe<Scalars['Boolean']['input']>;
   main_image?: InputMaybe<Image_Obj_Rel_Insert_Input>;
@@ -259,8 +265,10 @@ export type Album_Insert_Input = {
 export type Album_Max_Fields = {
   __typename?: 'album_max_fields';
   album_id?: Maybe<Scalars['Int']['output']>;
+  background?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   created_by?: Maybe<Scalars['Int']['output']>;
+  icon?: Maybe<Scalars['String']['output']>;
   main_image_id?: Maybe<Scalars['Int']['output']>;
   subtitle?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
@@ -269,8 +277,10 @@ export type Album_Max_Fields = {
 /** order by max() on columns of table "album" */
 export type Album_Max_Order_By = {
   album_id?: InputMaybe<Order_By>;
+  background?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   created_by?: InputMaybe<Order_By>;
+  icon?: InputMaybe<Order_By>;
   main_image_id?: InputMaybe<Order_By>;
   subtitle?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
@@ -280,8 +290,10 @@ export type Album_Max_Order_By = {
 export type Album_Min_Fields = {
   __typename?: 'album_min_fields';
   album_id?: Maybe<Scalars['Int']['output']>;
+  background?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   created_by?: Maybe<Scalars['Int']['output']>;
+  icon?: Maybe<Scalars['String']['output']>;
   main_image_id?: Maybe<Scalars['Int']['output']>;
   subtitle?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
@@ -290,8 +302,10 @@ export type Album_Min_Fields = {
 /** order by min() on columns of table "album" */
 export type Album_Min_Order_By = {
   album_id?: InputMaybe<Order_By>;
+  background?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   created_by?: InputMaybe<Order_By>;
+  icon?: InputMaybe<Order_By>;
   main_image_id?: InputMaybe<Order_By>;
   subtitle?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
@@ -306,6 +320,13 @@ export type Album_Mutation_Response = {
   returning: Array<Album>;
 };
 
+/** input type for inserting object relation for remote table "album" */
+export type Album_Obj_Rel_Insert_Input = {
+  data: Album_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Album_On_Conflict>;
+};
+
 /** on_conflict condition type for table "album" */
 export type Album_On_Conflict = {
   constraint: Album_Constraint;
@@ -316,9 +337,11 @@ export type Album_On_Conflict = {
 /** Ordering options when selecting data from "album". */
 export type Album_Order_By = {
   album_id?: InputMaybe<Order_By>;
+  background?: InputMaybe<Order_By>;
   create_user?: InputMaybe<User_Order_By>;
   created_at?: InputMaybe<Order_By>;
   created_by?: InputMaybe<Order_By>;
+  icon?: InputMaybe<Order_By>;
   images_aggregate?: InputMaybe<Image_Aggregate_Order_By>;
   is_shared?: InputMaybe<Order_By>;
   main_image?: InputMaybe<Image_Order_By>;
@@ -337,9 +360,13 @@ export enum Album_Select_Column {
   /** column name */
   AlbumId = 'album_id',
   /** column name */
+  Background = 'background',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   CreatedBy = 'created_by',
+  /** column name */
+  Icon = 'icon',
   /** column name */
   IsShared = 'is_shared',
   /** column name */
@@ -365,8 +392,10 @@ export enum Album_Select_Column_Album_Aggregate_Bool_Exp_Bool_Or_Arguments_Colum
 /** input type for updating data in table "album" */
 export type Album_Set_Input = {
   album_id?: InputMaybe<Scalars['Int']['input']>;
+  background?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   created_by?: InputMaybe<Scalars['Int']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
   is_shared?: InputMaybe<Scalars['Boolean']['input']>;
   main_image_id?: InputMaybe<Scalars['Int']['input']>;
   subtitle?: InputMaybe<Scalars['String']['input']>;
@@ -429,8 +458,10 @@ export type Album_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Album_Stream_Cursor_Value_Input = {
   album_id?: InputMaybe<Scalars['Int']['input']>;
+  background?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   created_by?: InputMaybe<Scalars['Int']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
   is_shared?: InputMaybe<Scalars['Boolean']['input']>;
   main_image_id?: InputMaybe<Scalars['Int']['input']>;
   subtitle?: InputMaybe<Scalars['String']['input']>;
@@ -457,9 +488,13 @@ export enum Album_Update_Column {
   /** column name */
   AlbumId = 'album_id',
   /** column name */
+  Background = 'background',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   CreatedBy = 'created_by',
+  /** column name */
+  Icon = 'icon',
   /** column name */
   IsShared = 'is_shared',
   /** column name */
@@ -535,6 +570,8 @@ export enum Cursor_Ordering {
 /** 이미지 */
 export type Image = {
   __typename?: 'image';
+  /** An object relationship */
+  album?: Maybe<Album>;
   album_id: Scalars['Int']['output'];
   created_at: Scalars['timestamptz']['output'];
   height?: Maybe<Scalars['Int']['output']>;
@@ -631,6 +668,7 @@ export type Image_Bool_Exp = {
   _and?: InputMaybe<Array<Image_Bool_Exp>>;
   _not?: InputMaybe<Image_Bool_Exp>;
   _or?: InputMaybe<Array<Image_Bool_Exp>>;
+  album?: InputMaybe<Album_Bool_Exp>;
   album_id?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   height?: InputMaybe<Int_Comparison_Exp>;
@@ -657,6 +695,7 @@ export type Image_Inc_Input = {
 
 /** input type for inserting data into table "image" */
 export type Image_Insert_Input = {
+  album?: InputMaybe<Album_Obj_Rel_Insert_Input>;
   album_id?: InputMaybe<Scalars['Int']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   height?: InputMaybe<Scalars['Int']['input']>;
@@ -737,6 +776,7 @@ export type Image_On_Conflict = {
 
 /** Ordering options when selecting data from "image". */
 export type Image_Order_By = {
+  album?: InputMaybe<Album_Order_By>;
   album_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   height?: InputMaybe<Order_By>;
@@ -1658,7 +1698,7 @@ export type AlbumQueryVariables = Exact<{
 }>;
 
 
-export type AlbumQuery = { __typename?: 'query_root', album_by_pk?: { __typename?: 'album', album_id: number, created_at: any, is_shared: boolean, title: string, subtitle?: string | null, main_image?: { __typename?: 'image', image_id: number, path: string, size?: number | null, width?: number | null, height?: number | null } | null } | null };
+export type AlbumQuery = { __typename?: 'query_root', album_by_pk?: { __typename?: 'album', album_id: number, created_at: any, is_shared: boolean, title: string, subtitle?: string | null, icon?: string | null, background?: string | null, main_image?: { __typename?: 'image', image_id: number, path: string, size?: number | null, width?: number | null, height?: number | null } | null } | null };
 
 export type MyAlbumsQueryVariables = Exact<{
   user_id?: InputMaybe<Scalars['Int']['input']>;
@@ -1684,14 +1724,14 @@ export type InsertAlbumMutationVariables = Exact<{
 }>;
 
 
-export type InsertAlbumMutation = { __typename?: 'mutation_root', insert_album_one?: { __typename?: 'album', album_id: number, created_at: any } | null };
+export type InsertAlbumMutation = { __typename?: 'mutation_root', insert_album_one?: { __typename?: 'album', album_id: number, created_at: any, title: string, subtitle?: string | null, is_shared: boolean } | null };
 
-export type InsertImageMutationVariables = Exact<{
+export type InsertImagesMutationVariables = Exact<{
   objects: Array<Image_Insert_Input> | Image_Insert_Input;
 }>;
 
 
-export type InsertImageMutation = { __typename?: 'mutation_root', insert_image?: { __typename?: 'image_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'image', album_id: number, created_at: any, image_id: number, path: string }> } | null };
+export type InsertImagesMutation = { __typename?: 'mutation_root', insert_image?: { __typename?: 'image_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'image', album_id: number, created_at: any, image_id: number, path: string }> } | null };
 
 export type UpdateAlbumMutationVariables = Exact<{
   album_id: Scalars['Int']['input'];
@@ -1705,10 +1745,10 @@ export type UpdateAlbumMutation = { __typename?: 'mutation_root', update_album_b
 export const DeleteAlbumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteAlbum"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_album_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"album_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}}]}}]}}]} as unknown as DocumentNode<DeleteAlbumMutation, DeleteAlbumMutationVariables>;
 export const DeleteImageByAlbumIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteImageByAlbumId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_image"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"album_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteImageByAlbumIdMutation, DeleteImageByAlbumIdMutationVariables>;
 export const DeleteImageByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteImageById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"image_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_image_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"image_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"image_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}}]}}]} as unknown as DocumentNode<DeleteImageByIdMutation, DeleteImageByIdMutationVariables>;
-export const AlbumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"album"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"album_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"is_shared"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"main_image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AlbumQuery, AlbumQueryVariables>;
+export const AlbumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"album"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"album_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"is_shared"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"icon"}},{"kind":"Field","name":{"kind":"Name","value":"background"}},{"kind":"Field","name":{"kind":"Name","value":"main_image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AlbumQuery, AlbumQueryVariables>;
 export const MyAlbumsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"myAlbums"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"user_id"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_at"},"value":{"kind":"EnumValue","value":"desc"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"user_id"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"is_shared"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"main_image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<MyAlbumsQuery, MyAlbumsQueryVariables>;
 export const GetImagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getImages"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"album_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_at"},"value":{"kind":"EnumValue","value":"asc"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}}]}}]}}]} as unknown as DocumentNode<GetImagesQuery, GetImagesQueryVariables>;
 export const UsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<UsersQuery, UsersQueryVariables>;
-export const InsertAlbumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"insertAlbum"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"object"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"album_insert_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_album_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"Variable","name":{"kind":"Name","value":"object"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}}]}}]}}]} as unknown as DocumentNode<InsertAlbumMutation, InsertAlbumMutationVariables>;
-export const InsertImageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"insertImage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"image_insert_input"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_image"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}}]}}]}}]} as unknown as DocumentNode<InsertImageMutation, InsertImageMutationVariables>;
+export const InsertAlbumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"insertAlbum"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"object"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"album_insert_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_album_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"Variable","name":{"kind":"Name","value":"object"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"is_shared"}}]}}]}}]} as unknown as DocumentNode<InsertAlbumMutation, InsertAlbumMutationVariables>;
+export const InsertImagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"insertImages"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"image_insert_input"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_image"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"image_id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}}]}}]}}]} as unknown as DocumentNode<InsertImagesMutation, InsertImagesMutationVariables>;
 export const UpdateAlbumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateAlbum"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"_set"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"album_set_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_album_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"album_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"album_id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"_set"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"album_id"}}]}}]}}]} as unknown as DocumentNode<UpdateAlbumMutation, UpdateAlbumMutationVariables>;

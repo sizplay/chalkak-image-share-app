@@ -1,0 +1,42 @@
+table:
+  name: album
+  schema: public
+object_relationships:
+  - name: create_user
+    using:
+      foreign_key_constraint_on: created_by
+  - name: main_image
+    using:
+      manual_configuration:
+        column_mapping:
+          main_image_id: image_id
+        insertion_order: null
+        remote_table:
+          name: image
+          schema: public
+array_relationships:
+  - name: images
+    using:
+      manual_configuration:
+        column_mapping:
+          album_id: album_id
+        insertion_order: null
+        remote_table:
+          name: image
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - album_id
+        - background
+        - created_at
+        - created_by
+        - icon
+        - is_shared
+        - main_image_id
+        - subtitle
+        - title
+      filter:
+        is_shared:
+          _eq: true
