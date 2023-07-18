@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import ImageList from '@/Components/ImageList';
 import NavBar from '@/Components/NavBar';
-// import {  CustomImage } from '@/Components/images';
+import { Image } from '@/gql/graphql';
 import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';
 
@@ -15,7 +15,7 @@ const OneAlbum = () => {
   const { data: images, isLoading: isImagesLoading } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
 
   const newImages = useMemo(() => {
-    return images?.map((image) => ({
+    return images?.map((image: Image) => ({
       original: image.path,
       src: image.path,
       width: image.width,

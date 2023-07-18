@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import EditAlbum from '@/Components/album/EditAlbum';
 import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';
+import { Image } from '@/gql/graphql';
 import { useMemo } from 'react';
 
 const EditAlbumPage = () => {
@@ -13,7 +14,7 @@ const EditAlbumPage = () => {
   const { data: images, refetch } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
 
   const newImages = useMemo(() => {
-    return images?.map((image) => ({
+    return images?.map((image: Image) => ({
       original: image.path,
       src: image.path,
       width: image.width,
