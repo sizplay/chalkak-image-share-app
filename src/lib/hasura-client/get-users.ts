@@ -1,5 +1,4 @@
 import gql from 'graphql-tag';
-import { IGetUsersQuery } from '../hasura-types';
 import client from './client';
 
 const query = gql`
@@ -13,7 +12,7 @@ const query = gql`
 `;
 
 export default async function getUsers() {
-  const res = await client.query<IGetUsersQuery>({
+  const res = await client.query({
     query,
     variables: {},
     fetchPolicy: 'network-only',

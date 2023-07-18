@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { IInsertImageMutation, IInsertImageMutationVariables } from '../hasura-types';
+import { InsertImagesMutationVariables } from '@/gql/graphql';
 import client from './client';
 
 const mutation = gql`
@@ -16,8 +16,8 @@ const mutation = gql`
   }
 `;
 
-const insertImages = async (variables: IInsertImageMutationVariables) => {
-  const res = await client.mutate<IInsertImageMutation, IInsertImageMutationVariables>({
+const insertImages = async (variables: InsertImagesMutationVariables) => {
+  const res = await client.mutate({
     mutation,
     variables,
     fetchPolicy: 'network-only',
