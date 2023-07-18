@@ -1,5 +1,4 @@
 import gql from 'graphql-tag';
-import { IGetImagesQuery } from '../hasura-types';
 import client from './client';
 
 const query = gql`
@@ -16,7 +15,7 @@ const query = gql`
 `;
 
 export default async function getAlbumImageList(album_id: number) {
-  const res = await client.query<IGetImagesQuery>({
+  const res = await client.query({
     query,
     variables: {
       album_id,

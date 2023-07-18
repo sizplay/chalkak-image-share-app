@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
+import { Album_Insert_Input, Album_Set_Input } from '@/gql/graphql';
 import getAlbums from '../hasura-client/get-albums';
 import getAlbum from '../hasura-client/get-album';
 import insertAlbum from '../hasura-client/insert-album';
 import updateAlbum from '../hasura-client/update-album';
 import deleteAlbum from '../hasura-client/delete-album';
-import { IAlbum_Insert_Input, IAlbum_Update_Input } from '../hasura-types';
 
 const t = initTRPC.context().create();
 const { procedure } = t;
@@ -31,7 +31,7 @@ export const albumProcedure = {
       }),
     )
     .mutation(async ({ input }) => {
-      const object: IAlbum_Insert_Input = { title: input.title, created_by: input.userId };
+      const object: Album_Insert_Input = { title: input.title, created_by: input.userId };
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
       }
@@ -59,7 +59,7 @@ export const albumProcedure = {
       }),
     )
     .mutation(async ({ input }) => {
-      const object: IAlbum_Update_Input = {};
+      const object: Album_Set_Input = {};
       if (input?.title) {
         object.title = input.title;
       }

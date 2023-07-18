@@ -1,5 +1,4 @@
 import gql from 'graphql-tag';
-import { IImage_Delete_Input, IDeleteImageMutation } from '../hasura-types';
 import client from './client';
 
 const mutation = gql`
@@ -16,7 +15,7 @@ const mutation = gql`
 `;
 
 export default async function deleteImageByAlbumId(album_id: number) {
-  const res = await client.mutate<IDeleteImageMutation, IImage_Delete_Input>({
+  const res = await client.mutate({
     mutation,
     variables: { album_id },
     fetchPolicy: 'network-only',

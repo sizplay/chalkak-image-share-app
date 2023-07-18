@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { IInsertAlbumMutation, IAlbum_Insert_Variables } from '../hasura-types';
+import { InsertAlbumMutationVariables } from '@/gql/graphql';
 import client from './client';
 
 const mutation = gql`
@@ -14,8 +14,8 @@ const mutation = gql`
   }
 `;
 
-const insertAlbum = async (variables: IAlbum_Insert_Variables) => {
-  const res = await client.mutate<IInsertAlbumMutation, IAlbum_Insert_Variables>({
+const insertAlbum = async (variables: InsertAlbumMutationVariables) => {
+  const res = await client.mutate({
     mutation,
     variables,
     fetchPolicy: 'network-only',
