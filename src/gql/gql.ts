@@ -17,7 +17,7 @@ const documents = {
     "\n  mutation deleteImageByAlbumId($album_id: Int!) {\n    delete_image(where: { album_id: { _eq: $album_id } }) {\n      affected_rows\n      returning {\n        album_id\n        image_id\n        path\n      }\n    }\n  }\n": types.DeleteImageByAlbumIdDocument,
     "\n  mutation deleteImageById($image_id: Int!) {\n    delete_image_by_pk(image_id: $image_id) {\n      image_id\n      album_id\n      path\n    }\n  }\n": types.DeleteImageByIdDocument,
     "\n  query album($album_id: Int!) {\n    album_by_pk(album_id: $album_id) {\n      album_id\n      created_at\n      is_shared\n      title\n      subtitle\n      icon\n      background\n      main_image {\n        image_id\n        path\n        size\n        width\n        height\n      }\n    }\n  }\n": types.AlbumDocument,
-    "\n  query myAlblums($user_id: uuid) {\n    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {\n      album_id\n      created_at\n      is_shared\n      title\n      subtitle\n      main_image {\n        image_id\n        path\n        size\n        width\n        height\n      }\n    }\n  }\n": types.MyAlblumsDocument,
+    "\n  query myAlblums($user_id: uuid) {\n    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {\n      album_id\n      created_at\n      is_shared\n      title\n      subtitle\n    }\n  }\n": types.MyAlblumsDocument,
     "\n  query getImages($album_id: Int) {\n    image(where: { album_id: { _eq: $album_id } }, order_by: { created_at: asc }) {\n      image_id\n      path\n      size\n      width\n      height\n      created_at\n    }\n  }\n": types.GetImagesDocument,
     "\n  query users {\n    users {\n      id\n      name\n      email\n    }\n  }\n": types.UsersDocument,
     "\n  mutation insertAlbum($object: album_insert_input!) {\n    insert_album_one(object: $object) {\n      album_id\n      created_at\n      title\n      subtitle\n      is_shared\n    }\n  }\n": types.InsertAlbumDocument,
@@ -58,7 +58,7 @@ export function graphql(source: "\n  query album($album_id: Int!) {\n    album_b
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query myAlblums($user_id: uuid) {\n    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {\n      album_id\n      created_at\n      is_shared\n      title\n      subtitle\n      main_image {\n        image_id\n        path\n        size\n        width\n        height\n      }\n    }\n  }\n"): (typeof documents)["\n  query myAlblums($user_id: uuid) {\n    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {\n      album_id\n      created_at\n      is_shared\n      title\n      subtitle\n      main_image {\n        image_id\n        path\n        size\n        width\n        height\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query myAlblums($user_id: uuid) {\n    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {\n      album_id\n      created_at\n      is_shared\n      title\n      subtitle\n    }\n  }\n"): (typeof documents)["\n  query myAlblums($user_id: uuid) {\n    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {\n      album_id\n      created_at\n      is_shared\n      title\n      subtitle\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

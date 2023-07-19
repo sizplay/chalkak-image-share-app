@@ -9,3 +9,57 @@ array_relationships:
         table:
           name: album
           schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        album:
+          create_user:
+            id:
+              _eq: X-Hasura-User-Id
+      columns:
+        - path
+        - album_id
+        - height
+        - image_id
+        - size
+        - width
+        - created_at
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - path
+        - album_id
+        - height
+        - image_id
+        - size
+        - width
+        - created_at
+      filter:
+        _or:
+          - album:
+              is_shared:
+                _eq: true
+          - album:
+              create_user:
+                id:
+                  _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns: []
+      filter:
+        album:
+          create_user:
+            id:
+              _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        album:
+          create_user:
+            id:
+              _eq: X-Hasura-User-Id

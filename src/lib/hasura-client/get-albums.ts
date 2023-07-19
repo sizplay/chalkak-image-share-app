@@ -9,13 +9,6 @@ const query = gql`
       is_shared
       title
       subtitle
-      main_image {
-        image_id
-        path
-        size
-        width
-        height
-      }
     }
   }
 `;

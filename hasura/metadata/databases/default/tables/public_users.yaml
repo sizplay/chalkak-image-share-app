@@ -26,7 +26,12 @@ array_relationships:
 select_permissions:
   - role: user
     permission:
-      columns: []
+      columns:
+        - email
+        - image
+        - name
+        - emailVerified
+        - id
       filter:
         id:
           _eq: X-Hasura-User-Id
