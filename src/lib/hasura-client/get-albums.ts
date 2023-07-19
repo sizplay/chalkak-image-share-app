@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import client from './client';
 
 const query = gql`
-  query myAlbums($user_id: Int) {
-    album(order_by: { created_at: desc }, where: { created_by: { _eq: $user_id } }) {
+  query myAlblums($user_id: uuid) {
+    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {
       album_id
       created_at
       is_shared

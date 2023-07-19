@@ -1,3 +1,6 @@
+- "!include public_accounts.yaml"
 - "!include public_album.yaml"
 - "!include public_image.yaml"
-- "!include public_user.yaml"
+- "!include public_sessions.yaml"
+- "!include public_users.yaml"
+- "!include public_verification_tokens.yaml"

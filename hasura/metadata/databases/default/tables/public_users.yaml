@@ -1,5 +1,5 @@
 table:
-  name: user
+  name: users
   schema: public
 array_relationships:
   - name: albums
@@ -9,3 +9,10 @@ array_relationships:
         table:
           name: album
           schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns: []
+      filter:
+        id:
+          _eq: X-Hasura-User-Id

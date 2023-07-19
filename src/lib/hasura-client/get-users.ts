@@ -3,8 +3,8 @@ import client from './client';
 
 const query = gql`
   query users {
-    user {
-      user_id
+    users {
+      id
       name
       email
     }
