@@ -105,6 +105,17 @@ export type Accounts_Aggregate = {
   nodes: Array<Accounts>;
 };
 
+export type Accounts_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Accounts_Aggregate_Bool_Exp_Count>;
+};
+
+export type Accounts_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Accounts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Accounts_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "accounts" */
 export type Accounts_Aggregate_Fields = {
   __typename?: 'accounts_aggregate_fields';
@@ -128,11 +139,39 @@ export type Accounts_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** order by aggregate values of table "accounts" */
+export type Accounts_Aggregate_Order_By = {
+  avg?: InputMaybe<Accounts_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Accounts_Max_Order_By>;
+  min?: InputMaybe<Accounts_Min_Order_By>;
+  stddev?: InputMaybe<Accounts_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Accounts_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Accounts_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Accounts_Sum_Order_By>;
+  var_pop?: InputMaybe<Accounts_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Accounts_Var_Samp_Order_By>;
+  variance?: InputMaybe<Accounts_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "accounts" */
+export type Accounts_Arr_Rel_Insert_Input = {
+  data: Array<Accounts_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Accounts_On_Conflict>;
+};
+
 /** aggregate avg on columns */
 export type Accounts_Avg_Fields = {
   __typename?: 'accounts_avg_fields';
   expires_at?: Maybe<Scalars['Float']['output']>;
   refresh_token_expires_in?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "accounts" */
+export type Accounts_Avg_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "accounts". All fields are combined with a logical 'AND'. */
@@ -208,6 +247,25 @@ export type Accounts_Max_Fields = {
   userId?: Maybe<Scalars['uuid']['output']>;
 };
 
+/** order by max() on columns of table "accounts" */
+export type Accounts_Max_Order_By = {
+  access_token?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  id_token?: InputMaybe<Order_By>;
+  oauth_token?: InputMaybe<Order_By>;
+  oauth_token_secret?: InputMaybe<Order_By>;
+  provider?: InputMaybe<Order_By>;
+  providerAccountId?: InputMaybe<Order_By>;
+  refresh_token?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
+  scope?: InputMaybe<Order_By>;
+  session_state?: InputMaybe<Order_By>;
+  token_type?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  userId?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Accounts_Min_Fields = {
   __typename?: 'accounts_min_fields';
@@ -226,6 +284,25 @@ export type Accounts_Min_Fields = {
   token_type?: Maybe<Scalars['String']['output']>;
   type?: Maybe<Scalars['String']['output']>;
   userId?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by min() on columns of table "accounts" */
+export type Accounts_Min_Order_By = {
+  access_token?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  id_token?: InputMaybe<Order_By>;
+  oauth_token?: InputMaybe<Order_By>;
+  oauth_token_secret?: InputMaybe<Order_By>;
+  provider?: InputMaybe<Order_By>;
+  providerAccountId?: InputMaybe<Order_By>;
+  refresh_token?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
+  scope?: InputMaybe<Order_By>;
+  session_state?: InputMaybe<Order_By>;
+  token_type?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  userId?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "accounts" */
@@ -328,6 +405,12 @@ export type Accounts_Stddev_Fields = {
   refresh_token_expires_in?: Maybe<Scalars['Float']['output']>;
 };
 
+/** order by stddev() on columns of table "accounts" */
+export type Accounts_Stddev_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_pop on columns */
 export type Accounts_Stddev_Pop_Fields = {
   __typename?: 'accounts_stddev_pop_fields';
@@ -335,11 +418,23 @@ export type Accounts_Stddev_Pop_Fields = {
   refresh_token_expires_in?: Maybe<Scalars['Float']['output']>;
 };
 
+/** order by stddev_pop() on columns of table "accounts" */
+export type Accounts_Stddev_Pop_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_samp on columns */
 export type Accounts_Stddev_Samp_Fields = {
   __typename?: 'accounts_stddev_samp_fields';
   expires_at?: Maybe<Scalars['Float']['output']>;
   refresh_token_expires_in?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "accounts" */
+export type Accounts_Stddev_Samp_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "accounts" */
@@ -374,6 +469,12 @@ export type Accounts_Sum_Fields = {
   __typename?: 'accounts_sum_fields';
   expires_at?: Maybe<Scalars['bigint']['output']>;
   refresh_token_expires_in?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "accounts" */
+export type Accounts_Sum_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "accounts" */
@@ -426,6 +527,12 @@ export type Accounts_Var_Pop_Fields = {
   refresh_token_expires_in?: Maybe<Scalars['Float']['output']>;
 };
 
+/** order by var_pop() on columns of table "accounts" */
+export type Accounts_Var_Pop_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
+};
+
 /** aggregate var_samp on columns */
 export type Accounts_Var_Samp_Fields = {
   __typename?: 'accounts_var_samp_fields';
@@ -433,11 +540,23 @@ export type Accounts_Var_Samp_Fields = {
   refresh_token_expires_in?: Maybe<Scalars['Float']['output']>;
 };
 
+/** order by var_samp() on columns of table "accounts" */
+export type Accounts_Var_Samp_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
+};
+
 /** aggregate variance on columns */
 export type Accounts_Variance_Fields = {
   __typename?: 'accounts_variance_fields';
   expires_at?: Maybe<Scalars['Float']['output']>;
   refresh_token_expires_in?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "accounts" */
+export type Accounts_Variance_Order_By = {
+  expires_at?: InputMaybe<Order_By>;
+  refresh_token_expires_in?: InputMaybe<Order_By>;
 };
 
 /** 사진앨범 */
@@ -1764,9 +1883,9 @@ export enum Order_By {
 
 export type Query_Root = {
   __typename?: 'query_root';
-  /** fetch data from the table: "accounts" */
+  /** An array relationship */
   accounts: Array<Accounts>;
-  /** fetch aggregated fields from the table: "accounts" */
+  /** An aggregate relationship */
   accounts_aggregate: Accounts_Aggregate;
   /** fetch data from the table: "accounts" using primary key columns */
   accounts_by_pk?: Maybe<Accounts>;
@@ -1782,9 +1901,9 @@ export type Query_Root = {
   image_aggregate: Image_Aggregate;
   /** fetch data from the table: "image" using primary key columns */
   image_by_pk?: Maybe<Image>;
-  /** fetch data from the table: "sessions" */
+  /** An array relationship */
   sessions: Array<Sessions>;
-  /** fetch aggregated fields from the table: "sessions" */
+  /** An aggregate relationship */
   sessions_aggregate: Sessions_Aggregate;
   /** fetch data from the table: "sessions" using primary key columns */
   sessions_by_pk?: Maybe<Sessions>;
@@ -1956,6 +2075,17 @@ export type Sessions_Aggregate = {
   nodes: Array<Sessions>;
 };
 
+export type Sessions_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Sessions_Aggregate_Bool_Exp_Count>;
+};
+
+export type Sessions_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Sessions_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Sessions_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "sessions" */
 export type Sessions_Aggregate_Fields = {
   __typename?: 'sessions_aggregate_fields';
@@ -1969,6 +2099,20 @@ export type Sessions_Aggregate_Fields = {
 export type Sessions_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Sessions_Select_Column>>;
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "sessions" */
+export type Sessions_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Sessions_Max_Order_By>;
+  min?: InputMaybe<Sessions_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "sessions" */
+export type Sessions_Arr_Rel_Insert_Input = {
+  data: Array<Sessions_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Sessions_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "sessions". All fields are combined with a logical 'AND'. */
@@ -2005,6 +2149,14 @@ export type Sessions_Max_Fields = {
   userId?: Maybe<Scalars['uuid']['output']>;
 };
 
+/** order by max() on columns of table "sessions" */
+export type Sessions_Max_Order_By = {
+  expires?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  sessionToken?: InputMaybe<Order_By>;
+  userId?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Sessions_Min_Fields = {
   __typename?: 'sessions_min_fields';
@@ -2012,6 +2164,14 @@ export type Sessions_Min_Fields = {
   id?: Maybe<Scalars['uuid']['output']>;
   sessionToken?: Maybe<Scalars['String']['output']>;
   userId?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by min() on columns of table "sessions" */
+export type Sessions_Min_Order_By = {
+  expires?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  sessionToken?: InputMaybe<Order_By>;
+  userId?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "sessions" */
@@ -2100,9 +2260,9 @@ export type Sessions_Updates = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
-  /** fetch data from the table: "accounts" */
+  /** An array relationship */
   accounts: Array<Accounts>;
-  /** fetch aggregated fields from the table: "accounts" */
+  /** An aggregate relationship */
   accounts_aggregate: Accounts_Aggregate;
   /** fetch data from the table: "accounts" using primary key columns */
   accounts_by_pk?: Maybe<Accounts>;
@@ -2124,9 +2284,9 @@ export type Subscription_Root = {
   image_by_pk?: Maybe<Image>;
   /** fetch data from the table in a streaming manner: "image" */
   image_stream: Array<Image>;
-  /** fetch data from the table: "sessions" */
+  /** An array relationship */
   sessions: Array<Sessions>;
-  /** fetch aggregated fields from the table: "sessions" */
+  /** An aggregate relationship */
   sessions_aggregate: Sessions_Aggregate;
   /** fetch data from the table: "sessions" using primary key columns */
   sessions_by_pk?: Maybe<Sessions>;
@@ -2347,6 +2507,10 @@ export type Timestamptz_Comparison_Exp = {
 export type Users = {
   __typename?: 'users';
   /** An array relationship */
+  accounts: Array<Accounts>;
+  /** An aggregate relationship */
+  accounts_aggregate: Accounts_Aggregate;
+  /** An array relationship */
   albums: Array<Album>;
   /** An aggregate relationship */
   albums_aggregate: Album_Aggregate;
@@ -2355,6 +2519,30 @@ export type Users = {
   id: Scalars['uuid']['output'];
   image?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
+  sessions: Array<Sessions>;
+  /** An aggregate relationship */
+  sessions_aggregate: Sessions_Aggregate;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersAccountsArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Order_By>>;
+  where?: InputMaybe<Accounts_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersAccounts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Order_By>>;
+  where?: InputMaybe<Accounts_Bool_Exp>;
 };
 
 
@@ -2375,6 +2563,26 @@ export type UsersAlbums_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Album_Order_By>>;
   where?: InputMaybe<Album_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersSessionsArgs = {
+  distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Sessions_Order_By>>;
+  where?: InputMaybe<Sessions_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersSessions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Sessions_Order_By>>;
+  where?: InputMaybe<Sessions_Bool_Exp>;
 };
 
 /** aggregated selection of "users" */
@@ -2404,6 +2612,8 @@ export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
+  accounts?: InputMaybe<Accounts_Bool_Exp>;
+  accounts_aggregate?: InputMaybe<Accounts_Aggregate_Bool_Exp>;
   albums?: InputMaybe<Album_Bool_Exp>;
   albums_aggregate?: InputMaybe<Album_Aggregate_Bool_Exp>;
   email?: InputMaybe<String_Comparison_Exp>;
@@ -2411,6 +2621,8 @@ export type Users_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   image?: InputMaybe<String_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
+  sessions?: InputMaybe<Sessions_Bool_Exp>;
+  sessions_aggregate?: InputMaybe<Sessions_Aggregate_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "users" */
@@ -2423,12 +2635,14 @@ export enum Users_Constraint {
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
+  accounts?: InputMaybe<Accounts_Arr_Rel_Insert_Input>;
   albums?: InputMaybe<Album_Arr_Rel_Insert_Input>;
   email?: InputMaybe<Scalars['String']['input']>;
   emailVerified?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  sessions?: InputMaybe<Sessions_Arr_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
@@ -2476,12 +2690,14 @@ export type Users_On_Conflict = {
 
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
+  accounts_aggregate?: InputMaybe<Accounts_Aggregate_Order_By>;
   albums_aggregate?: InputMaybe<Album_Aggregate_Order_By>;
   email?: InputMaybe<Order_By>;
   emailVerified?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   image?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
+  sessions_aggregate?: InputMaybe<Sessions_Aggregate_Order_By>;
 };
 
 /** primary key columns input for table: users */

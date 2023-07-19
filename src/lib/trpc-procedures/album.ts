@@ -12,7 +12,7 @@ const t = initTRPC.context().create();
 const { procedure } = t;
 
 export const albumProcedure = {
-  getAlbumList: procedure.input(z.number()).query(async ({ input }) => {
+  getAlbumList: procedure.input(z.string()).query(async ({ input }) => {
     const res = await getAlbums(input);
     return res;
   }),
