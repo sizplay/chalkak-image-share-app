@@ -62,7 +62,7 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
           )}
           <CenterWrapper>
             <button type="button" onClick={() => router.push('/')}>
-              <p>Grid image share app</p>
+              <p>Grid Image Share App</p>
             </button>
           </CenterWrapper>
           <RightSideWrapper>
@@ -88,7 +88,7 @@ const StyledNavigationBar = styled.section`
   align-items: center;
   background: #001c30;
   height: 50px;
-  z-index: 100;
+  z-index: 200;
 
   button {
     background: none;
