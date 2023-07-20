@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import client from './client';
 
 const query = gql`
-  query myAlblums($user_id: uuid) {
-    album(order_by: {created_at: asc}, where: {created_by: {_eq: $user_id}}) {
+  query myAlblums {
+    album(order_by: { created_at: asc }) {
       album_id
       created_at
       is_shared
@@ -13,12 +13,9 @@ const query = gql`
   }
 `;
 
-export default async function getAlbums(user_id: string) {
+export default async function getAlbums() {
   const res = await client.query({
     query,
-    variables: {
-      user_id,
-    },
   });
 
   if (res.errors) {

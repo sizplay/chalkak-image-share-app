@@ -3,23 +3,12 @@ import { Image } from 'lucide-react';
 import { useRouter } from 'next/router';
 import HeadComponent from '@/Components/HeadComponent';
 import { trpcReactClient } from '@/lib/trpc-client';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import { User, Album } from '@/gql/graphql';
+import { Album } from '@/gql/graphql';
 
-const Album = () => {
-  const [userId, setUserId] = useState(0);
+const AlbumComponent = () => {
   const router = useRouter();
 
-  const { data: sessionData } = useSession();
-  const { data: users } = trpcReactClient.users.useQuery();
-
-  useEffect(() => {
-    const user = users?.find((user: User) => user.email === sessionData?.user?.email);
-    setUserId(user?.user_id || 0);
-  }, [users, sessionData]);
-
-  const { data } = trpcReactClient.getAlbumList.useQuery(userId);
+  const { data } = trpcReactClient.getAlbumList.useQuery();
 
   const onClickToggle = (id: number) => {
     router.push({
@@ -50,7 +39,7 @@ const Album = () => {
   );
 };
 
-export default Album;
+export default AlbumComponent;
 
 const StyledAlbum = styled.main`
   width: 100%;
