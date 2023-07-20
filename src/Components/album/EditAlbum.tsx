@@ -10,6 +10,7 @@ import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { trpcReactClient } from '@/lib/trpc-client';
 import axios from 'axios';
 import { imageProps } from '@/pages/create';
+import debounce from 'lodash/debounce';
 import AlbumHeader from '../AlbumHeader';
 import EmojiPickerComponent from '../EmojiPicker';
 import { convertURLtoFile } from '../utils/convertURLtoFile';
@@ -47,6 +48,7 @@ const EditAlbum = ({
   const [iconUrl, setIconUrl] = useState<string>(icon);
   const [background, setBackground] = useState<string>(backgroundImage);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const insertImagesMutation = trpcReactClient.insertImages.useMutation({
     onSuccess: () => AlbumImagesRefetch(),
@@ -158,6 +160,7 @@ const EditAlbum = ({
       return;
     }
     try {
+      setIsLoading(true);
       // 1. 앨범 수정
       updateAlbumMutation.mutate({
         albumId,
@@ -229,13 +232,23 @@ const EditAlbum = ({
           }),
         );
       }
+      setIsLoading(false);
       alert('앨범이 수정되었습니다.');
       router.push(`/album/${albumId}`);
     } catch (e) {
+      setIsLoading(false);
       console.log(e);
       alert('앨범 수정에 실패했습니다.');
     }
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <div>loading</div>
+      </>
+    );
+  }
 
   return (
     <StyledAlbumCreate>
@@ -260,7 +273,9 @@ const EditAlbum = ({
           onChange={handleAlbumDescription}
         />
 
-        <label htmlFor="images">이미지를 선택해주세요.</label>
+        <label className="image-label" htmlFor="images">
+          이미지를 선택해주세요
+        </label>
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
 
         {images && (
@@ -279,7 +294,7 @@ const EditAlbum = ({
         )}
       </form>
       <SubmitButtonWrapper>
-        <SubmitButton type="submit" onClick={handleSubmit}>
+        <SubmitButton type="submit" onClick={debounce(handleSubmit)}>
           앨범 수정하기
         </SubmitButton>
       </SubmitButtonWrapper>
@@ -359,6 +374,21 @@ const StyledAlbumCreate = styled.main`
     border-bottom: 1px solid #176b87;
     padding-bottom: 8px;
     font-size: 18px;
+  }
+
+  .image-label {
+    width: 100%;
+    height: 50px;
+    border-radius: 6px;
+    background: #001c30;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
   }
 
   #images {

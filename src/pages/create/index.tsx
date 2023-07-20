@@ -15,6 +15,7 @@ import EmojiPickerComponent from '@/Components/EmojiPicker';
 import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import useGetUser from '@/Components/hooks/useGetUser';
 import { getRandomBackgroundImage } from '@/Components/utils/backgroundImages';
+import debounce from 'lodash/debounce';
 
 export interface imageProps {
   album_id: number;
@@ -31,6 +32,7 @@ const AlbumCreate = () => {
   const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [icon, setIcon] = useState<string>('');
   const [backgroundImage, setBackgroundImage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const userId = useGetUser();
@@ -122,6 +124,7 @@ const AlbumCreate = () => {
       return;
     }
     try {
+      setIsLoading(true);
       // 1. 앨범 생성
       const returnedAlbumData = await trpcClient.insertAlbum.mutate({
         title: albumName,
@@ -168,6 +171,7 @@ const AlbumCreate = () => {
           if (newImages.length === imageFiles.length) {
             const response = await trpcClient.insertImages.mutate(newImages);
             if (response.affected_rows === imageFiles.length) {
+              setIsLoading(false);
               alert('앨범이 생성되었습니다.');
               router.push(`/album/${albumId}`);
             }
@@ -175,6 +179,7 @@ const AlbumCreate = () => {
         });
       }
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
       // eslint-disable-next-line no-new
 
@@ -182,6 +187,13 @@ const AlbumCreate = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <div>loading</div>
+      </>
+    );
+  }
   return (
     <StyledAlbumCreate>
       <NavBar leftArrow={true} />
@@ -206,7 +218,7 @@ const AlbumCreate = () => {
         />
 
         <label className="image-label" htmlFor="images">
-          이미지를 선택해주세요.
+          이미지를 선택해주세요
         </label>
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
         {imageFiles && (
@@ -225,7 +237,7 @@ const AlbumCreate = () => {
         )}
       </form>
       <SubmitButtonWrapper>
-        <SubmitButton type="submit" onClick={handleSubmit}>
+        <SubmitButton type="submit" onClick={debounce(handleSubmit)}>
           앨범 생성하기
         </SubmitButton>
       </SubmitButtonWrapper>

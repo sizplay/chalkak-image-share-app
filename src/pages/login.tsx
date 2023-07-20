@@ -6,7 +6,7 @@ const login = () => {
   return (
     <LoginContainer>
       <TextWrapper>
-        <h1>Grid Image Share App</h1>
+        <p>Grid Image Share App</p>
       </TextWrapper>
       <ImageWrapper>
         <KakaoLogin
@@ -39,8 +39,9 @@ const TextWrapper = styled.div`
   align-items: center;
   margin-bottom: 100px;
 
-  h1 {
+  p {
     color: #fff;
+    font-size: 24px;
   }
 `;
 

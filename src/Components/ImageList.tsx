@@ -7,6 +7,7 @@ import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import { useAuth } from '@/lib/auth/auth-provider';
+import debounce from 'lodash/debounce';
 import AlbumHeader from './AlbumHeader';
 
 interface ImageListProps {
@@ -64,9 +65,10 @@ const ImageList = (props: ImageListProps) => {
         deleteAlbumMutation.mutate(Number(router.query.id)),
         deleteImagesMutation.mutate(Number(router.query.id)),
       ]).then(() => {
-        refetch();
-        alert('앨범을 삭제했습니다.');
-        router.push('/');
+        refetch().then(() => {
+          alert('앨범을 삭제했습니다.');
+          router.push('/');
+        });
       });
     } catch (error) {
       console.log(error);
@@ -89,7 +91,7 @@ const ImageList = (props: ImageListProps) => {
                 <button type="button" onClick={handleEditAlbum}>
                   앨범 수정
                 </button>
-                <button type="button" onClick={handleDeleteAlbum}>
+                <button type="button" onClick={debounce(handleDeleteAlbum)}>
                   앨범 삭제
                 </button>
               </div>
