@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
-// import TrcpClientSample from '@/Components/TrcpClientSample';
 
 const login = () => {
   return (
@@ -18,7 +17,6 @@ const login = () => {
           height={45}
         />
       </ImageWrapper>
-      {/* <TrcpClientSample /> */}
     </LoginContainer>
   );
 };

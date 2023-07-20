@@ -12,8 +12,8 @@ const t = initTRPC.context().create();
 const { procedure } = t;
 
 export const albumProcedure = {
-  getAlbumList: procedure.input(z.string()).query(async ({ input }) => {
-    const res = await getAlbums(input);
+  getAlbumList: procedure.query(async () => {
+    const res = await getAlbums();
     return res;
   }),
   getAlbum: procedure.input(z.number()).query(async ({ input }) => {
@@ -25,13 +25,12 @@ export const albumProcedure = {
       z.object({
         title: z.string(),
         subtitle: z.string().optional(),
-        userId: z.number(),
         icon: z.string().optional(),
         backgroundImage: z.string().optional(),
       }),
     )
     .mutation(async ({ input }) => {
-      const object: Album_Insert_Input = { title: input.title, created_by: input.userId };
+      const object: Album_Insert_Input = { title: input.title };
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
       }
