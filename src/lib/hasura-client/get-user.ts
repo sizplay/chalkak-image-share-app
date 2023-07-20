@@ -2,23 +2,18 @@ import gql from 'graphql-tag';
 import client from './client';
 
 const query = gql`
-  query album($album_id: Int!) {
-    album_by_pk(album_id: $album_id) {
-      album_id
-      created_at
-      title
-      subtitle
-      icon
-      background
+  query user($email: String) {
+    users(where: { email: { _eq: $email } }) {
+      id
     }
   }
 `;
 
-export default async function getAlbum(album_id: number) {
+export default async function getUser(email: string) {
   const res = await client.query({
     query,
     variables: {
-      album_id,
+      email,
     },
   });
 
@@ -28,5 +23,5 @@ export default async function getAlbum(album_id: number) {
     throw res.errors;
   }
 
-  return res.data.album_by_pk;
+  return res.data.users[0].id;
 }

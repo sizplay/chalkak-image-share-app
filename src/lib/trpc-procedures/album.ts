@@ -25,6 +25,7 @@ export const albumProcedure = {
       z.object({
         title: z.string(),
         subtitle: z.string().optional(),
+        user_id: z.string(),
         icon: z.string().optional(),
         backgroundImage: z.string().optional(),
       }),
@@ -33,6 +34,9 @@ export const albumProcedure = {
       const object: Album_Insert_Input = { title: input.title };
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
+      }
+      if (input?.user_id) {
+        object.created_by = input.user_id;
       }
       if (input?.icon) {
         object.icon = input.icon;
@@ -68,9 +72,6 @@ export const albumProcedure = {
 
       if (input?.mainImageId) {
         object.main_image_id = input.mainImageId;
-      }
-      if (input?.isShared) {
-        object.is_shared = input.isShared;
       }
       if (input?.icon) {
         object.icon = input.icon;

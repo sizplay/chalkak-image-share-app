@@ -1,19 +1,11 @@
-// import { User } from '@/gql/graphql';
-// import { trpcReactClient } from '@/lib/trpc-client';
-// import { useSession } from 'next-auth/react';
-// import { useEffect, useState } from 'react';
+import { trpcReactClient } from '@/lib/trpc-client';
+import { useSession } from 'next-auth/react';
 
-// const useGetUser = () => {
-//   const [userId, setUserId] = useState(0);
-//   const { data: sessionData } = useSession();
-//   const { data: users } = trpcReactClient.users.useQuery();
+const useGetUser = () => {
+  const session = useSession();
+  const { data: userId } = trpcReactClient.user.useQuery(session?.data?.user?.email || '');
 
-//   useEffect(() => {
-//     const user = users?.find((user: User) => user.email === sessionData?.user?.email);
-//     setUserId(user?.user_id || 0);
-//   }, [users, sessionData]);
+  return userId;
+};
 
-//   return userId;
-// };
-
-// export default useGetUser;
+export default useGetUser;

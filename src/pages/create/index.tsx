@@ -126,7 +126,7 @@ const AlbumCreate = () => {
       const returnedAlbumData = await trpcClient.insertAlbum.mutate({
         title: albumName,
         subtitle: albumDescription,
-        userId,
+        user_id: userId || 0,
         icon,
         backgroundImage,
       });
@@ -176,6 +176,8 @@ const AlbumCreate = () => {
       }
     } catch (error) {
       console.error(error);
+      // eslint-disable-next-line no-new
+
       alert('에러가 발생하였습니다. 다시 이용해주세요.');
     }
   };

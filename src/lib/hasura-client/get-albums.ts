@@ -6,9 +6,17 @@ const query = gql`
     album(order_by: { created_at: asc }) {
       album_id
       created_at
-      is_shared
       title
       subtitle
+      icon
+      background
+      images {
+        image_id
+        path
+        size
+        width
+        height
+      }
     }
   }
 `;
