@@ -205,7 +205,9 @@ const AlbumCreate = () => {
           onChange={handleAlbumDescription}
         />
 
-        <label htmlFor="images">이미지를 선택해주세요.</label>
+        <label className="image-label" htmlFor="images">
+          이미지를 선택해주세요.
+        </label>
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
         {imageFiles && (
           <AlbumImageWrapper>
@@ -304,6 +306,21 @@ const StyledAlbumCreate = styled.main`
     border-bottom: 1px solid #176b87;
     padding-bottom: 8px;
     font-size: 16px;
+  }
+
+  .image-label {
+    width: 100%;
+    height: 50px;
+    border-radius: 6px;
+    background: #001c30;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
   }
 
   #images {
