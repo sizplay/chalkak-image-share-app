@@ -25,16 +25,18 @@ insert_permissions:
         - size
         - width
         - created_at
-update_permissions:
+select_permissions:
   - role: user
     permission:
-      columns: []
-      filter:
-        album:
-          create_user:
-            id:
-              _eq: X-Hasura-User-Id
-      check: null
+      columns:
+        - path
+        - album_id
+        - height
+        - image_id
+        - size
+        - width
+        - created_at
+      filter: {}
 delete_permissions:
   - role: user
     permission:
