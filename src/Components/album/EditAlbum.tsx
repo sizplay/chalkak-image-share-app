@@ -17,6 +17,7 @@ import { convertURLtoFile } from '../utils/convertURLtoFile';
 import { getDate } from '../utils/getDate';
 import { getHeightAndWidthFromDataUrl } from '../utils/getHeightAndWidthFromDataUrl';
 import { getRandomBackgroundImage } from '../utils/backgroundImages';
+import Spinner from '../utils/spinner';
 
 interface EditAlbumProps {
   albumData: {
@@ -47,6 +48,7 @@ const EditAlbum = ({
   const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [iconUrl, setIconUrl] = useState<string>(icon);
   const [background, setBackground] = useState<string>(backgroundImage);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -57,6 +59,7 @@ const EditAlbum = ({
   const deleteImageMutation = trpcReactClient.deleteImage.useMutation({
     onSuccess: () => AlbumImagesRefetch(),
   });
+  const { refetch } = trpcReactClient.getAlbumList.useQuery();
 
   useEffect(() => {
     if (album && album.length > 0) {
@@ -76,14 +79,10 @@ const EditAlbum = ({
     setIsIconModalOpen(false);
   };
 
-  const handleCoverImageModalOpen = () => {
-    const backgroundImage = getRandomBackgroundImage();
-    setBackground(backgroundImage);
-  };
-
   const handleChangeImage = () => {
-    const backgroundImage = getRandomBackgroundImage();
-    setBackground(backgroundImage);
+    const { image, index } = getRandomBackgroundImage(currentImageIndex);
+    setCurrentImageIndex(index);
+    setBackground(image);
   };
 
   const handleDeleteImage = () => {
@@ -226,15 +225,22 @@ const EditAlbum = ({
       });
 
       if (deletedImages.length > 0) {
+        setIsLoading(false);
         await Promise.all(
           deletedImages.map(async (image) => {
             deleteImageMutation.mutate(image.imageId);
           }),
-        );
+        ).then(() => {
+          refetch().then(() => {
+            alert('앨범이 수정되었습니다.');
+            router.push(`/album/${albumId}`);
+          });
+        });
+      } else {
+        setIsLoading(false);
+        alert('앨범이 수정되었습니다.');
+        router.push(`/album/${albumId}`);
       }
-      setIsLoading(false);
-      alert('앨범이 수정되었습니다.');
-      router.push(`/album/${albumId}`);
     } catch (e) {
       setIsLoading(false);
       console.log(e);
@@ -243,11 +249,7 @@ const EditAlbum = ({
   };
 
   if (isLoading) {
-    return (
-      <>
-        <div>loading</div>
-      </>
-    );
+    return <Spinner />;
   }
 
   return (
@@ -255,7 +257,6 @@ const EditAlbum = ({
       <NavBar leftArrow={true} />
       <AlbumHeader
         onIconModalOpen={handleIconModalOpen}
-        onCoverImageModalOpen={handleCoverImageModalOpen}
         onChangeImage={handleChangeImage}
         onDeleteImage={handleDeleteImage}
         backgroundImage={background}

@@ -5,7 +5,7 @@ const useGetUser = () => {
   const session = useSession();
   const { data: userId } = trpcReactClient.user.useQuery(session?.data?.user?.email || '');
 
-  return userId;
+  return userId as string;
 };
 
 export default useGetUser;

@@ -16,6 +16,7 @@ import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import useGetUser from '@/Components/hooks/useGetUser';
 import { getRandomBackgroundImage } from '@/Components/utils/backgroundImages';
 import debounce from 'lodash/debounce';
+import Spinner from '@/Components/utils/spinner';
 
 export interface imageProps {
   album_id: number;
@@ -33,6 +34,7 @@ const AlbumCreate = () => {
   const [icon, setIcon] = useState<string>('');
   const [backgroundImage, setBackgroundImage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
 
   const router = useRouter();
   const userId = useGetUser();
@@ -86,14 +88,10 @@ const AlbumCreate = () => {
     setIsIconModalOpen(false);
   };
 
-  const handleCoverImageModalOpen = () => {
-    const backgroundImage = getRandomBackgroundImage();
-    setBackgroundImage(backgroundImage);
-  };
-
   const handleChangeImage = () => {
-    const backgroundImage = getRandomBackgroundImage();
-    setBackgroundImage(backgroundImage);
+    const { image, index } = getRandomBackgroundImage(currentImageIndex);
+    setCurrentImageIndex(index);
+    setBackgroundImage(image);
   };
 
   const handleDeleteImage = () => {
@@ -129,7 +127,7 @@ const AlbumCreate = () => {
       const returnedAlbumData = await trpcClient.insertAlbum.mutate({
         title: albumName,
         subtitle: albumDescription,
-        user_id: userId || 0,
+        user_id: userId || '',
         icon,
         backgroundImage,
       });
@@ -188,18 +186,13 @@ const AlbumCreate = () => {
   };
 
   if (isLoading) {
-    return (
-      <>
-        <div>loading</div>
-      </>
-    );
+    return <Spinner />;
   }
   return (
     <StyledAlbumCreate>
       <NavBar leftArrow={true} />
       <AlbumHeader
         onIconModalOpen={handleIconModalOpen}
-        onCoverImageModalOpen={handleCoverImageModalOpen}
         onChangeImage={handleChangeImage}
         onDeleteImage={handleDeleteImage}
         backgroundImage={backgroundImage}

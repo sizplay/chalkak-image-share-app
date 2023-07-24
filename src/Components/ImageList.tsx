@@ -40,9 +40,13 @@ const ImageList = (props: ImageListProps) => {
 
   const userInfo = useAuth();
 
-  const deleteAlbumMutation = trpcReactClient.deleteAlbum.useMutation();
-  const deleteImagesMutation = trpcReactClient.deleteAllAlbumImages.useMutation();
   const { refetch } = trpcReactClient.getAlbumList.useQuery();
+  const deleteAlbumMutation = trpcReactClient.deleteAlbum.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
+  const deleteImagesMutation = trpcReactClient.deleteAllAlbumImages.useMutation();
 
   const currentImage = images[index];
   const nextIndex = (index + 1) % images.length;
@@ -65,10 +69,8 @@ const ImageList = (props: ImageListProps) => {
         deleteAlbumMutation.mutate(Number(router.query.id)),
         deleteImagesMutation.mutate(Number(router.query.id)),
       ]).then(() => {
-        refetch().then(() => {
-          alert('앨범을 삭제했습니다.');
-          router.push('/');
-        });
+        alert('앨범을 삭제했습니다.');
+        router.push('/');
       });
     } catch (error) {
       console.log(error);

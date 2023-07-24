@@ -3,7 +3,6 @@ import { Smile, Image as LucideImage } from 'lucide-react';
 
 interface AlbumHeaderProps {
   onIconModalOpen?: () => void;
-  onCoverImageModalOpen?: () => void;
   onChangeImage?: () => void;
   onDeleteImage?: () => void;
   backgroundImage: string | null;
@@ -15,7 +14,6 @@ interface AlbumHeaderProps {
 
 const AlbumHeader = ({
   onIconModalOpen,
-  onCoverImageModalOpen,
   onChangeImage,
   onDeleteImage,
   backgroundImage,
@@ -61,7 +59,7 @@ const AlbumHeader = ({
         )}
         {!isNomalPage && !backgroundImage && (
           <li>
-            <button type="button" onClick={onCoverImageModalOpen}>
+            <button type="button" onClick={onChangeImage}>
               <LucideImage size={24} color="#798187" />
               <p>커버 추가</p>
             </button>
