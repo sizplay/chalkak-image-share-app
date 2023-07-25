@@ -1,5 +1,7 @@
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
 SET check_function_bodies = false;
+COMMENT ON SCHEMA public IS '';
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 CREATE TABLE public.accounts (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     type text NOT NULL,
@@ -24,7 +26,6 @@ CREATE TABLE public.album (
     main_image_id integer,
     created_by uuid NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    is_shared boolean DEFAULT false NOT NULL,
     icon text,
     background text
 );

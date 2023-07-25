@@ -1,6 +1,6 @@
 version: 3
-#endpoint: http://ec2-3-34-49-178.ap-northeast-2.compute.amazonaws.com:8080
 endpoint: https://rare-gobbler-36.hasura.app
+admin_secret: WGOqf2frsV2RDq7ZL2pCHXLAOyTGiYZS3uRCHf3dA3cLQucdK1JvV39Xocd8e1XA
 metadata_directory: metadata
 actions:
   kind: synchronous

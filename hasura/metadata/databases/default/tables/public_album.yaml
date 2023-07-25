@@ -34,6 +34,19 @@ insert_permissions:
         - created_at
         - created_by
 select_permissions:
+  - role: anynomous
+    permission:
+      columns:
+        - subtitle
+        - title
+        - album_id
+        - main_image_id
+        - background
+        - icon
+        - created_at
+        - created_by
+      filter: {}
+      limit: 1
   - role: user
     permission:
       columns:
@@ -46,9 +59,8 @@ select_permissions:
         - created_at
         - created_by
       filter:
-        create_user:
-          id:
-            _eq: X-Hasura-User-Id
+        created_by:
+          _eq: X-Hasura-User-Id
 update_permissions:
   - role: user
     permission:
@@ -59,15 +71,13 @@ update_permissions:
         - main_image_id
         - subtitle
         - title
-      filter: {}
-      check:
-        create_user:
-          id:
-            _eq: X-Hasura-User-Id
+      filter:
+        created_by:
+          _eq: X-Hasura-User-Id
+      check: {}
 delete_permissions:
   - role: user
     permission:
       filter:
-        create_user:
-          id:
-            _eq: X-Hasura-User-Id
+        created_by:
+          _eq: X-Hasura-User-Id
