@@ -15,7 +15,7 @@ const query = gql`
 `;
 
 export default async function getAlbum(album_id: number) {
-  const res = await client.query({
+  const res = await client().query({
     query,
     variables: {
       album_id,

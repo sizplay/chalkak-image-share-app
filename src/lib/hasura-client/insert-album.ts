@@ -17,7 +17,7 @@ const mutation = gql`
 `;
 
 const insertAlbum = async (variables: InsertAlbumMutationVariables) => {
-  const res = await client.mutate({
+  const res = await client().mutate({
     mutation,
     variables,
     fetchPolicy: 'network-only',

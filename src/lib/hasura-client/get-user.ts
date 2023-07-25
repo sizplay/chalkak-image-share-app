@@ -10,7 +10,7 @@ const query = gql`
 `;
 
 export default async function getUser(email: string) {
-  const res = await client.query({
+  const res = await client().query({
     query,
     variables: {
       email,

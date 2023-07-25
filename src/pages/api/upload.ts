@@ -23,7 +23,6 @@ const S3Upload = async (req: NextApiRequest, res: NextApiResponse) => {
       Key: name,
       Expires: 600,
       ContentType: type,
-      ACL: 'public-read',
     };
 
     const url = await s3.getSignedUrlPromise('putObject', fileParams);
