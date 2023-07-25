@@ -14,8 +14,8 @@ const mutation = gql`
   }
 `;
 
-export default async function deleteImageByAlbumId(album_id: number) {
-  const res = await client.mutate({
+export default async function deleteImageByAlbumId(album_id: number, userId?: string) {
+  const res = await client(userId).mutate({
     mutation,
     variables: { album_id },
     fetchPolicy: 'network-only',

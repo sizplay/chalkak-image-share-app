@@ -4,6 +4,15 @@ import getImages from '../hasura-client/get-images';
 import deleteImageById from '../hasura-client/delete-image-by-id';
 import deleteImageByAlbumId from '../hasura-client/delete-image-by-album';
 import insertImages from '../hasura-client/insert-image';
+import { ctxProps } from './album';
+
+interface ImageInputProps {
+  album_id: string;
+  path: string;
+  size: number;
+  width: number;
+  height: number;
+}
 
 const t = initTRPC.context().create();
 const { procedure } = t;
@@ -25,10 +34,9 @@ export const imageProcedure = {
         })
         .array(),
     )
-    .mutation(async ({ input }) => {
-      console.log(input);
+    .mutation(async ({ ctx, input }: ctxProps) => {
       const res = await insertImages({
-        objects: input.map((item) => ({
+        objects: input.map((item: ImageInputProps) => ({
           album_id: item.album_id,
           path: item.path,
           size: item.size || 0,
@@ -39,12 +47,14 @@ export const imageProcedure = {
 
       return res;
     }),
-  deleteImage: procedure.input(z.number()).mutation(async ({ input }) => {
-    const res = await deleteImageById(input);
+  deleteImage: procedure.input(z.number()).mutation(async ({ ctx, input }: ctxProps) => {
+    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
+    const res = await deleteImageById(input, userId);
     return res;
   }),
-  deleteAllAlbumImages: procedure.input(z.number()).mutation(async ({ input }) => {
-    const res = await deleteImageByAlbumId(input);
+  deleteAllAlbumImages: procedure.input(z.number()).mutation(async ({ ctx, input }: ctxProps) => {
+    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
+    const res = await deleteImageByAlbumId(input, userId);
     return res;
   }),
 };

@@ -1,10 +1,23 @@
+/* eslint-disable no-param-reassign */
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createNextApiHandler } from '@trpc/server/adapters/next';
 import { appRouter } from '@/lib/trpc-server';
+import { getSession } from 'next-auth/react';
 
 const nextApiHandler = createNextApiHandler({
   router: appRouter,
-  createContext: () => ({}),
+  createContext: async (data) => {
+    const session = await getSession({ req: data.req });
+    if (session?.user?.id) {
+      data.req.headers['x-hasura-user-id'] = session.user.id.toString();
+    }
+
+    // console.log('data.req.headers', data.req.headers);
+    return {
+      req: data.req,
+      res: data.res,
+    };
+  },
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
