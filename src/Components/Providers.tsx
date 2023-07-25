@@ -4,15 +4,13 @@ import { trpcReactClient } from '@/lib/trpc-client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { getFetch, httpBatchLink, loggerLink } from '@trpc/client';
-import { Session } from 'next-auth';
-import { SessionProvider } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 /** @see https://github.com/wpcodevo/nextjs13-trpc-setup/blob/main/src/utils/trpc-provider.tsx */
 const Providers: React.FC<{
   children: React.ReactNode;
-  nextAuthSession: Session | null;
-}> = ({ children, nextAuthSession }) => {
+}> = ({ children }) => {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -20,10 +18,8 @@ const Providers: React.FC<{
       }),
   );
 
-  // const url = process.env.NEXT_PUBLIC_VERCEL_URL
-  //   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  //   : "http://localhost:3000/api/trpc/";
   const url = '/api/trpc';
+  const session = useSession();
 
   const [trpcClient] = useState(() =>
     trpcReactClient.createClient({
@@ -33,6 +29,16 @@ const Providers: React.FC<{
         }),
         httpBatchLink({
           url,
+          async headers() {
+            const headers: Record<string, string[] | string> = {
+              'x-hasura-allowed-roles': ['user'],
+              'x-hasura-default-role': 'user',
+              'x-hasura-role': 'user',
+              'x-hasura-user-id': session?.data?.user?.id || '',
+            };
+
+            return headers;
+          },
           fetch: async (input, init?) => {
             const fetch = getFetch();
             return fetch(input, {
@@ -42,18 +48,16 @@ const Providers: React.FC<{
           },
         }),
       ],
-      // transformer: superjson,
     }),
   );
+
   return (
-    <SessionProvider session={nextAuthSession}>
-      <trpcReactClient.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
-          {children}
-          <ReactQueryDevtools />
-        </QueryClientProvider>
-      </trpcReactClient.Provider>
-    </SessionProvider>
+    <trpcReactClient.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <ReactQueryDevtools />
+      </QueryClientProvider>
+    </trpcReactClient.Provider>
   );
 };
 
