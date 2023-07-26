@@ -19,8 +19,6 @@ export default async function deleteImageById(image_id: number, userId?: string)
     context: { fetchOptions: { cache: 'no-store' } },
   });
 
-  console.log(res);
-
   if (res.errors || !res.data?.delete_image_by_pk) {
     // eslint-disable-next-line no-console
     console.error(res.errors);

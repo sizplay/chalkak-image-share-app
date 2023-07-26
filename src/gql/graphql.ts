@@ -768,6 +768,13 @@ export type Album_Mutation_Response = {
   returning: Array<Album>;
 };
 
+/** input type for inserting object relation for remote table "album" */
+export type Album_Obj_Rel_Insert_Input = {
+  data: Album_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Album_On_Conflict>;
+};
+
 /** on_conflict condition type for table "album" */
 export type Album_On_Conflict = {
   constraint: Album_Constraint;
@@ -991,10 +998,8 @@ export enum Cursor_Ordering {
 /** 이미지 */
 export type Image = {
   __typename?: 'image';
-  /** An array relationship */
-  album: Array<Album>;
-  /** An aggregate relationship */
-  album_aggregate: Album_Aggregate;
+  /** An object relationship */
+  album?: Maybe<Album>;
   album_id: Scalars['Int']['output'];
   created_at: Scalars['timestamptz']['output'];
   height?: Maybe<Scalars['Int']['output']>;
@@ -1002,26 +1007,6 @@ export type Image = {
   path: Scalars['String']['output'];
   size?: Maybe<Scalars['Int']['output']>;
   width?: Maybe<Scalars['Int']['output']>;
-};
-
-
-/** 이미지 */
-export type ImageAlbumArgs = {
-  distinct_on?: InputMaybe<Array<Album_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Album_Order_By>>;
-  where?: InputMaybe<Album_Bool_Exp>;
-};
-
-
-/** 이미지 */
-export type ImageAlbum_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Album_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Album_Order_By>>;
-  where?: InputMaybe<Album_Bool_Exp>;
 };
 
 /** aggregated selection of "image" */
@@ -1112,7 +1097,6 @@ export type Image_Bool_Exp = {
   _not?: InputMaybe<Image_Bool_Exp>;
   _or?: InputMaybe<Array<Image_Bool_Exp>>;
   album?: InputMaybe<Album_Bool_Exp>;
-  album_aggregate?: InputMaybe<Album_Aggregate_Bool_Exp>;
   album_id?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   height?: InputMaybe<Int_Comparison_Exp>;
@@ -1139,7 +1123,7 @@ export type Image_Inc_Input = {
 
 /** input type for inserting data into table "image" */
 export type Image_Insert_Input = {
-  album?: InputMaybe<Album_Arr_Rel_Insert_Input>;
+  album?: InputMaybe<Album_Obj_Rel_Insert_Input>;
   album_id?: InputMaybe<Scalars['Int']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   height?: InputMaybe<Scalars['Int']['input']>;
@@ -1220,7 +1204,7 @@ export type Image_On_Conflict = {
 
 /** Ordering options when selecting data from "image". */
 export type Image_Order_By = {
-  album_aggregate?: InputMaybe<Album_Aggregate_Order_By>;
+  album?: InputMaybe<Album_Order_By>;
   album_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   height?: InputMaybe<Order_By>;
@@ -1838,9 +1822,9 @@ export type Query_Root = {
   accounts_aggregate: Accounts_Aggregate;
   /** fetch data from the table: "accounts" using primary key columns */
   accounts_by_pk?: Maybe<Accounts>;
-  /** An array relationship */
+  /** fetch data from the table: "album" */
   album: Array<Album>;
-  /** An aggregate relationship */
+  /** fetch aggregated fields from the table: "album" */
   album_aggregate: Album_Aggregate;
   /** fetch data from the table: "album" using primary key columns */
   album_by_pk?: Maybe<Album>;
@@ -2217,9 +2201,9 @@ export type Subscription_Root = {
   accounts_by_pk?: Maybe<Accounts>;
   /** fetch data from the table in a streaming manner: "accounts" */
   accounts_stream: Array<Accounts>;
-  /** An array relationship */
+  /** fetch data from the table: "album" */
   album: Array<Album>;
-  /** An aggregate relationship */
+  /** fetch aggregated fields from the table: "album" */
   album_aggregate: Album_Aggregate;
   /** fetch data from the table: "album" using primary key columns */
   album_by_pk?: Maybe<Album>;

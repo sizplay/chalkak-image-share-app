@@ -78,10 +78,9 @@ const NavBar = ({ leftArrow, isScrolledOn = false }: NavBarProps) => {
 
 export default NavBar;
 
-const StyledNavigationBar = styled.section`
+const StyledNavigationBar = styled.article`
   position: fixed;
   top: 0;
-  left: 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -89,6 +88,7 @@ const StyledNavigationBar = styled.section`
   background: #001c30;
   height: 50px;
   z-index: 200;
+  max-width: 768px;
 
   button {
     background: none;

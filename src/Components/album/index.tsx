@@ -1,14 +1,21 @@
 import styled from '@emotion/styled';
-import { Image } from 'lucide-react';
 import { useRouter } from 'next/router';
 import HeadComponent from '@/Components/HeadComponent';
 import { trpcReactClient } from '@/lib/trpc-client';
 import { Album } from '@/gql/graphql';
+import { useEffect, useState } from 'react';
+import { Image } from 'lucide-react';
 
 const AlbumComponent = () => {
   const router = useRouter();
 
   const { data } = trpcReactClient.getAlbumList.useQuery();
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const width = window.innerWidth;
+    setWidth(width);
+  }, []);
 
   const onClickToggle = (id: number) => {
     router.push({
@@ -24,11 +31,10 @@ const AlbumComponent = () => {
           {data?.map((item: Album) => {
             return (
               <button key={item.created_at} type="button" onClick={() => onClickToggle(item.album_id)}>
-                <AlbumItem>
-                  <AlbumImageWrapper>
-                    <Image size={24} color="#001c30" />
-                  </AlbumImageWrapper>
+                <AlbumItem width={width}>
+                  {item.images[0].path && <img src={item.images[0].path} alt="background" />}
                   <p>{item.title}</p>
+                  <p>{item.created_at.split('T')[0]}</p>
                 </AlbumItem>
               </button>
             );
@@ -78,26 +84,32 @@ const AlbumImageWrapper = styled.div`
   align-items: center;
 `;
 
-const AlbumItem = styled.div`
+const AlbumItem = styled.div<{ width: number }>`
   background-color: #fff;
-  display: flex;
-  align-items: center;
   word-break: keep-all;
-  width: 170px;
-  height: 56px;
-  border-radius: 6px;
-  padding: 13px;
-  gap: 10px;
-  border: 2.5px solid #001c30;
-  border-radius: 16px;
+  width: calc((${({ width }) => width}px - 32px) / 2 - 8px);
+
+  img {
+    width: 100%;
+    /* height: 100%; */
+    height: 178px;
+    object-fit: cover;
+    opacity: 0.8;
+  }
 
   p {
     color: #001c30;
     font-size: 14px;
-    font-weight: bold;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
+    margin-top: 4px;
+
+    &:first-of-type {
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 8px;
+    }
   }
 `;

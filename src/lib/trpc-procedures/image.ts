@@ -1,20 +1,10 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
+import { ctxProps, getAlbumImageListProps } from '@/types/image';
 import getImages from '../hasura-client/get-images';
 import deleteImageById from '../hasura-client/delete-image-by-id';
 import deleteImageByAlbumId from '../hasura-client/delete-image-by-album';
 import insertImages from '../hasura-client/insert-image';
-import { ctxProps } from './album';
-
-interface getAlbumImageListProps {
-  __typename: string;
-  image_id: number;
-  path: string;
-  size: number;
-  width: number;
-  height: number;
-  created_at: string;
-}
 
 const t = initTRPC.context().create();
 const { procedure } = t;

@@ -11,8 +11,6 @@ const nextApiHandler = createNextApiHandler({
     if (session?.user?.id) {
       data.req.headers['x-hasura-user-id'] = session.user.id.toString();
     }
-
-    // console.log('data.req.headers', data.req.headers);
     return {
       req: data.req,
       res: data.res,
