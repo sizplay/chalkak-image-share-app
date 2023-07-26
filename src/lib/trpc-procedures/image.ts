@@ -6,12 +6,14 @@ import deleteImageByAlbumId from '../hasura-client/delete-image-by-album';
 import insertImages from '../hasura-client/insert-image';
 import { ctxProps } from './album';
 
-interface ImageInputProps {
-  album_id: string;
+interface getAlbumImageListProps {
+  __typename: string;
+  image_id: number;
   path: string;
   size: number;
   width: number;
   height: number;
+  created_at: string;
 }
 
 const t = initTRPC.context().create();
@@ -20,6 +22,17 @@ const { procedure } = t;
 export const imageProcedure = {
   getAlbumImageList: procedure.input(z.number()).query(async ({ input }) => {
     const res = await getImages(input);
+    const cdn = process.env.CDN_URL;
+
+    if (cdn) {
+      const newResponse = res.map((item: getAlbumImageListProps) => {
+        return {
+          ...item,
+          path: `${cdn}/${item.path}`,
+        };
+      });
+      return newResponse;
+    }
     return res;
   }),
   insertImages: procedure
@@ -34,11 +47,11 @@ export const imageProcedure = {
         })
         .array(),
     )
-    .mutation(async ({ ctx, input }: ctxProps) => {
+    .mutation(async ({ input }) => {
       const res = await insertImages({
-        objects: input.map((item: ImageInputProps) => ({
+        objects: input.map((item) => ({
           album_id: item.album_id,
-          path: item.path,
+          path: item.path.split('amazonaws.com')[1],
           size: item.size || 0,
           width: item.width || 0,
           height: item.height || 0,
