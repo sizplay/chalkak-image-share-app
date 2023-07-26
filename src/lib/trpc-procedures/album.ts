@@ -3,7 +3,7 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 import { Album_Insert_Input, Album_Set_Input } from '@/gql/graphql';
-
+import { albumListProps, ctxProps, getAlbumImageListProps } from '@/types/image';
 import getAlbums from '../hasura-client/get-albums';
 import getAlbum from '../hasura-client/get-album';
 import insertAlbum from '../hasura-client/insert-album';
@@ -13,15 +13,24 @@ import deleteAlbum from '../hasura-client/delete-album';
 const t = initTRPC.context().create();
 const { procedure } = t;
 
-export type ctxProps = {
-  [key: string]: any;
-  req?: any;
-};
-
 export const albumProcedure = {
   getAlbumList: procedure.query(async ({ ctx }: ctxProps) => {
     const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
     const res = await getAlbums(userId || undefined);
+    const cdn = process.env.CDN_URL;
+
+    if (cdn) {
+      const newResponse = res.map((item: albumListProps) => {
+        return {
+          ...item,
+          images: item.images.map((image: getAlbumImageListProps) => ({
+            ...image,
+            path: `${cdn}/${image.path}`,
+          })),
+        };
+      });
+      return newResponse;
+    }
     return res;
   }),
   getAlbum: procedure.input(z.number()).query(async ({ input }) => {

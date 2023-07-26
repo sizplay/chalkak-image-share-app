@@ -16,8 +16,6 @@ export async function query<Result, Variables>({
   variables: Variables;
   cacheTags: string[];
 }) {
-  // console.log("fetching tags", cacheTags);
-
   const res = await fetch(process.env.HASURA_PROJECT_ENDPOINT || '', {
     method: 'POST',
     body: JSON.stringify({
