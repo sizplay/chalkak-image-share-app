@@ -2,7 +2,7 @@
 import { trpcReactClient } from '@/lib/trpc-client';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
@@ -36,7 +36,25 @@ const ImageList = (props: ImageListProps) => {
   const { data, isLoading } = props;
   const { icon, backgroundImage } = data;
   const [index, setIndex] = useState(-1);
-  const images = data?.album || [];
+  const images = useMemo(() => {
+    return data?.album || [];
+  }, [data?.album]);
+
+  const originalImages = useMemo(() => {
+    return images.map((image: ImagesArrayProps) => ({
+      ...image,
+      original: `${image.original}?format=webp`,
+      src: `${image.original}?format=webp`,
+    }));
+  }, [images]);
+
+  const thumbnailImages = useMemo(() => {
+    return images.map((image: ImagesArrayProps) => ({
+      ...image,
+      src: `${image.src}?format=webp&width=500`,
+      original: `${image.src}?format=webp&width=500`,
+    }));
+  }, [images]);
 
   const userInfo = useAuth();
 
@@ -48,11 +66,11 @@ const ImageList = (props: ImageListProps) => {
   });
   const deleteImagesMutation = trpcReactClient.deleteAllAlbumImages.useMutation();
 
-  const currentImage = images[index];
-  const nextIndex = (index + 1) % images.length;
-  const nextImage = images[nextIndex] || currentImage;
-  const prevIndex = (index + images.length - 1) % images.length;
-  const prevImage = images[prevIndex] || currentImage;
+  const currentImage = originalImages[index];
+  const nextIndex = (index + 1) % originalImages.length;
+  const nextImage = originalImages[nextIndex] || currentImage;
+  const prevIndex = (index + originalImages.length - 1) % originalImages.length;
+  const prevImage = originalImages[prevIndex] || currentImage;
 
   const handleClick = (index: number) => setIndex(index);
   const handleClose = () => setIndex(-1);
@@ -99,7 +117,7 @@ const ImageList = (props: ImageListProps) => {
               </div>
             )}
           </TitleWrapper>
-          <Gallery images={images} onClick={handleClick} enableImageSelection={false} />
+          <Gallery images={thumbnailImages} onClick={handleClick} enableImageSelection={false} />
           {!!currentImage && (
             <Lightbox
               mainSrc={currentImage.original}
