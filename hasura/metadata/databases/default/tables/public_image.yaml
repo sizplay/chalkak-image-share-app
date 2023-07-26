@@ -1,12 +1,14 @@
 table:
   name: image
   schema: public
-array_relationships:
+object_relationships:
   - name: album
     using:
-      foreign_key_constraint_on:
-        column: main_image_id
-        table:
+      manual_configuration:
+        column_mapping:
+          album_id: album_id
+        insertion_order: null
+        remote_table:
           name: album
           schema: public
 insert_permissions:
