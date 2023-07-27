@@ -133,6 +133,13 @@ const ImageList = (props: ImageListProps) => {
                 </button>
               </div>
             )}
+            {!userInfo?.initialized && data && (
+              <div className="button-wrapper">
+                <button type="button" onClick={handleShare}>
+                  공유 하기
+                </button>
+              </div>
+            )}
           </TitleWrapper>
           <Gallery images={thumbnailImages} onClick={handleClick} enableImageSelection={false} />
           {!!currentImage && (
