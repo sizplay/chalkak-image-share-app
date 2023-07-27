@@ -39,7 +39,7 @@ const OneAlbum = () => {
 
   return (
     <AlbumContainer>
-      <NavBar leftArrow={true} isScrolledOn={true} />
+      <NavBar leftArrow={true} />
       <ImageListContainer>
         <ImageList data={albumData} isLoading={isAlbumDetailLoading || isImagesLoading} />
       </ImageListContainer>
@@ -52,23 +52,8 @@ export default OneAlbum;
 const AlbumContainer = styled.main`
   width: 100%;
   height: 100%;
-
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const ImageListContainer = styled.section`
   margin-top: 50px;
-  width: 100%;
-  height: 100%;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
