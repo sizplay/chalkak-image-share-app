@@ -270,6 +270,9 @@ const AlbumCreate = () => {
 export default AlbumCreate;
 
 const StyledAlbumCreate = styled.main`
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
   padding-top: 50px;
   height: 100vh;
 
@@ -336,9 +339,10 @@ const StyledAlbumCreate = styled.main`
 const SubmitButtonWrapper = styled.div`
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
   padding: 0 16px 16px;
+  max-width: 768px;
+  margin: 0 auto;
 `;
 
 const SubmitButton = styled.button`

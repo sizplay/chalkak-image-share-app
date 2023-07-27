@@ -97,7 +97,7 @@ const ImageList = (props: ImageListProps) => {
   };
 
   return (
-    <>
+    <ImageListContainer>
       {!isLoading && (
         <>
           <AlbumHeader icon={icon || ''} backgroundImage={backgroundImage || ''} isNomalPage={true} />
@@ -133,27 +133,45 @@ const ImageList = (props: ImageListProps) => {
           )}
         </>
       )}
-    </>
+    </ImageListContainer>
   );
 };
 
 export default ImageList;
 
+const ImageListContainer = styled.article`
+  width: 100%;
+  height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
 const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   margin: 10px 16px 20px;
+
+  div:first-of-type {
+    max-width: 80%;
+  }
 
   h1 {
     font-size: 24px;
     font-weight: bold;
     color: #001c30;
+    word-break: break-all;
   }
 
   p {
     margin-top: 10px;
     font-size: 16px;
     color: #001c30;
+    word-break: break-all;
   }
 
   .button-wrapper {

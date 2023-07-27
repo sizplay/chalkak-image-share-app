@@ -38,7 +38,7 @@ const Home = () => {
       <NavBar />
       <HomeContainer>
         <Album />
-        <FloatingButtonWrapper width={width < MAX_WIDTH ? width : MAX_WIDTH}>
+        <FloatingButtonWrapper width={width}>
           {data?.initialized && (
             <FloatingAddButton>
               <Input onClick={handleClick} />
@@ -57,10 +57,13 @@ const MobileContainer = styled.div`
   height: 100vh;
   width: 768px;
   margin: 0 auto;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const HomeContainer = styled.main`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   background: #fff;
   overflow-y: scroll;
@@ -71,12 +74,18 @@ const HomeContainer = styled.main`
   align-items: center;
   padding-top: 50px;
   position: relative;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const FloatingButtonWrapper = styled.div<FloatingButtonWrapperProps>`
-  position: absolute;
+  position: fixed;
   bottom: 20px;
-  left: ${({ width }) => width - 70}px;
+  ${({ width }) => (width > MAX_WIDTH ? 'right: calc((100% - 768px) / 2 + 20px)' : 'right: 20px')};
   border-radius: 50%;
   z-index: 1;
   width: 50px;
