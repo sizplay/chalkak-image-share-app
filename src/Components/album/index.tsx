@@ -24,44 +24,65 @@ const AlbumComponent = () => {
   };
 
   return (
-    <>
+    <Container>
       <HeadComponent />
-      <StyledAlbum>
+      <StyledAlbum width={width}>
         <AlbumList>
           {data?.map((item: Album) => {
             return (
-              <button key={item.created_at} type="button" onClick={() => onClickToggle(item.album_id)}>
-                <AlbumItem width={width}>
+              <AlbumItem key={item.created_at} width={width}>
+                <button type="button" onClick={() => onClickToggle(item.album_id)}>
                   {item.images[0].path && <img src={item.images[0].path} alt="background" />}
                   <p>{item.title}</p>
                   <p>{item.created_at.split('T')[0]}</p>
-                </AlbumItem>
-              </button>
+                </button>
+              </AlbumItem>
             );
           })}
         </AlbumList>
       </StyledAlbum>
-    </>
+    </Container>
   );
 };
 
 export default AlbumComponent;
 
-const StyledAlbum = styled.main`
+const Container = styled.div`
   width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+`;
+
+const StyledAlbum = styled.main<{ width: number }>`
+  width: ${({ width }) => (width < 768 ? width : 768)}px;
   height: 100%;
   color: #fff;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const AlbumList = styled.section`
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  margin: 0 16px;
+  margin: 16px 16px 0;
   gap: 16px;
-  margin-top: 16px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: flex-start;
+`;
+
+const AlbumItem = styled.div<{ width: number }>`
+  background-color: #fff;
+  word-break: keep-all;
+  width: ${({ width }) => (width < 768 ? width / 2 - 23 : 360)}px;
 
   button {
+    width: 100%;
+    height: 100%;
+    padding: 0;
     background: none;
     border: none;
     cursor: pointer;
@@ -72,29 +93,10 @@ const AlbumList = styled.section`
   button:active {
     opacity: 0.8;
   }
-`;
-
-const AlbumImageWrapper = styled.div`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const AlbumItem = styled.div<{ width: number }>`
-  background-color: #fff;
-  word-break: keep-all;
-  width: calc((${({ width }) => width}px - 32px) / 2 - 8px);
 
   img {
     width: 100%;
-    /* height: 100%; */
     height: 178px;
-    object-fit: cover;
-    opacity: 0.8;
   }
 
   p {

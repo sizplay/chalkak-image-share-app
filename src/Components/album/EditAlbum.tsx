@@ -400,7 +400,8 @@ const StyledAlbumCreate = styled.main`
 const SubmitButtonWrapper = styled.div`
   position: fixed;
   bottom: 0;
-  left: 0;
+  max-width: 768px;
+  margin: 0 auto;
   width: 100%;
   padding: 0 16px 16px;
 `;
