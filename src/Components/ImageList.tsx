@@ -96,6 +96,20 @@ const ImageList = (props: ImageListProps) => {
     }
   };
 
+  const handleShare = () => {
+    const url = `${window.location.origin}/album/${router.query.id}`;
+    if (!navigator.share) {
+      navigator.clipboard.writeText(url);
+      alert('앨범 주소가 복사되었습니다.');
+    } else {
+      navigator.share({
+        title: data?.title,
+        text: data?.description,
+        url,
+      });
+    }
+  };
+
   return (
     <ImageListContainer>
       {!isLoading && (
@@ -108,6 +122,9 @@ const ImageList = (props: ImageListProps) => {
             </div>
             {userInfo?.initialized && data && (
               <div className="button-wrapper">
+                <button type="button" onClick={handleShare}>
+                  공유 하기
+                </button>
                 <button type="button" onClick={handleEditAlbum}>
                   앨범 수정
                 </button>
