@@ -37,27 +37,33 @@ export const imageProcedure = {
         })
         .array(),
     )
-    .mutation(async ({ input }) => {
-      const res = await insertImages({
-        objects: input.map((item) => ({
-          album_id: item.album_id,
-          path: item.path.split('amazonaws.com/')[1],
-          size: item.size || 0,
-          width: item.width || 0,
-          height: item.height || 0,
-        })),
-      });
+    .mutation(async ({ ctx, input }: ctxProps) => {
+      const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+      const res = await insertImages(
+        {
+          objects: input.map(
+            (item: { album_id: number; path: string; size?: number; width?: number; height?: number }) => ({
+              album_id: item.album_id,
+              path: item.path.split('amazonaws.com/')[1],
+              size: item.size || 0,
+              width: item.width || 0,
+              height: item.height || 0,
+            }),
+          ),
+        },
+        token,
+      );
 
       return res;
     }),
   deleteImage: procedure.input(z.number()).mutation(async ({ ctx, input }: ctxProps) => {
-    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
-    const res = await deleteImageById(input, userId);
+    const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+    const res = await deleteImageById(input, token);
     return res;
   }),
   deleteAllAlbumImages: procedure.input(z.number()).mutation(async ({ ctx, input }: ctxProps) => {
-    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
-    const res = await deleteImageByAlbumId(input, userId);
+    const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+    const res = await deleteImageByAlbumId(input, token);
     return res;
   }),
 };
