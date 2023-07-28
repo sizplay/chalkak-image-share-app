@@ -42,7 +42,7 @@ const Home = () => {
           {data?.initialized && (
             <FloatingAddButton>
               <Input onClick={handleClick} />
-              <PlusCircle color="#001C30" size={50} />
+              <PlusCircle color="#755bb4" size={50} />
             </FloatingAddButton>
           )}
         </FloatingButtonWrapper>

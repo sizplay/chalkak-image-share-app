@@ -314,13 +314,14 @@ const StyledAlbumCreate = styled.main`
     border-bottom: 1px solid #176b87;
     padding-bottom: 8px;
     font-size: 16px;
+    border: none;
   }
 
   .image-label {
     width: 100%;
     height: 50px;
     border-radius: 6px;
-    background: #001c30;
+    background: #755bb4;
     color: #fff;
     font-size: 16px;
     display: flex;
@@ -350,7 +351,7 @@ const SubmitButton = styled.button`
   height: 50px;
   border: none;
   border-radius: 6px;
-  background: #001c30;
+  background: #755bb4;
   color: #fff;
   font-size: 16px;
   cursor: pointer;
