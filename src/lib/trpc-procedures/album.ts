@@ -35,6 +35,18 @@ export const albumProcedure = {
   }),
   getAlbum: procedure.input(z.number()).query(async ({ input }) => {
     const res = await getAlbum(input);
+    const cdn = process.env.CDN_URL;
+
+    if (cdn) {
+      const newResponse = {
+        ...res,
+        images: res.images.map((image: getAlbumImageListProps) => ({
+          ...image,
+          path: `${cdn}/${image.path}`,
+        })),
+      };
+      return newResponse;
+    }
     return res;
   }),
   insertAlbum: procedure

@@ -6,7 +6,7 @@ const login = () => {
   return (
     <LoginContainer>
       <TextWrapper>
-        <p>Grid Image Share App</p>
+        <p>찰칵</p>
       </TextWrapper>
       <ImageWrapper>
         <KakaoLogin

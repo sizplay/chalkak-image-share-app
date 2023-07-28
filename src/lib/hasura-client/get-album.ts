@@ -5,11 +5,17 @@ const query = gql`
   query album($album_id: Int!) {
     album_by_pk(album_id: $album_id) {
       album_id
-      created_at
       title
       subtitle
       icon
       background
+      created_by
+      images {
+        image_id
+        path
+        width
+        height
+      }
     }
   }
 `;
