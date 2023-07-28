@@ -16,8 +16,8 @@ const mutation = gql`
   }
 `;
 
-const insertImages = async (variables: InsertImagesMutationVariables) => {
-  const res = await client().mutate({
+const insertImages = async (variables: InsertImagesMutationVariables, token?: string) => {
+  const res = await client(token).mutate({
     mutation,
     variables,
     fetchPolicy: 'network-only',

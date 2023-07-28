@@ -15,8 +15,9 @@ const { procedure } = t;
 
 export const albumProcedure = {
   getAlbumList: procedure.query(async ({ ctx }: ctxProps) => {
-    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
-    const res = await getAlbums(userId || undefined);
+    const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+
+    const res = await getAlbums(token);
     const cdn = process.env.CDN_URL;
 
     if (cdn) {
@@ -59,8 +60,9 @@ export const albumProcedure = {
         backgroundImage: z.string().optional(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }: ctxProps) => {
       const object: Album_Insert_Input = { title: input.title };
+      const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
       }
@@ -74,7 +76,7 @@ export const albumProcedure = {
         object.background = input.backgroundImage;
       }
 
-      const res = await insertAlbum({ object });
+      const res = await insertAlbum({ object }, token);
 
       return res;
     }),
@@ -110,14 +112,14 @@ export const albumProcedure = {
         object.background = input.backgroundImage;
       }
 
-      const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
-      const res = await updateAlbum({ album_id: input.albumId, _set: object }, userId);
+      const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+      const res = await updateAlbum({ album_id: input.albumId, _set: object }, token);
 
       return res;
     }),
   deleteAlbum: procedure.input(z.number()).mutation(async ({ ctx, input }: ctxProps) => {
-    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
-    const res = await deleteAlbum(input, userId);
+    const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+    const res = await deleteAlbum(input, token);
     return res;
   }),
 };

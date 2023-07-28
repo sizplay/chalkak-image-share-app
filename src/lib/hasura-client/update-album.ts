@@ -10,8 +10,8 @@ const mutation = gql`
   }
 `;
 
-const updateAlbum = async (variables: UpdateAlbumMutationVariables, userId?: string) => {
-  const res = await client(userId).mutate({
+const updateAlbum = async (variables: UpdateAlbumMutationVariables, token?: string) => {
+  const res = await client(token).mutate({
     mutation,
     variables,
     fetchPolicy: 'network-only',
