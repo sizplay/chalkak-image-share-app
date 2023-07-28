@@ -163,10 +163,12 @@ const CoverButtonWrapper = styled.div`
 
   button {
     margin-left: 5px;
-    padding: 2px 4px;
+    padding: 3px 6px;
     border-radius: 4px;
     font-size: 14px;
-    color: #001c30;
+    color: #fff;
+    background-color: #755bb4;
+    border: none;
   }
 `;
 

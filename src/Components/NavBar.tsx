@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
 import { LogOut, MoveLeft, UserCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
+import Image from 'next/image';
 
 interface NavBarProps {
   leftArrow?: boolean;
@@ -27,7 +28,7 @@ const NavBar = ({ leftArrow }: NavBarProps) => {
       )}
       <CenterWrapper>
         <button type="button" onClick={() => router.push('/')}>
-          <p>찰칵</p>
+          <Image src="/icon/logo-no-background.svg" alt="logo" width={130} height={60} />
         </button>
       </CenterWrapper>
       <RightSideWrapper>
@@ -48,7 +49,7 @@ const StyledNavigationBar = styled.article`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #001c30;
+  background: #755bb4;
   height: 50px;
   z-index: 200;
   max-width: 768px;

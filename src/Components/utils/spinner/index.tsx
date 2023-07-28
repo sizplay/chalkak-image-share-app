@@ -33,8 +33,8 @@ const StyledSpinner = styled.div`
     height: 0;
     margin: 8px;
     box-sizing: border-box;
-    border: 32px solid #001c30;
-    border-color: #001c30 transparent #001c30 transparent;
+    border: 32px solid #755bb4;
+    border-color: #755bb4 transparent #755bb4 transparent;
     animation: lds-hourglass 1.2s infinite;
   }
   @keyframes lds-hourglass {

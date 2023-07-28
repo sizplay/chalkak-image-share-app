@@ -6,7 +6,7 @@ const login = () => {
   return (
     <LoginContainer>
       <TextWrapper>
-        <p>찰칵</p>
+        <Image src="/icon/logo-no-background.svg" alt="logo" width={200} height={100} />
       </TextWrapper>
       <ImageWrapper>
         <KakaoLogin
@@ -24,13 +24,12 @@ const login = () => {
 export default login;
 
 const LoginContainer = styled.section`
-  background: #001c30;
+  background: #755bb4;
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  color: #fff;
 `;
 
 const TextWrapper = styled.div`

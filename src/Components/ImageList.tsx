@@ -205,7 +205,7 @@ const TitleWrapper = styled.div`
   }
 
   button {
-    background: #001c30;
+    background: #755bb4;
     border: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
