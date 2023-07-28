@@ -6,13 +6,13 @@ import { useMemo, useState } from 'react';
 import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
-import { useAuth } from '@/lib/auth/auth-provider';
 import debounce from 'lodash/debounce';
 import AlbumHeader from './AlbumHeader';
 
 interface ImageListProps {
   data: ImageDataProps;
   isLoading: boolean;
+  isAuthenticatedUser: boolean;
 }
 
 interface ImagesArrayProps {
@@ -33,7 +33,7 @@ interface ImageDataProps {
 
 const ImageList = (props: ImageListProps) => {
   const router = useRouter();
-  const { data, isLoading } = props;
+  const { data, isLoading, isAuthenticatedUser } = props;
   const { icon, backgroundImage } = data;
   const [index, setIndex] = useState(-1);
   const images = useMemo(() => {
@@ -55,8 +55,6 @@ const ImageList = (props: ImageListProps) => {
       original: `${image.src}?format=webp&width=500`,
     }));
   }, [images]);
-
-  const userInfo = useAuth();
 
   const { refetch } = trpcReactClient.getAlbumList.useQuery();
   const deleteAlbumMutation = trpcReactClient.deleteAlbum.useMutation({
@@ -98,11 +96,11 @@ const ImageList = (props: ImageListProps) => {
 
   const handleShare = () => {
     const url = `${window.location.origin}/album/${router.query.id}`;
-    if (!navigator.share) {
-      navigator.clipboard.writeText(url);
+    if (!window.navigator.share) {
+      window.navigator.clipboard.writeText(url);
       alert('앨범 주소가 복사되었습니다.');
     } else {
-      navigator.share({
+      window.navigator.share({
         title: data?.title,
         text: data?.description,
         url,
@@ -120,7 +118,7 @@ const ImageList = (props: ImageListProps) => {
               <h1>{data?.title}</h1>
               <p>{data?.description}</p>
             </div>
-            {userInfo?.initialized && data && (
+            {isAuthenticatedUser && data && (
               <div className="button-wrapper">
                 <button type="button" onClick={handleShare}>
                   공유 하기
@@ -133,7 +131,7 @@ const ImageList = (props: ImageListProps) => {
                 </button>
               </div>
             )}
-            {!userInfo?.initialized && data && (
+            {!isAuthenticatedUser && data && (
               <div className="button-wrapper">
                 <button type="button" onClick={handleShare}>
                   공유 하기

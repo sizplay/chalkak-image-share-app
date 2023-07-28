@@ -4,7 +4,6 @@ import HeadComponent from '@/Components/HeadComponent';
 import { trpcReactClient } from '@/lib/trpc-client';
 import { Album } from '@/gql/graphql';
 import { useEffect, useState } from 'react';
-import { Image } from 'lucide-react';
 
 const AlbumComponent = () => {
   const router = useRouter();
@@ -40,6 +39,12 @@ const AlbumComponent = () => {
             );
           })}
         </AlbumList>
+        {data?.length === 0 && (
+          <EmptyAlbum>
+            <p>앨범이 없습니다.</p>
+            <p>앨범을 추가해주세요.</p>
+          </EmptyAlbum>
+        )}
       </StyledAlbum>
     </Container>
   );
@@ -62,6 +67,22 @@ const StyledAlbum = styled.main<{ width: number }>`
 
   &::-webkit-scrollbar {
     display: none;
+  }
+`;
+
+const EmptyAlbum = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  p {
+    color: #001c30;
+    font-size: 16px;
+    font-weight: bold;
+    transform: translateY(-100px);
+    opacity: 0.5;
   }
 `;
 

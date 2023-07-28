@@ -5,6 +5,7 @@ type Headers = Record<string, string>;
 const apolloclientWithId = (id?: string) => {
   const reqHeaders: Headers = {
     'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET || '',
+    // token이 여기에 들어가야함. x-hasura-admin 대신에
   };
 
   if (id) {

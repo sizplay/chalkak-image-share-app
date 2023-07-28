@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface getAlbumImageListProps {
   __typename: string;
   image_id: number;

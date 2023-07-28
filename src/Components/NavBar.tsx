@@ -27,7 +27,7 @@ const NavBar = ({ leftArrow }: NavBarProps) => {
       )}
       <CenterWrapper>
         <button type="button" onClick={() => router.push('/')}>
-          <p>Grid Image Share App</p>
+          <p>찰칵</p>
         </button>
       </CenterWrapper>
       <RightSideWrapper>

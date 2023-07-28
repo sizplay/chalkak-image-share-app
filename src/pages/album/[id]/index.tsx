@@ -6,23 +6,25 @@ import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';
 
 import { useMemo } from 'react';
+import { useSession } from 'next-auth/react';
 
 const OneAlbum = () => {
   const router = useRouter();
   const { id } = router.query;
 
   const { data: albumDetail, isLoading: isAlbumDetailLoading } = trpcReactClient.getAlbum.useQuery(Number(id));
-  const { data: images, isLoading: isImagesLoading } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
+
+  const userInfo = useSession();
 
   const newImages = useMemo(() => {
-    return images?.map((image: Image) => ({
+    return albumDetail?.images?.map((image: Image) => ({
       original: image.path,
       src: image.path,
+      imageId: image.image_id,
       width: image.width,
       height: image.height,
-      imageId: image.image_id,
     }));
-  }, [images]);
+  }, [albumDetail?.images]);
 
   const albumData = {
     title: albumDetail?.title || '',
@@ -31,9 +33,10 @@ const OneAlbum = () => {
     album: newImages || [],
     icon: albumDetail?.icon || '',
     backgroundImage: albumDetail?.background || '',
+    createdby: albumDetail?.created_by || '',
   };
 
-  if (albumDetail === null && images?.length === 0 && !isAlbumDetailLoading && !isImagesLoading) {
+  if (albumDetail === null && !isAlbumDetailLoading) {
     router.replace('/');
   }
 
@@ -41,7 +44,11 @@ const OneAlbum = () => {
     <AlbumContainer>
       <NavBar leftArrow={true} />
       <ImageListContainer>
-        <ImageList data={albumData} isLoading={isAlbumDetailLoading || isImagesLoading} />
+        <ImageList
+          data={albumData}
+          isLoading={isAlbumDetailLoading}
+          isAuthenticatedUser={albumData.createdby === userInfo?.data?.user?.id}
+        />
       </ImageListContainer>
     </AlbumContainer>
   );

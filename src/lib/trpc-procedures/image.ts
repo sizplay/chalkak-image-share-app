@@ -41,7 +41,7 @@ export const imageProcedure = {
       const res = await insertImages({
         objects: input.map((item) => ({
           album_id: item.album_id,
-          path: item.path.split('amazonaws.com')[1],
+          path: item.path.split('amazonaws.com/')[1],
           size: item.size || 0,
           width: item.width || 0,
           height: item.height || 0,
