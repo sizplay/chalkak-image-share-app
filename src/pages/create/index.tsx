@@ -13,10 +13,10 @@ import { getDate } from '@/Components/utils/getDate';
 import AlbumHeader from '@/Components/AlbumHeader';
 import EmojiPickerComponent from '@/Components/EmojiPicker';
 import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
-import useGetUser from '@/Components/hooks/useGetUser';
 import { getRandomBackgroundImage } from '@/Components/utils/backgroundImages';
 import debounce from 'lodash/debounce';
 import Spinner from '@/Components/utils/spinner';
+import { useSession } from 'next-auth/react';
 
 export interface imageProps {
   album_id: number;
@@ -37,7 +37,7 @@ const AlbumCreate = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
 
   const router = useRouter();
-  const userId = useGetUser();
+  const userInfo = useSession();
 
   const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAlbumName(e.target.value);
@@ -127,7 +127,7 @@ const AlbumCreate = () => {
       const returnedAlbumData = await trpcClient.insertAlbum.mutate({
         title: albumName,
         subtitle: albumDescription,
-        user_id: userId || '',
+        user_id: userInfo?.data?.user?.id || '',
         icon,
         backgroundImage,
       });
