@@ -21,8 +21,8 @@ const query = gql`
   }
 `;
 
-export default async function getAlbums(token: string) {
-  const res = await client(token).query({
+export default async function getAlbums(token?: string, userId?: string) {
+  const res = await client({ token, id: userId }).query({
     query,
   });
 

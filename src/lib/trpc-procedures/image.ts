@@ -39,6 +39,7 @@ export const imageProcedure = {
     )
     .mutation(async ({ ctx, input }: ctxProps) => {
       const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+      const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
       const res = await insertImages(
         {
           objects: input.map(
@@ -52,18 +53,21 @@ export const imageProcedure = {
           ),
         },
         token,
+        userId,
       );
 
       return res;
     }),
   deleteImage: procedure.input(z.number()).mutation(async ({ ctx, input }: ctxProps) => {
     const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
-    const res = await deleteImageById(input, token);
+    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
+    const res = await deleteImageById(input, token, userId);
     return res;
   }),
   deleteAllAlbumImages: procedure.input(z.number()).mutation(async ({ ctx, input }: ctxProps) => {
     const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
-    const res = await deleteImageByAlbumId(input, token);
+    const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
+    const res = await deleteImageByAlbumId(input, token, userId);
     return res;
   }),
 };

@@ -10,8 +10,8 @@ const mutation = gql`
   }
 `;
 
-export default async function deleteAlbum(album_id: number, token?: string) {
-  const res = await client(token).mutate<DeleteAlbumMutation>({
+export default async function deleteAlbum(album_id: number, token?: string, userId?: string) {
+  const res = await client({ token, id: userId }).mutate<DeleteAlbumMutation>({
     mutation,
     variables: { album_id },
     fetchPolicy: 'network-only',
