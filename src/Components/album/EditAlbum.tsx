@@ -358,7 +358,7 @@ const StyledAlbumCreate = styled.main`
     width: 100%;
     height: 50px;
     border: none;
-    border-bottom: 1px solid #176b87;
+    border-bottom: 1px solid #755bb4;
     margin-bottom: 16px;
     background: none;
     font-size: 18px;
@@ -378,7 +378,7 @@ const StyledAlbumCreate = styled.main`
     margin-top: 12px;
     color: #001c30;
     margin-bottom: 20px;
-    border-bottom: 1px solid #176b87;
+    border-bottom: 1px solid #755bb4;
     padding-bottom: 8px;
     font-size: 18px;
     border: none;
