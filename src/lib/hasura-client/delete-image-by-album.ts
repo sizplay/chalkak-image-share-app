@@ -15,18 +15,23 @@ const mutation = gql`
 `;
 
 export default async function deleteImageByAlbumId(album_id: number, token?: string, userId?: string) {
-  const res = await client({ token, id: userId }).mutate({
-    mutation,
-    variables: { album_id },
-    fetchPolicy: 'network-only',
-    context: { fetchOptions: { cache: 'no-store' } },
-  });
+  try {
+    const res = await client({ token, id: userId }).mutate({
+      mutation,
+      variables: { album_id },
+      fetchPolicy: 'network-only',
+      context: { fetchOptions: { cache: 'no-store' } },
+    });
 
-  if (res.errors || !res.data?.delete_image) {
-    // eslint-disable-next-line no-console
-    console.error(res.errors);
-    throw res.errors;
+    if (res.errors || !res.data?.delete_image) {
+      // eslint-disable-next-line no-console
+      console.error(res.errors);
+      throw res.errors;
+    }
+
+    return res.data.delete_image;
+  } catch (e) {
+    console.log('e', e);
+    throw e;
   }
-
-  return res.data.delete_image;
 }

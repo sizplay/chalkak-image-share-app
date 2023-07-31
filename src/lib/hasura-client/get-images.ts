@@ -15,18 +15,23 @@ const query = gql`
 `;
 
 export default async function getAlbumImageList(album_id: number) {
-  const res = await client({}).query({
-    query,
-    variables: {
-      album_id,
-    },
-  });
+  try {
+    const res = await client({}).query({
+      query,
+      variables: {
+        album_id,
+      },
+    });
 
-  if (res.errors) {
-    // eslint-disable-next-line no-console
-    console.error(res.errors);
-    throw res.errors;
+    if (res.errors) {
+      // eslint-disable-next-line no-console
+      console.error(res.errors);
+      throw res.errors;
+    }
+
+    return res.data.image;
+  } catch (e) {
+    console.log('e', e);
+    throw e;
   }
-
-  return res.data.image;
 }

@@ -34,12 +34,14 @@ interface EditAlbumProps {
     icon: string;
     backgroundImage: string;
   };
-  AlbumImagesRefetch: () => void;
+  albumImageListRefetch: () => void;
+  albumRefetch: () => void;
 }
 
 const EditAlbum = ({
   albumData: { title, description, icon, backgroundImage, album, albumId },
-  AlbumImagesRefetch,
+  albumImageListRefetch,
+  albumRefetch,
 }: EditAlbumProps) => {
   const [images, setImages] = useState<FileList | null>(null);
   const [updatingImages, setUpdatingImages] = useState<FileList | null>(null);
@@ -53,13 +55,17 @@ const EditAlbum = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const insertImagesMutation = trpcReactClient.insertImages.useMutation({
-    onSuccess: () => AlbumImagesRefetch(),
+    onSuccess: () => albumImageListRefetch(),
   });
-  const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation();
+  const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation({
+    onSuccess: () => {
+      albumRefetch();
+    },
+  });
   const deleteImageMutation = trpcReactClient.deleteImage.useMutation({
-    onSuccess: () => AlbumImagesRefetch(),
+    onSuccess: () => albumImageListRefetch(),
   });
-  const { refetch } = trpcReactClient.getAlbumList.useQuery();
+  const { refetch: getAlbumListRefetch } = trpcReactClient.getAlbumList.useQuery();
 
   useEffect(() => {
     if (album && album.length > 0) {
@@ -231,7 +237,7 @@ const EditAlbum = ({
             deleteImageMutation.mutate(image.imageId);
           }),
         ).then(() => {
-          refetch().then(() => {
+          getAlbumListRefetch().then(() => {
             alert('앨범이 수정되었습니다.');
             router.push(`/album/${albumId}`);
           });

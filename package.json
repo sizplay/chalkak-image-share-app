@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "hasura": "hasura console --admin-secret $HASURA_ADMIN_SECRET --project hasura",
-    "codegen": "graphql-codegen --r dotenv/config -config codegen.yml dotenv-config-path=.env"
+    "codegen": "graphql-codegen --r dotenv/config -config codegen.yml dotenv-config-path=.env",
+    "postcodegen": "next lint --fix"
   },
   "dependencies": {
     "@apollo/client": "^3.7.16",

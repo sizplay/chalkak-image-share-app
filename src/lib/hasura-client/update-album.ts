@@ -11,20 +11,25 @@ const mutation = gql`
 `;
 
 const updateAlbum = async (variables: UpdateAlbumMutationVariables, token?: string, userId?: string) => {
-  const res = await client({ token, id: userId }).mutate({
-    mutation,
-    variables,
-    fetchPolicy: 'network-only',
-    context: { fetchOptions: { cache: 'no-store' } },
-  });
+  try {
+    const res = await client({ token, id: userId }).mutate({
+      mutation,
+      variables,
+      fetchPolicy: 'network-only',
+      context: { fetchOptions: { cache: 'no-store' } },
+    });
 
-  if (res.errors || !res.data?.update_album_by_pk) {
-    // eslint-disable-next-line no-console
-    console.error(res.errors);
-    throw res.errors;
+    if (res.errors || !res.data?.update_album_by_pk) {
+      // eslint-disable-next-line no-console
+      console.error(res.errors);
+      throw res.errors;
+    }
+
+    return res.data.update_album_by_pk;
+  } catch (e) {
+    console.log('e', e);
+    throw e;
   }
-
-  return res.data.update_album_by_pk;
 };
 
 export default updateAlbum;

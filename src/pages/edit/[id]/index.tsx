@@ -10,8 +10,8 @@ const EditAlbumPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: albumDetail } = trpcReactClient.getAlbum.useQuery(Number(id));
-  const { data: images, refetch } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
+  const { data: albumDetail, refetch: albumRefetch } = trpcReactClient.getAlbum.useQuery(Number(id));
+  const { data: images, refetch: albumImageListRefetch } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
 
   const newImages = useMemo(() => {
     return images?.map((image: Image) => ({
@@ -36,7 +36,9 @@ const EditAlbumPage = () => {
     <>
       <HeadComponent />
       <EditAlbumContainer>
-        {albumData?.title.length > 0 && <EditAlbum albumData={albumData} AlbumImagesRefetch={refetch} />}
+        {albumData?.title.length > 0 && (
+          <EditAlbum albumData={albumData} albumImageListRefetch={albumImageListRefetch} albumRefetch={albumRefetch} />
+        )}
       </EditAlbumContainer>
     </>
   );
