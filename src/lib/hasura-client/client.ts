@@ -2,11 +2,23 @@ import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 type Headers = Record<string, string>;
 
-const apolloclientWithId = (token?: string) => {
+interface ClientProps {
+  id?: string;
+  token?: string;
+}
+
+const client = ({ id, token }: ClientProps) => {
   const reqHeaders: Headers = {
     'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET || '',
     Authorization: `Bearer ${token}`,
   };
+
+  if (id) {
+    reqHeaders['x-hasura-user-id'] = id;
+    reqHeaders['x-hasura-role'] = 'user';
+    reqHeaders['x-hasura-default-role'] = 'user';
+    reqHeaders['x-hasura-allowed-roles'] = 'user';
+  }
 
   if (!token) {
     delete reqHeaders.Authorization;
@@ -35,4 +47,4 @@ const apolloclientWithId = (token?: string) => {
   });
 };
 
-export default apolloclientWithId;
+export default client;

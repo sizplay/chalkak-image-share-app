@@ -12,7 +12,7 @@ const query = gql`
 `;
 
 export default async function getUsers() {
-  const res = await client().query({
+  const res = await client({}).query({
     query,
     variables: {},
     fetchPolicy: 'network-only',
