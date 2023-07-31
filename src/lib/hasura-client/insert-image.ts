@@ -17,20 +17,25 @@ const mutation = gql`
 `;
 
 const insertImages = async (variables: InsertImagesMutationVariables, token?: string, userId?: string) => {
-  const res = await client({ token, id: userId }).mutate({
-    mutation,
-    variables,
-    fetchPolicy: 'network-only',
-    context: { fetchOptions: { cache: 'no-store' } },
-  });
+  try {
+    const res = await client({ token, id: userId }).mutate({
+      mutation,
+      variables,
+      fetchPolicy: 'network-only',
+      context: { fetchOptions: { cache: 'no-store' } },
+    });
 
-  if (res.errors || !res.data?.insert_image) {
-    // eslint-disable-next-line no-console
-    console.error(res.errors);
-    throw res.errors;
+    if (res.errors || !res.data?.insert_image) {
+      // eslint-disable-next-line no-console
+      console.error(res.errors);
+      throw res.errors;
+    }
+
+    return res.data.insert_image;
+  } catch (e) {
+    console.log('e', e);
+    throw e;
   }
-
-  return res.data.insert_image;
 };
 
 export default insertImages;

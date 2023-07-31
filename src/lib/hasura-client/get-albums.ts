@@ -22,15 +22,20 @@ const query = gql`
 `;
 
 export default async function getAlbums(token?: string, userId?: string) {
-  const res = await client({ token, id: userId }).query({
-    query,
-  });
+  try {
+    const res = await client({ token, id: userId }).query({
+      query,
+    });
 
-  if (res.errors) {
-    // eslint-disable-next-line no-console
-    console.error(res.errors);
-    throw res.errors;
+    if (res.errors) {
+      // eslint-disable-next-line no-console
+      console.error(res.errors);
+      throw res.errors;
+    }
+
+    return res.data.album;
+  } catch (e) {
+    console.log('e', e);
+    throw e;
   }
-
-  return res.data.album;
 }

@@ -68,8 +68,8 @@ export const albumProcedure = {
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
       }
-      if (input?.user_id) {
-        object.created_by = input.user_id;
+      if (input?.userId) {
+        object.created_by = input.userId;
       }
       if (input?.icon) {
         object.icon = input.icon;
@@ -104,9 +104,6 @@ export const albumProcedure = {
         object.subtitle = input.subtitle;
       }
 
-      if (input?.mainImageId) {
-        object.main_image_id = input.mainImageId;
-      }
       if (input?.icon) {
         object.icon = input.icon;
       }

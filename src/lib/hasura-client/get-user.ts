@@ -10,18 +10,23 @@ const query = gql`
 `;
 
 export default async function getUser(email: string) {
-  const res = await client({}).query({
-    query,
-    variables: {
-      email,
-    },
-  });
+  try {
+    const res = await client({}).query({
+      query,
+      variables: {
+        email,
+      },
+    });
 
-  if (res.errors) {
-    // eslint-disable-next-line no-console
-    console.error(res.errors);
-    throw res.errors;
+    if (res.errors) {
+      // eslint-disable-next-line no-console
+      console.error(res.errors);
+      throw res.errors;
+    }
+
+    return res.data.users[0].id;
+  } catch (e) {
+    console.log('e', e);
+    throw e;
   }
-
-  return res.data.users[0].id;
 }

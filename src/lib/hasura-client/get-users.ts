@@ -12,17 +12,22 @@ const query = gql`
 `;
 
 export default async function getUsers() {
-  const res = await client({}).query({
-    query,
-    variables: {},
-    fetchPolicy: 'network-only',
-    context: { fetchOptions: { cache: 'no-store' } },
-  });
+  try {
+    const res = await client({}).query({
+      query,
+      variables: {},
+      fetchPolicy: 'network-only',
+      context: { fetchOptions: { cache: 'no-store' } },
+    });
 
-  if (res.errors) {
-    // eslint-disable-next-line no-console
-    console.error(res.errors);
-    throw res.errors;
+    if (res.errors) {
+      // eslint-disable-next-line no-console
+      console.error(res.errors);
+      throw res.errors;
+    }
+    return res.data.user;
+  } catch (e) {
+    console.log('e', e);
+    throw e;
   }
-  return res.data.user;
 }
