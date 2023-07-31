@@ -113,4 +113,5 @@ const Input = styled.input`
   height: 50px;
   border-radius: 50%;
   z-index: 1;
+  cursor: pointer;
 `;
