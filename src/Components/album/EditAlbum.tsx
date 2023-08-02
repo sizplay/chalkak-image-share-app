@@ -3,7 +3,7 @@
 import NavBar from '@/Components/NavBar';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import ReactModal from 'react-modal';
 import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
@@ -18,6 +18,7 @@ import { getDate } from '../utils/getDate';
 import { getHeightAndWidthFromDataUrl } from '../utils/getHeightAndWidthFromDataUrl';
 import { getRandomBackgroundImage } from '../utils/backgroundImages';
 import Spinner from '../utils/spinner';
+import { trpc } from '../utils/trpc';
 
 interface EditAlbumProps {
   albumData: {
@@ -36,12 +37,14 @@ interface EditAlbumProps {
   };
   albumImageListRefetch: () => void;
   albumRefetch: () => void;
+  isImageLoading: boolean;
 }
 
 const EditAlbum = ({
   albumData: { title, description, icon, backgroundImage, album, albumId },
   albumImageListRefetch,
   albumRefetch,
+  isImageLoading,
 }: EditAlbumProps) => {
   const [images, setImages] = useState<FileList | null>(null);
   const [updatingImages, setUpdatingImages] = useState<FileList | null>(null);
@@ -53,12 +56,17 @@ const EditAlbum = ({
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+
+  const utils = trpc.useContext();
 
   const insertImagesMutation = trpcReactClient.insertImages.useMutation({
     onSuccess: () => albumImageListRefetch(),
   });
   const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('data', data);
+      // utils.getAlbum.setData('getAlbum', data);
       albumRefetch();
     },
   });
@@ -80,6 +88,13 @@ const EditAlbum = ({
       });
     }
   }, [album]);
+
+  useEffect(() => {
+    if (isScrolling) {
+      window.scrollTo(0, document.body.scrollHeight);
+      setIsScrolling(false);
+    }
+  }, [isScrolling]);
 
   const handleIconModalClose = () => {
     setIsIconModalOpen(false);
@@ -116,11 +131,13 @@ const EditAlbum = ({
           Array.from(files).forEach((image) => {
             dataTranster.items.add(image);
           });
+
           return dataTranster.files;
         }
       }
       return e.target.files;
     });
+    setIsScrolling(true);
   };
 
   const handleIconModalOpen = () => {
@@ -260,6 +277,7 @@ const EditAlbum = ({
 
   return (
     <StyledAlbumCreate>
+      {isImageLoading && <Spinner />}
       <NavBar leftArrow={true} />
       <AlbumHeader
         onIconModalOpen={handleIconModalOpen}
@@ -279,14 +297,12 @@ const EditAlbum = ({
           value={albumDescription}
           onChange={handleAlbumDescription}
         />
-
         <label className="image-label" htmlFor="images">
           이미지를 선택해주세요
         </label>
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
-
         {images && (
-          <AlbumImageWrapper>
+          <AlbumImageWrapper id="albumImageWrapper">
             {Array.from(images).map((image) => (
               <ImageWrapper key={image.name}>
                 <img src={URL.createObjectURL(image)} alt="album" />
@@ -342,7 +358,7 @@ export default EditAlbum;
 
 const StyledAlbumCreate = styled.main`
   padding-top: 50px;
-  height: 100vh;
+  height: 100%;
 
   form {
     margin: 0 16px;
@@ -426,21 +442,39 @@ const SubmitButton = styled.button`
 `;
 
 const AlbumImageWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: stretch;
+  gap: 2vw;
   padding-bottom: 80px;
+  overflow-y: hidden;
+  height: 100%;
+
+  @media screen and (min-width: 768px) {
+    gap: 16px;
+  }
+
   img {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 20vw;
     object-fit: cover;
     border-radius: 6px;
+
+    @media screen and (min-width: 768px) {
+      height: 153.59px;
+    }
   }
 `;
 
 const ImageWrapper = styled.div`
   position: relative;
+  margin: 0;
+  padding: 0;
+  height: 20vw;
+
+  @media screen and (min-width: 768px) {
+    height: 153.59px;
+  }
 `;
 
 const CancelButtonWrapper = styled.div`

@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import HeadComponent from '@/Components/HeadComponent';
 import { trpcReactClient } from '@/lib/trpc-client';
 import { Album } from '@/gql/graphql';
 import { useEffect, useState } from 'react';
@@ -24,7 +23,6 @@ const AlbumComponent = () => {
 
   return (
     <Container>
-      <HeadComponent />
       <StyledAlbum width={width}>
         <AlbumList>
           {data?.map((item: Album) => {
