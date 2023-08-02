@@ -2,7 +2,7 @@
 /* eslint-disable no-alert */
 import NavBar from '@/Components/NavBar';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { trpcClient } from '@/lib/trpc-client';
 import { useRouter } from 'next/router';
@@ -35,9 +35,17 @@ const AlbumCreate = () => {
   const [backgroundImage, setBackgroundImage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   const router = useRouter();
   const userInfo = useSession();
+
+  useEffect(() => {
+    if (isScrolling) {
+      window.scrollTo(0, document.body.scrollHeight);
+      setIsScrolling(false);
+    }
+  }, [isScrolling]);
 
   const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAlbumName(e.target.value);
@@ -64,6 +72,7 @@ const AlbumCreate = () => {
       }
       return e.target.files;
     });
+    setIsScrolling(true);
   };
 
   const handleCancelImage = (imageName: string) => {
@@ -270,11 +279,8 @@ const AlbumCreate = () => {
 export default AlbumCreate;
 
 const StyledAlbumCreate = styled.main`
-  width: 100%;
-  max-width: 768px;
-  margin: 0 auto;
   padding-top: 50px;
-  height: 100vh;
+  height: 100%;
 
   form {
     margin: 0 16px;
@@ -290,11 +296,10 @@ const StyledAlbumCreate = styled.main`
     width: 100%;
     height: 50px;
     border: none;
-    border-radius: 0;
     border-bottom: 1px solid #755bb4;
     margin-bottom: 16px;
     background: none;
-    font-size: 16px;
+    font-size: 18px;
     color: #001c30;
 
     &::placeholder {
@@ -313,7 +318,7 @@ const StyledAlbumCreate = styled.main`
     margin-bottom: 20px;
     border-bottom: 1px solid #755bb4;
     padding-bottom: 8px;
-    font-size: 16px;
+    font-size: 18px;
     border: none;
   }
 
@@ -340,10 +345,10 @@ const StyledAlbumCreate = styled.main`
 const SubmitButtonWrapper = styled.div`
   position: fixed;
   bottom: 0;
-  width: 100%;
-  padding: 0 16px 16px;
   max-width: 768px;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 16px 16px;
 `;
 
 const SubmitButton = styled.button`
@@ -359,21 +364,39 @@ const SubmitButton = styled.button`
 `;
 
 const AlbumImageWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: stretch;
+  gap: 2vw;
   padding-bottom: 80px;
+  overflow-y: hidden;
+  height: 100%;
+
+  @media screen and (min-width: 768px) {
+    gap: 16px;
+  }
+
   img {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 20vw;
     object-fit: cover;
     border-radius: 6px;
+
+    @media screen and (min-width: 768px) {
+      height: 153.59px;
+    }
   }
 `;
 
 const ImageWrapper = styled.div`
   position: relative;
+  margin: 0;
+  padding: 0;
+  height: 20vw;
+
+  @media screen and (min-width: 768px) {
+    height: 153.59px;
+  }
 `;
 
 const CancelButtonWrapper = styled.div`
@@ -385,7 +408,6 @@ const CancelButtonWrapper = styled.div`
   background-color: #fff;
   width: 24px;
   height: 24px;
-  border-radius: 50%;
 `;
 
 const CancelButton = styled.button`
