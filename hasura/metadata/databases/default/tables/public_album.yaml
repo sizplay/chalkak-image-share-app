@@ -25,39 +25,42 @@ insert_permissions:
       set:
         created_by: x-hasura-User-Id
       columns:
-        - subtitle
-        - title
         - album_id
-        - main_image_id
         - background
-        - icon
         - created_at
         - created_by
+        - icon
+        - main_image_id
+        - subtitle
+        - title
+        - upload_path
 select_permissions:
   - role: anynomous
     permission:
       columns:
-        - subtitle
-        - title
         - album_id
-        - main_image_id
         - background
-        - icon
         - created_at
         - created_by
+        - icon
+        - main_image_id
+        - subtitle
+        - title
+        - upload_path
       filter: {}
       limit: 1
   - role: user
     permission:
       columns:
-        - subtitle
-        - title
         - album_id
-        - main_image_id
         - background
-        - icon
         - created_at
         - created_by
+        - icon
+        - main_image_id
+        - subtitle
+        - title
+        - upload_path
       filter:
         created_by:
           _eq: X-Hasura-User-Id
@@ -71,6 +74,7 @@ update_permissions:
         - main_image_id
         - subtitle
         - title
+        - upload_path
       filter:
         created_by:
           _eq: X-Hasura-User-Id

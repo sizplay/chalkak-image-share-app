@@ -565,6 +565,7 @@ export type Album = {
   main_image_id?: Maybe<Scalars['Int']['output']>;
   subtitle?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
+  upload_path: Scalars['String']['output'];
 };
 
 
@@ -680,6 +681,7 @@ export type Album_Bool_Exp = {
   main_image_id?: InputMaybe<Int_Comparison_Exp>;
   subtitle?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
+  upload_path?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "album" */
@@ -707,6 +709,7 @@ export type Album_Insert_Input = {
   main_image_id?: InputMaybe<Scalars['Int']['input']>;
   subtitle?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
+  upload_path?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
@@ -720,6 +723,7 @@ export type Album_Max_Fields = {
   main_image_id?: Maybe<Scalars['Int']['output']>;
   subtitle?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
+  upload_path?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by max() on columns of table "album" */
@@ -732,6 +736,7 @@ export type Album_Max_Order_By = {
   main_image_id?: InputMaybe<Order_By>;
   subtitle?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
+  upload_path?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -745,6 +750,7 @@ export type Album_Min_Fields = {
   main_image_id?: Maybe<Scalars['Int']['output']>;
   subtitle?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
+  upload_path?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by min() on columns of table "album" */
@@ -757,6 +763,7 @@ export type Album_Min_Order_By = {
   main_image_id?: InputMaybe<Order_By>;
   subtitle?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
+  upload_path?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "album" */
@@ -795,6 +802,7 @@ export type Album_Order_By = {
   main_image_id?: InputMaybe<Order_By>;
   subtitle?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
+  upload_path?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: album */
@@ -819,7 +827,9 @@ export enum Album_Select_Column {
   /** column name */
   Subtitle = 'subtitle',
   /** column name */
-  Title = 'title'
+  Title = 'title',
+  /** column name */
+  UploadPath = 'upload_path'
 }
 
 /** input type for updating data in table "album" */
@@ -832,6 +842,7 @@ export type Album_Set_Input = {
   main_image_id?: InputMaybe<Scalars['Int']['input']>;
   subtitle?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
+  upload_path?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -891,6 +902,7 @@ export type Album_Stream_Cursor_Value_Input = {
   main_image_id?: InputMaybe<Scalars['Int']['input']>;
   subtitle?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
+  upload_path?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -923,7 +935,9 @@ export enum Album_Update_Column {
   /** column name */
   Subtitle = 'subtitle',
   /** column name */
-  Title = 'title'
+  Title = 'title',
+  /** column name */
+  UploadPath = 'upload_path'
 }
 
 export type Album_Updates = {
