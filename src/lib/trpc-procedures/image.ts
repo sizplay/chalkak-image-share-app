@@ -10,21 +10,21 @@ const t = initTRPC.context().create();
 const { procedure } = t;
 
 export const imageProcedure = {
-  getAlbumImageList: procedure.input(z.number()).query(async ({ input }) => {
-    const res = await getImages(input);
-    const cdn = process.env.CDN_URL;
+  // getAlbumImageList: procedure.input(z.number()).query(async ({ input }) => {
+  //   const res = await getImages(input);
+  //   const cdn = process.env.CDN_URL;
 
-    if (cdn) {
-      const newResponse = res.map((item: getAlbumImageListProps) => {
-        return {
-          ...item,
-          path: `${cdn}/${item.path}`,
-        };
-      });
-      return newResponse;
-    }
-    return res;
-  }),
+  //   if (cdn) {
+  //     const newResponse = res.map((item: getAlbumImageListProps) => {
+  //       return {
+  //         ...item,
+  //         path: `${cdn}/${item.path}`,
+  //       };
+  //     });
+  //     return newResponse;
+  //   }
+  //   return res;
+  // }),
   insertImages: procedure
     .input(
       z
@@ -40,17 +40,25 @@ export const imageProcedure = {
     .mutation(async ({ ctx, input }: ctxProps) => {
       const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
       const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
+
+      const objects = input.map(
+        (item: { album_id: number; path: string; size?: number; width?: number; height?: number }) => {
+          const splitedPath = item.path.split('/');
+          const path = `${splitedPath[splitedPath.length - 2]}/${splitedPath[splitedPath.length - 1]}`;
+          console.log('edit path', path);
+          return {
+            album_id: item.album_id,
+            path,
+            size: item.size || 0,
+            width: item.width || 0,
+            height: item.height || 0,
+          };
+        },
+      );
+
       const res = await insertImages(
         {
-          objects: input.map(
-            (item: { album_id: number; path: string; size?: number; width?: number; height?: number }) => ({
-              album_id: item.album_id,
-              path: item.path.split('amazonaws.com/')[1],
-              size: item.size || 0,
-              width: item.width || 0,
-              height: item.height || 0,
-            }),
-          ),
+          objects,
         },
         token,
         userId,

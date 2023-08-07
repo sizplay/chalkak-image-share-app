@@ -10,22 +10,17 @@ const EditAlbumPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: albumDetail, refetch: albumRefetch } = trpcReactClient.getAlbum.useQuery(Number(id));
-  const {
-    data: images,
-    refetch: albumImageListRefetch,
-    isLoading: isAlbumImageLoading,
-  } = trpcReactClient.getAlbumImageList.useQuery(Number(id));
+  const { data: albumDetail, refetch: albumRefetch, isLoading } = trpcReactClient.getAlbum.useQuery(Number(id));
 
   const newImages = useMemo(() => {
-    return images?.map((image: Image) => ({
+    return albumDetail?.images?.map((image: Image) => ({
       original: image.path,
       src: image.path,
       width: image.width,
       height: image.height,
       imageId: image.image_id,
     }));
-  }, [images]);
+  }, [albumDetail?.images]);
 
   const albumData = {
     title: albumDetail?.title || '',
@@ -36,14 +31,7 @@ const EditAlbumPage = () => {
     backgroundImage: albumDetail?.background || '',
   };
 
-  return (
-    <EditAlbum
-      albumData={albumData}
-      albumImageListRefetch={albumImageListRefetch}
-      albumRefetch={albumRefetch}
-      isImageLoading={isAlbumImageLoading}
-    />
-  );
+  return <EditAlbum albumData={albumData} albumRefetch={albumRefetch} isAlbumLoading={isLoading} />;
 };
 
 export default EditAlbumPage;

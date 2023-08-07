@@ -10,6 +10,7 @@ const query = gql`
       icon
       background
       created_by
+      upload_path
       images {
         image_id
         path

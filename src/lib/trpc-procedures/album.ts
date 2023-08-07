@@ -27,7 +27,7 @@ export const albumProcedure = {
           ...item,
           images: item.images.map((image: getAlbumImageListProps) => ({
             ...image,
-            path: `${cdn}/${image.path}`,
+            path: `${cdn}/${item?.upload_path}${image.path}`,
           })),
         };
       });
@@ -44,9 +44,10 @@ export const albumProcedure = {
         ...res,
         images: res.images.map((image: getAlbumImageListProps) => ({
           ...image,
-          path: `${cdn}/${image.path}`,
+          path: `${cdn}/${res.upload_path}${image.path}`,
         })),
       };
+
       return newResponse;
     }
     return res;
@@ -56,7 +57,6 @@ export const albumProcedure = {
       z.object({
         title: z.string(),
         subtitle: z.string().optional(),
-        user_id: z.string(),
         icon: z.string().optional(),
         backgroundImage: z.string().optional(),
       }),
@@ -68,8 +68,9 @@ export const albumProcedure = {
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
       }
-      if (input?.userId) {
+      if (userId) {
         object.created_by = input.userId;
+        object.upload_path = `${userId}/${input.title}/`;
       }
       if (input?.icon) {
         object.icon = input.icon;
@@ -89,7 +90,6 @@ export const albumProcedure = {
         title: z.string().optional(),
         subtitle: z.string().optional(),
         mainImageId: z.number().optional(),
-        isShared: z.boolean().optional(),
         icon: z.string().optional(),
         backgroundImage: z.string().optional(),
       }),

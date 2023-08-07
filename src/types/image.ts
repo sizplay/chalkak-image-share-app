@@ -22,5 +22,6 @@ export interface albumListProps {
   subtitle: string;
   icon: string;
   background: string;
+  upload_path: string;
   images: getAlbumImageListProps[];
 }
