@@ -34,7 +34,6 @@ const Home = () => {
 
   return (
     <MobileContainer>
-      <HeadComponent />
       <NavBar />
       <HomeContainer>
         <Album />
@@ -54,7 +53,7 @@ const Home = () => {
 export default Home;
 
 const MobileContainer = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 768px;
   margin: 0 auto;
   @media (max-width: 768px) {

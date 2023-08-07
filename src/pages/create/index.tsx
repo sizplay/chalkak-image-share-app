@@ -136,7 +136,6 @@ const AlbumCreate = () => {
       const returnedAlbumData = await trpcClient.insertAlbum.mutate({
         title: albumName,
         subtitle: albumDescription,
-        user_id: userInfo?.data?.user?.id || '',
         icon,
         backgroundImage,
       });
@@ -152,8 +151,13 @@ const AlbumCreate = () => {
           const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
           const { width, height } = dimension;
 
+          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+            imageFile.name
+          }~${new Date().getTime()}`;
+
           const s3uploadData = await axios.post('/api/upload', {
-            name: `${date}/${imageFile.name}~${new Date().getTime()}`,
+            name: imageName,
+            body: imageFile,
             type: imageFile.type,
           });
           const { url } = s3uploadData.data;

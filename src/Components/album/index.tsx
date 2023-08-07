@@ -29,7 +29,7 @@ const AlbumComponent = () => {
             return (
               <AlbumItem key={item.created_at} width={width}>
                 <button type="button" onClick={() => onClickToggle(item.album_id)}>
-                  {item.images[0].path && <img src={item.images[0].path} alt="background" />}
+                  {item.images?.[0]?.path && <img src={item.images[0].path} alt="background" />}
                   <p>{item.title}</p>
                   <p>{item.created_at.split('T')[0]}</p>
                 </button>
@@ -50,15 +50,13 @@ const AlbumComponent = () => {
 
 export default AlbumComponent;
 
-const Container = styled.div`
+const Container = styled.section`
   width: 100%;
-  height: 100vh;
-  margin: 0 auto;
+  margin: 0 auto 20px;
 `;
 
-const StyledAlbum = styled.main<{ width: number }>`
+const StyledAlbum = styled.article<{ width: number }>`
   width: ${({ width }) => (width < 768 ? width : 768)}px;
-  height: 100%;
   color: #fff;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -73,8 +71,7 @@ const EmptyAlbum = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
+
   p {
     color: #001c30;
     font-size: 16px;

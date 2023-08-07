@@ -10,6 +10,7 @@ const query = gql`
       subtitle
       icon
       background
+      upload_path
       images {
         image_id
         path

@@ -3,7 +3,7 @@
 import NavBar from '@/Components/NavBar';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import ReactModal from 'react-modal';
 import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
@@ -11,6 +11,7 @@ import { trpcReactClient } from '@/lib/trpc-client';
 import axios from 'axios';
 import { imageProps } from '@/pages/create';
 import debounce from 'lodash/debounce';
+import { useSession } from 'next-auth/react';
 import AlbumHeader from '../AlbumHeader';
 import EmojiPickerComponent from '../EmojiPicker';
 import { convertURLtoFile } from '../utils/convertURLtoFile';
@@ -35,16 +36,18 @@ interface EditAlbumProps {
     icon: string;
     backgroundImage: string;
   };
-  albumImageListRefetch: () => void;
   albumRefetch: () => void;
-  isImageLoading: boolean;
+  isAlbumLoading: boolean;
+}
+
+interface DeleteImageProps {
+  key: string;
 }
 
 const EditAlbum = ({
   albumData: { title, description, icon, backgroundImage, album, albumId },
-  albumImageListRefetch,
   albumRefetch,
-  isImageLoading,
+  isAlbumLoading,
 }: EditAlbumProps) => {
   const [images, setImages] = useState<FileList | null>(null);
   const [updatingImages, setUpdatingImages] = useState<FileList | null>(null);
@@ -55,13 +58,15 @@ const EditAlbum = ({
   const [background, setBackground] = useState<string>(backgroundImage);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
   const router = useRouter();
+  const userInfo = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   const utils = trpc.useContext();
+  const session = useSession();
 
   const insertImagesMutation = trpcReactClient.insertImages.useMutation({
-    onSuccess: () => albumImageListRefetch(),
+    onSuccess: () => albumRefetch(),
   });
   const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation({
     onSuccess: (data) => {
@@ -71,7 +76,9 @@ const EditAlbum = ({
     },
   });
   const deleteImageMutation = trpcReactClient.deleteImage.useMutation({
-    onSuccess: () => albumImageListRefetch(),
+    onSuccess: () => {
+      albumRefetch();
+    },
   });
   const { refetch: getAlbumListRefetch } = trpcReactClient.getAlbumList.useQuery();
 
@@ -154,16 +161,31 @@ const EditAlbum = ({
     setIsIconModalOpen(false);
   };
 
-  const handleCancelImage = (imageName: string) => {
+  const handleCancelImage = async (imageName: string) => {
     const dataTranster = new DataTransfer();
+    const keys: DeleteImageProps[] = [];
     if (images) {
       Array.from(images)
         .filter((image) => {
+          if (imageName === image.name) {
+            keys.push({ key: image.name });
+          }
           return imageName !== image.name;
         })
         .forEach((image) => {
           dataTranster.items.add(image);
         });
+      if (keys.length > 0) {
+        const res = await axios.post('/api/delete', {
+          data: { keys },
+        });
+        if (res.status === 200) {
+          const deletedImage = album.find((image) => image.src.includes(imageName));
+          if (deletedImage) {
+            deleteImageMutation.mutate(deletedImage.imageId);
+          }
+        }
+      }
     }
     setImages(dataTranster.files);
   };
@@ -198,21 +220,26 @@ const EditAlbum = ({
       // 2-1. 신규 이미지 업로드
       if (updatingImages && updatingImages?.length > 0) {
         const date = getDate();
-        Array.from(updatingImages).forEach(async (image) => {
+        Array.from(updatingImages).forEach(async (imageFile) => {
           // width height 구하기
-          const fileAsDataURL = window.URL.createObjectURL(image);
+          const fileAsDataURL = window.URL.createObjectURL(imageFile);
           const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
           const { width, height } = dimension;
 
+          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+            imageFile.name
+          }~${new Date().getTime()}`;
+
           // 1. 이미지 파일 s3에 업로드
           const s3uploadData = await axios.post('/api/upload', {
-            name: `${date}/${image.name}~${new Date().getTime()}`,
-            type: image.type,
+            name: imageName,
+            body: imageFile,
+            type: imageFile.type,
           });
           const { url } = s3uploadData.data;
-          await axios.put(url, image, {
+          await axios.put(url, imageFile, {
             headers: {
-              'Content-Type': image.type,
+              'Content-Type': imageFile.type,
               'Access-Control-Allow-Origin': '*',
             },
           });
@@ -224,7 +251,7 @@ const EditAlbum = ({
             path: `${newUrl.origin}${newUrl.pathname}`,
             width: width || 0,
             height: height || 0,
-            size: image.size || 0,
+            size: imageFile.size || 0,
           };
           newImages.push(imageData);
 
@@ -277,7 +304,7 @@ const EditAlbum = ({
 
   return (
     <StyledAlbumCreate>
-      {isImageLoading && <Spinner />}
+      {isAlbumLoading && <Spinner />}
       <NavBar leftArrow={true} />
       <AlbumHeader
         onIconModalOpen={handleIconModalOpen}
