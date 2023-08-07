@@ -17,9 +17,9 @@ import EmojiPickerComponent from '../EmojiPicker';
 import { convertURLtoFile } from '../utils/convertURLtoFile';
 import { getDate } from '../utils/getDate';
 import { getHeightAndWidthFromDataUrl } from '../utils/getHeightAndWidthFromDataUrl';
-import { getRandomBackgroundImage } from '../utils/backgroundImages';
 import Spinner from '../utils/spinner';
 import { trpc } from '../utils/trpc';
+import backgroundS3Upload from '../utils/backgroundS3Upload';
 
 interface EditAlbumProps {
   albumData: {
@@ -49,28 +49,43 @@ const EditAlbum = ({
   albumRefetch,
   isAlbumLoading,
 }: EditAlbumProps) => {
-  const [images, setImages] = useState<FileList | null>(null);
-  const [updatingImages, setUpdatingImages] = useState<FileList | null>(null);
   const [albumName, setAlbumName] = useState<string>(title);
   const [albumDescription, setAlbumDescription] = useState<string>(description);
-  const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [iconUrl, setIconUrl] = useState<string>(icon);
   const [background, setBackground] = useState<string>(backgroundImage);
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
+  const [images, setImages] = useState<FileList | null>(null);
+  const [updatingImages, setUpdatingImages] = useState<FileList | null>(null);
+  const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
+  const [backfroundFile, setBackfroundFile] = useState<FileList | null>(null);
+
+  useEffect(() => {
+    setBackground(backgroundImage);
+    setAlbumName(title);
+    setAlbumDescription(description);
+    setIconUrl(icon);
+  }, [backgroundImage, description, icon, title]);
+
   const router = useRouter();
   const userInfo = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   const utils = trpc.useContext();
-  const session = useSession();
 
-  const insertImagesMutation = trpcReactClient.insertImages.useMutation({
+  const insertImagesMutation = trpcReactClient.insertImages.useMutation<{
+    input: {
+      albumId: number;
+      images: FileList;
+    };
+    output: {
+      images: imageProps[];
+    };
+  }>({
     onSuccess: () => albumRefetch(),
   });
   const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation({
     onSuccess: (data) => {
-      console.log('data', data);
+      // console.log('data', data);
       // utils.getAlbum.setData('getAlbum', data);
       albumRefetch();
     },
@@ -107,10 +122,12 @@ const EditAlbum = ({
     setIsIconModalOpen(false);
   };
 
-  const handleChangeImage = () => {
-    const { image, index } = getRandomBackgroundImage(currentImageIndex);
-    setCurrentImageIndex(index);
-    setBackground(image);
+  const handleBackgroundImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files && files.length > 0) {
+      setBackground(URL.createObjectURL(files[0]));
+      setBackfroundFile(files);
+    }
   };
 
   const handleDeleteImage = () => {
@@ -205,13 +222,20 @@ const EditAlbum = ({
     }
     try {
       setIsLoading(true);
+
+      // 0. 백그라운드 이미지 s3 업로드
+      let backgroundPath = '';
+      if (backfroundFile) {
+        backgroundPath = await backgroundS3Upload(backfroundFile[0], albumName, userInfo?.data?.user?.id || '');
+      }
+
       // 1. 앨범 수정
       updateAlbumMutation.mutate({
         albumId,
         title: albumName,
         subtitle: albumDescription,
         icon: iconUrl,
-        backgroundImage: background,
+        backgroundImage: backgroundPath,
       });
 
       // 2. 앨범 이미지 수정
@@ -230,7 +254,7 @@ const EditAlbum = ({
             imageFile.name
           }~${new Date().getTime()}`;
 
-          // 1. 이미지 파일 s3에 업로드
+          // 이미지 파일 s3에 업로드
           const s3uploadData = await axios.post('/api/upload', {
             name: imageName,
             body: imageFile,
@@ -308,14 +332,13 @@ const EditAlbum = ({
       <NavBar leftArrow={true} />
       <AlbumHeader
         onIconModalOpen={handleIconModalOpen}
-        onChangeImage={handleChangeImage}
+        onChangeImage={handleBackgroundImages}
         onDeleteImage={handleDeleteImage}
         backgroundImage={background}
         icon={iconUrl}
         showEditButton={true}
         showDeleteButton={true}
       />
-      <h1>앨범을 수정해 주세요</h1>
       <form>
         <input type="text" placeholder="앨범 이름을 입력해주세요." value={albumName} onChange={handleAlbumName} />
         <input
@@ -389,12 +412,6 @@ const StyledAlbumCreate = styled.main`
 
   form {
     margin: 0 16px;
-  }
-  h1 {
-    font-size: 24px;
-    color: #001c30;
-    margin: 0 16px;
-    margin-bottom: 24px;
   }
 
   input {

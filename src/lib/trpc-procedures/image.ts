@@ -45,7 +45,6 @@ export const imageProcedure = {
         (item: { album_id: number; path: string; size?: number; width?: number; height?: number }) => {
           const splitedPath = item.path.split('/');
           const path = `${splitedPath[splitedPath.length - 2]}/${splitedPath[splitedPath.length - 1]}`;
-          console.log('edit path', path);
           return {
             album_id: item.album_id,
             path,

@@ -3,7 +3,7 @@ import client from './client';
 
 const query = gql`
   query myAlblums {
-    album(order_by: { created_at: asc }) {
+    album(order_by: { created_at: desc }) {
       album_id
       created_at
       title

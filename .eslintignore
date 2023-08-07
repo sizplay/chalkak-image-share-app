@@ -1,0 +1,4 @@
+node_modules/*
+dist/*
+src/gql/fragment-masking.ts
+src/gql/index.ts

@@ -13,10 +13,10 @@ import { getDate } from '@/Components/utils/getDate';
 import AlbumHeader from '@/Components/AlbumHeader';
 import EmojiPickerComponent from '@/Components/EmojiPicker';
 import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
-import { getRandomBackgroundImage } from '@/Components/utils/backgroundImages';
 import debounce from 'lodash/debounce';
 import Spinner from '@/Components/utils/spinner';
 import { useSession } from 'next-auth/react';
+import backgroundS3Upload from '@/Components/utils/backgroundS3Upload';
 
 export interface imageProps {
   album_id: number;
@@ -33,8 +33,8 @@ const AlbumCreate = () => {
   const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [icon, setIcon] = useState<string>('');
   const [backgroundImage, setBackgroundImage] = useState<string>('');
+  const [backfroundFile, setBackfroundFile] = useState<FileList | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(-1);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   const router = useRouter();
@@ -75,6 +75,14 @@ const AlbumCreate = () => {
     setIsScrolling(true);
   };
 
+  const handleBackgroundImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files && files.length > 0) {
+      setBackgroundImage(URL.createObjectURL(files[0]));
+      setBackfroundFile(files);
+    }
+  };
+
   const handleCancelImage = (imageName: string) => {
     const dataTranster = new DataTransfer();
     if (imageFiles) {
@@ -95,12 +103,6 @@ const AlbumCreate = () => {
 
   const handleIconModalClose = () => {
     setIsIconModalOpen(false);
-  };
-
-  const handleChangeImage = () => {
-    const { image, index } = getRandomBackgroundImage(currentImageIndex);
-    setCurrentImageIndex(index);
-    setBackgroundImage(image);
   };
 
   const handleDeleteImage = () => {
@@ -132,12 +134,18 @@ const AlbumCreate = () => {
     }
     try {
       setIsLoading(true);
+      // 0. 백그라운드 이미지 s3 업로드
+      let backgroundPath = '';
+      if (backfroundFile) {
+        backgroundPath = await backgroundS3Upload(backfroundFile[0], albumName, userInfo?.data?.user?.id || '');
+      }
+
       // 1. 앨범 생성
       const returnedAlbumData = await trpcClient.insertAlbum.mutate({
         title: albumName,
         subtitle: albumDescription,
         icon,
-        backgroundImage,
+        backgroundImage: backgroundPath,
       });
       const albumId = returnedAlbumData?.album_id;
       const newImages: imageProps[] = [];
@@ -155,6 +163,7 @@ const AlbumCreate = () => {
             imageFile.name
           }~${new Date().getTime()}`;
 
+          // 이미지 파일 s3에 업로드
           const s3uploadData = await axios.post('/api/upload', {
             name: imageName,
             body: imageFile,
@@ -206,14 +215,13 @@ const AlbumCreate = () => {
       <NavBar leftArrow={true} />
       <AlbumHeader
         onIconModalOpen={handleIconModalOpen}
-        onChangeImage={handleChangeImage}
+        onChangeImage={handleBackgroundImages}
         onDeleteImage={handleDeleteImage}
         backgroundImage={backgroundImage}
         icon={icon}
         showEditButton={true}
         showDeleteButton={true}
       />
-      <h1>앨범을 만들어 주세요</h1>
       <form>
         <input type="text" placeholder="앨범 이름을 입력해주세요." value={albumName} onChange={handleAlbumName} />
         <input
@@ -222,7 +230,6 @@ const AlbumCreate = () => {
           value={albumDescription}
           onChange={handleAlbumDescription}
         />
-
         <label className="image-label" htmlFor="images">
           이미지를 선택해주세요
         </label>
@@ -288,12 +295,6 @@ const StyledAlbumCreate = styled.main`
 
   form {
     margin: 0 16px;
-  }
-  h1 {
-    font-size: 24px;
-    color: #001c30;
-    margin: 0 16px;
-    margin-bottom: 24px;
   }
 
   input {
