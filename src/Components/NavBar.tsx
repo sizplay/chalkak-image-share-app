@@ -28,7 +28,7 @@ const NavBar = ({ leftArrow }: NavBarProps) => {
       )}
       <CenterWrapper>
         <button type="button" onClick={() => router.push('/')}>
-          <Image src="/icon/logo-no-background.svg" alt="logo" width={160} height={40} />
+          <Image src="/icon/logo-no-background.svg" alt="logo" width={160} height={40} priority={true} />
         </button>
       </CenterWrapper>
       <RightSideWrapper>

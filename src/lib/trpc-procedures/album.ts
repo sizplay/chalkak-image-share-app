@@ -25,7 +25,7 @@ export const albumProcedure = {
       const newResponse = res.map((item: albumListProps) => {
         return {
           ...item,
-          background: `${cdn}${item.background}`,
+          background: item.background ? `${cdn}${item.background}` : '',
           images: item.images.map((image: getAlbumImageListProps) => ({
             ...image,
             path: `${cdn}/${item?.upload_path}${image.path}`,
@@ -43,7 +43,7 @@ export const albumProcedure = {
     if (cdn) {
       const newResponse = {
         ...res,
-        background: `${cdn}${res.background}`,
+        background: res.background ? `${cdn}${res.background}` : '',
         images: res.images.map((image: getAlbumImageListProps) => ({
           ...image,
           path: `${cdn}/${res.upload_path}${image.path}`,
