@@ -10,7 +10,7 @@ const login = () => {
       </TextWrapper>
       <ImageWrapper>
         <KakaoLogin
-          src="/icon/kakao_login_medium_wide.png"
+          src="/icon/kakao_login_large_wide.png"
           onClick={() => signIn('kakao')}
           alt="kakao login"
           width={300}
@@ -37,11 +37,6 @@ const TextWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 100px;
-
-  p {
-    color: #fff;
-    font-size: 24px;
-  }
 `;
 
 const ImageWrapper = styled.div`
