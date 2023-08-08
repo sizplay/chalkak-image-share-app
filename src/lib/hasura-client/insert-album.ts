@@ -12,6 +12,7 @@ const mutation = gql`
       subtitle
       icon
       background
+      upload_path
     }
   }
 `;
