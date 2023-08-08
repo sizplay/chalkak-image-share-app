@@ -29,7 +29,8 @@ const AlbumComponent = () => {
             return (
               <AlbumItem key={item.created_at} width={width}>
                 <button type="button" onClick={() => onClickToggle(item.album_id)}>
-                  {item.images?.[0]?.path && <img src={item.images[0].path} alt="background" />}
+                  {item.images?.[0]?.path ? <img src={item.images[0].path} alt="background" /> : <div />}
+
                   <p>{item.title}</p>
                   <p>{item.created_at.split('T')[0]}</p>
                 </button>
@@ -113,6 +114,12 @@ const AlbumItem = styled.div<{ width: number }>`
   img {
     width: 100%;
     height: 178px;
+  }
+
+  div {
+    width: 100%;
+    height: 178px;
+    background-color: #e5e5e5;
   }
 
   p {
