@@ -72,6 +72,8 @@ const EditAlbum = ({
 
   const utils = trpc.useContext();
 
+  const { refetch: getAlbumListRefetch } = trpcReactClient.getAlbumList.useQuery();
+
   const insertImagesMutation = trpcReactClient.insertImages.useMutation<{
     input: {
       albumId: number;
@@ -81,21 +83,25 @@ const EditAlbum = ({
       images: imageProps[];
     };
   }>({
-    onSuccess: () => albumRefetch(),
-  });
-  const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation({
-    onSuccess: (data) => {
-      // console.log('data', data);
-      // utils.getAlbum.setData('getAlbum', data);
+    onSuccess: () => {
       albumRefetch();
+      getAlbumListRefetch();
     },
   });
+
+  const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation({
+    onSuccess: () => {
+      albumRefetch();
+      getAlbumListRefetch();
+    },
+  });
+
   const deleteImageMutation = trpcReactClient.deleteImage.useMutation({
     onSuccess: () => {
       albumRefetch();
+      getAlbumListRefetch();
     },
   });
-  const { refetch: getAlbumListRefetch } = trpcReactClient.getAlbumList.useQuery();
 
   useEffect(() => {
     if (album && album.length > 0) {
@@ -305,6 +311,7 @@ const EditAlbum = ({
             deleteImageMutation.mutate(image.imageId);
           }),
         ).then(() => {
+          utils.getAlbumList.invalidate();
           getAlbumListRefetch().then(() => {
             alert('앨범이 수정되었습니다.');
             router.push(`/album/${albumId}`);

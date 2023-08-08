@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import HeadComponent from '@/Components/HeadComponent';
 import NavBar from '@/Components/NavBar';
 import Album from '@/Components/album';
 import { useRouter } from 'next/router';

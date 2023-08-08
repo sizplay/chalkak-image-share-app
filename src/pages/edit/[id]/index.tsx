@@ -1,5 +1,3 @@
-import HeadComponent from '@/Components/HeadComponent';
-import styled from '@emotion/styled';
 import EditAlbum from '@/Components/album/EditAlbum';
 import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';

@@ -98,7 +98,8 @@ export const albumProcedure = {
     )
     .mutation(async ({ ctx, input }: ctxProps) => {
       const object: Album_Set_Input = {};
-
+      const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+      const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
       if (input?.title) {
         object.title = input.title;
       }
@@ -113,8 +114,6 @@ export const albumProcedure = {
         object.background = input.backgroundImage;
       }
 
-      const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
-      const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
       const res = await updateAlbum({ album_id: input.albumId, _set: object }, token, userId);
 
       return res;

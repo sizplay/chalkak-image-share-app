@@ -21,7 +21,7 @@ const documents = {
     "\n  query getImages($album_id: Int) {\n    image(where: { album_id: { _eq: $album_id } }, order_by: { created_at: asc }) {\n      image_id\n      path\n      size\n      width\n      height\n      created_at\n    }\n  }\n": types.GetImagesDocument,
     "\n  query user($email: String) {\n    users(where: { email: { _eq: $email } }) {\n      id\n    }\n  }\n": types.UserDocument,
     "\n  query users {\n    users {\n      id\n      name\n      email\n    }\n  }\n": types.UsersDocument,
-    "\n  mutation insertAlbum($object: album_insert_input!) {\n    insert_album_one(object: $object) {\n      album_id\n      created_at\n      created_by\n      title\n      subtitle\n      icon\n      background\n    }\n  }\n": types.InsertAlbumDocument,
+    "\n  mutation insertAlbum($object: album_insert_input!) {\n    insert_album_one(object: $object) {\n      album_id\n      created_at\n      created_by\n      title\n      subtitle\n      icon\n      background\n      upload_path\n    }\n  }\n": types.InsertAlbumDocument,
     "\n  mutation insertImages($objects: [image_insert_input!]!) {\n    insert_image(objects: $objects) {\n      affected_rows\n      returning {\n        album_id\n        created_at\n        image_id\n        path\n      }\n    }\n  }\n": types.InsertImagesDocument,
     "\n  mutation updateAlbum($album_id: Int!, $_set: album_set_input!) {\n    update_album_by_pk(pk_columns: { album_id: $album_id }, _set: $_set) {\n      album_id\n    }\n  }\n": types.UpdateAlbumDocument,
 };
@@ -75,7 +75,7 @@ export function graphql(source: "\n  query users {\n    users {\n      id\n     
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation insertAlbum($object: album_insert_input!) {\n    insert_album_one(object: $object) {\n      album_id\n      created_at\n      created_by\n      title\n      subtitle\n      icon\n      background\n    }\n  }\n"): (typeof documents)["\n  mutation insertAlbum($object: album_insert_input!) {\n    insert_album_one(object: $object) {\n      album_id\n      created_at\n      created_by\n      title\n      subtitle\n      icon\n      background\n    }\n  }\n"];
+export function graphql(source: "\n  mutation insertAlbum($object: album_insert_input!) {\n    insert_album_one(object: $object) {\n      album_id\n      created_at\n      created_by\n      title\n      subtitle\n      icon\n      background\n      upload_path\n    }\n  }\n"): (typeof documents)["\n  mutation insertAlbum($object: album_insert_input!) {\n    insert_album_one(object: $object) {\n      album_id\n      created_at\n      created_by\n      title\n      subtitle\n      icon\n      background\n      upload_path\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
