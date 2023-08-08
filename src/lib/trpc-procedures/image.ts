@@ -10,21 +10,21 @@ const t = initTRPC.context().create();
 const { procedure } = t;
 
 export const imageProcedure = {
-  // getAlbumImageList: procedure.input(z.number()).query(async ({ input }) => {
-  //   const res = await getImages(input);
-  //   const cdn = process.env.CDN_URL;
+  getAlbumImageList: procedure.input(z.number()).query(async ({ input }) => {
+    const res = await getImages(input);
+    const cdn = process.env.CDN_URL;
 
-  //   if (cdn) {
-  //     const newResponse = res.map((item: getAlbumImageListProps) => {
-  //       return {
-  //         ...item,
-  //         path: `${cdn}/${item.path}`,
-  //       };
-  //     });
-  //     return newResponse;
-  //   }
-  //   return res;
-  // }),
+    if (cdn) {
+      const newResponse = res.map((item: getAlbumImageListProps) => {
+        return {
+          ...item,
+          path: `${cdn}/${item.path}`,
+        };
+      });
+      return newResponse;
+    }
+    return res;
+  }),
   insertImages: procedure
     .input(
       z

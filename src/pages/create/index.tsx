@@ -4,7 +4,7 @@ import NavBar from '@/Components/NavBar';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
-import { trpcClient } from '@/lib/trpc-client';
+import { trpcClient, trpcReactClient } from '@/lib/trpc-client';
 import { useRouter } from 'next/router';
 import { X } from 'lucide-react';
 import axios from 'axios';
@@ -39,6 +39,7 @@ const AlbumCreate = () => {
 
   const router = useRouter();
   const userInfo = useSession();
+  const { refetch } = trpcReactClient.getAlbumList.useQuery();
 
   useEffect(() => {
     if (isScrolling) {
@@ -193,7 +194,11 @@ const AlbumCreate = () => {
             if (response.affected_rows === imageFiles.length) {
               setIsLoading(false);
               alert('앨범이 생성되었습니다.');
-              router.push(`/album/${albumId}`);
+              refetch().then((data) => {
+                const img = new Image();
+                img.src = data?.data[0].images[0].path || '';
+                router.push(`/album/${albumId}`);
+              });
             }
           }
         });
@@ -202,7 +207,6 @@ const AlbumCreate = () => {
       setIsLoading(false);
       console.error(error);
       // eslint-disable-next-line no-new
-
       alert('에러가 발생하였습니다. 다시 이용해주세요.');
     }
   };

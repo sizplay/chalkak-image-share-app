@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 interface EmojiPickerProps {
   onIconModalClose: () => void;
   onDeleteIcon: () => void;
+  // eslint-disable-next-line no-unused-vars
   onEmojiClick: (emojiObject: EmojiClickData) => void;
 }
 

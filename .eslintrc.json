@@ -9,13 +9,7 @@
     "browser": true,
     "es6": true
   },
-  "plugins": [
-    "react",
-    "react-hooks",
-    "import",
-    "@typescript-eslint",
-    "prettier"
-  ],
+  "plugins": ["react", "react-hooks", "import", "@typescript-eslint", "prettier"],
   "extends": [
     "airbnb",
     "airbnb-base",
@@ -48,12 +42,7 @@
     "react/jsx-filename-extension": [
       "error",
       {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     ],
     "react/function-component-definition": [
@@ -63,9 +52,7 @@
         "unnamedComponents": "arrow-function"
       }
     ],
-    "import/extensions": [
-      "off"
-    ],
+    "import/extensions": ["off"],
     "camelcase": "off",
     "@typescript-eslint/ban-types": "off",
     "react/prop-types": "off",
@@ -73,14 +60,14 @@
     "import/prefer-default-export": "off",
     "no-use-before-define": "off",
     "no-empty-pattern": "off",
-    "no-unused-vars": "off",
+    "no-unused-vars": "warn",
     "no-console": "off",
     "no-shadow": "off",
     "no-underscore-dangle": "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
     "import/no-extraneous-dependencies": [
       "error",
       {
@@ -97,16 +84,8 @@
       "typescript": {}
     },
     "import/parsers": {
-      "@typescript-eslint/parser": [
-        ".ts",
-        ".tsx",
-        ".js"
-      ]
+      "@typescript-eslint/parser": [".ts", ".tsx", ".js"]
     }
   },
-  "ignorePatterns": [
-    "node_modules/",
-    "next.config.js",
-    "tsconfig.json"
-  ]
+  "ignorePatterns": ["node_modules/", "next.config.js", "tsconfig.json"]
 }
