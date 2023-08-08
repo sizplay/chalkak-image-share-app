@@ -20,6 +20,7 @@ import { getHeightAndWidthFromDataUrl } from '../utils/getHeightAndWidthFromData
 import Spinner from '../utils/spinner';
 import { trpc } from '../utils/trpc';
 import backgroundS3Upload from '../utils/backgroundS3Upload';
+import useResize from '../hooks/useResize';
 
 interface EditAlbumProps {
   albumData: {
@@ -57,6 +58,7 @@ const EditAlbum = ({
   const [updatingImages, setUpdatingImages] = useState<FileList | null>(null);
   const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [backfroundFile, setBackfroundFile] = useState<FileList | null>(null);
+  const [isFileResized, setIsFileResized] = useState<boolean>(false);
 
   useEffect(() => {
     setBackground(backgroundImage);
@@ -64,6 +66,15 @@ const EditAlbum = ({
     setAlbumDescription(description);
     setIconUrl(icon);
   }, [backgroundImage, description, icon, title]);
+
+  const { resizedImageFiles } = useResize(updatingImages || undefined);
+
+  useEffect(() => {
+    if (!isFileResized && resizedImageFiles) {
+      setUpdatingImages(resizedImageFiles);
+      setIsFileResized(true);
+    }
+  }, [isFileResized, resizedImageFiles]);
 
   const router = useRouter();
   const userInfo = useSession();
@@ -154,13 +165,17 @@ const EditAlbum = ({
     setImages((prev) => {
       if (prev) {
         const dataTranster = new DataTransfer();
-        Array.from(prev).forEach((image) => {
-          dataTranster.items.add(image);
-        });
-        if (files) {
-          Array.from(files).forEach((image) => {
+        Array.from(prev)
+          .sort()
+          .forEach((image) => {
             dataTranster.items.add(image);
           });
+        if (files) {
+          Array.from(files)
+            .sort()
+            .forEach((image) => {
+              dataTranster.items.add(image);
+            });
 
           return dataTranster.files;
         }
@@ -189,6 +204,7 @@ const EditAlbum = ({
     const keys: DeleteImageProps[] = [];
     if (images) {
       Array.from(images)
+        .sort()
         .filter((image) => {
           if (imageName === image.name) {
             keys.push({ key: image.name });
@@ -250,49 +266,53 @@ const EditAlbum = ({
       // 2-1. 신규 이미지 업로드
       if (updatingImages && updatingImages?.length > 0) {
         const date = getDate();
-        Array.from(updatingImages).forEach(async (imageFile) => {
-          // width height 구하기
-          const fileAsDataURL = window.URL.createObjectURL(imageFile);
-          const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
-          const { width, height } = dimension;
+        Array.from(updatingImages)
+          .sort()
+          .forEach(async (imageFile) => {
+            // width height 구하기
+            const fileAsDataURL = window.URL.createObjectURL(imageFile);
+            const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
+            const { width, height } = dimension;
 
-          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
-            imageFile.name
-          }~${new Date().getTime()}`;
+            const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+              imageFile.name
+            }~${new Date().getTime()}`;
 
-          // 이미지 파일 s3에 업로드
-          const s3uploadData = await axios.post('/api/upload', {
-            name: imageName,
-            body: imageFile,
-            type: imageFile.type,
+            // 이미지 파일 s3에 업로드
+            const s3uploadData = await axios.post('/api/upload', {
+              name: imageName,
+              body: imageFile,
+              type: imageFile.type,
+            });
+            const { url } = s3uploadData.data;
+            await axios.put(url, imageFile, {
+              headers: {
+                'Content-Type': imageFile.type,
+                'Access-Control-Allow-Origin': '*',
+              },
+            });
+            const newUrl = new URL(url);
+
+            // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
+            const imageData = {
+              album_id: albumId,
+              path: `${newUrl.origin}${newUrl.pathname}`,
+              width: width || 0,
+              height: height || 0,
+              size: imageFile.size || 0,
+            };
+            newImages.push(imageData);
+
+            if (newImages.length === updatingImages.length) {
+              insertImagesMutation.mutate(newImages);
+            }
           });
-          const { url } = s3uploadData.data;
-          await axios.put(url, imageFile, {
-            headers: {
-              'Content-Type': imageFile.type,
-              'Access-Control-Allow-Origin': '*',
-            },
-          });
-          const newUrl = new URL(url);
-
-          // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
-          const imageData = {
-            album_id: albumId,
-            path: `${newUrl.origin}${newUrl.pathname}`,
-            width: width || 0,
-            height: height || 0,
-            size: imageFile.size || 0,
-          };
-          newImages.push(imageData);
-
-          if (newImages.length === updatingImages.length) {
-            insertImagesMutation.mutate(newImages);
-          }
-        });
       }
 
       // 기존 앨범에서 삭제된 이미지가 있는지 확인
-      const currentImages = Array.from(images).map((image) => image.name);
+      const currentImages = Array.from(images)
+        .sort()
+        .map((image) => image.name);
       const currentAlbum = album.map((image) => {
         return {
           src: image?.src?.slice(image.src.lastIndexOf('/') + 1),
@@ -360,16 +380,18 @@ const EditAlbum = ({
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
         {images && (
           <AlbumImageWrapper id="albumImageWrapper">
-            {Array.from(images).map((image) => (
-              <ImageWrapper key={image.name}>
-                <img src={URL.createObjectURL(image)} alt="album" />
-                <CancelButtonWrapper>
-                  <CancelButton type="button" onClick={() => handleCancelImage(image.name)}>
-                    <X color="#001C30" size={24} />
-                  </CancelButton>
-                </CancelButtonWrapper>
-              </ImageWrapper>
-            ))}
+            {Array.from(images)
+              .sort()
+              .map((image) => (
+                <ImageWrapper key={image.name}>
+                  <img src={URL.createObjectURL(image)} alt="album" />
+                  <CancelButtonWrapper>
+                    <CancelButton type="button" onClick={() => handleCancelImage(image.name)}>
+                      <X color="#001C30" size={24} />
+                    </CancelButton>
+                  </CancelButtonWrapper>
+                </ImageWrapper>
+              ))}
           </AlbumImageWrapper>
         )}
       </form>

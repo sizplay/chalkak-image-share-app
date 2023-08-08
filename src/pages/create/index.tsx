@@ -2,7 +2,7 @@
 /* eslint-disable no-alert */
 import NavBar from '@/Components/NavBar';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { trpcClient, trpcReactClient } from '@/lib/trpc-client';
 import { useRouter } from 'next/router';
@@ -17,6 +17,7 @@ import debounce from 'lodash/debounce';
 import Spinner from '@/Components/utils/spinner';
 import { useSession } from 'next-auth/react';
 import backgroundS3Upload from '@/Components/utils/backgroundS3Upload';
+import useResize from '@/Components/hooks/useResize';
 
 export interface imageProps {
   album_id: number;
@@ -36,6 +37,7 @@ const AlbumCreate = () => {
   const [backfroundFile, setBackfroundFile] = useState<FileList | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
+  const [isFileResized, setIsFileResized] = useState<boolean>(false);
 
   const router = useRouter();
   const userInfo = useSession();
@@ -48,6 +50,15 @@ const AlbumCreate = () => {
     }
   }, [isScrolling]);
 
+  const { resizedImageFiles } = useResize(imageFiles || undefined);
+
+  useEffect(() => {
+    if (!isFileResized && resizedImageFiles) {
+      setImageFiles(resizedImageFiles);
+      setIsFileResized(true);
+    }
+  }, [isFileResized, resizedImageFiles]);
+
   const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAlbumName(e.target.value);
   };
@@ -56,25 +67,29 @@ const AlbumCreate = () => {
     setAlbumDescription(e.target.value);
   };
 
-  const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImages = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     setImageFiles((prev) => {
       if (prev) {
         const dataTranster = new DataTransfer();
-        Array.from(prev).forEach((image) => {
-          dataTranster.items.add(image);
-        });
-        if (files) {
-          Array.from(files).forEach((image) => {
+        Array.from(prev)
+          .sort()
+          .forEach((image) => {
             dataTranster.items.add(image);
           });
+        if (files) {
+          Array.from(files)
+            .sort()
+            .forEach((image) => {
+              dataTranster.items.add(image);
+            });
           return dataTranster.files;
         }
       }
       return e.target.files;
     });
     setIsScrolling(true);
-  };
+  }, []);
 
   const handleBackgroundImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -88,6 +103,7 @@ const AlbumCreate = () => {
     const dataTranster = new DataTransfer();
     if (imageFiles) {
       Array.from(imageFiles)
+        .sort()
         .filter((image) => {
           return imageName !== image.name;
         })
@@ -155,53 +171,55 @@ const AlbumCreate = () => {
       if (albumId !== 0 && imageFiles) {
         const date = getDate();
 
-        Array.from(imageFiles).forEach(async (imageFile: File) => {
-          const fileAsDataURL = window.URL.createObjectURL(imageFile);
-          const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
-          const { width, height } = dimension;
+        Array.from(imageFiles)
+          .sort()
+          .forEach(async (imageFile: File) => {
+            const fileAsDataURL = window.URL.createObjectURL(imageFile);
+            const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
+            const { width, height } = dimension;
 
-          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
-            imageFile.name
-          }~${new Date().getTime()}`;
+            const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+              imageFile.name
+            }~${new Date().getTime()}`;
 
-          // 이미지 파일 s3에 업로드
-          const s3uploadData = await axios.post('/api/upload', {
-            name: imageName,
-            body: imageFile,
-            type: imageFile.type,
-          });
-          const { url } = s3uploadData.data;
-          await axios.put(url, imageFile, {
-            headers: {
-              'Content-Type': imageFile.type,
-              'Access-Control-Allow-Origin': '*',
-            },
-          });
-          const newUrl = new URL(url);
+            // 이미지 파일 s3에 업로드
+            const s3uploadData = await axios.post('/api/upload', {
+              name: imageName,
+              body: imageFile,
+              type: imageFile.type,
+            });
+            const { url } = s3uploadData.data;
+            await axios.put(url, imageFile, {
+              headers: {
+                'Content-Type': imageFile.type,
+                'Access-Control-Allow-Origin': '*',
+              },
+            });
+            const newUrl = new URL(url);
 
-          // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
-          const imageData = {
-            album_id: albumId,
-            path: `${newUrl.origin}${newUrl.pathname}`,
-            width: width || 0,
-            height: height || 0,
-            size: imageFile.size || 0,
-          };
-          newImages.push(imageData);
+            // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
+            const imageData = {
+              album_id: albumId,
+              path: `${newUrl.origin}${newUrl.pathname}`,
+              width: width || 0,
+              height: height || 0,
+              size: imageFile.size || 0,
+            };
+            newImages.push(imageData);
 
-          if (newImages.length === imageFiles.length) {
-            const response = await trpcClient.insertImages.mutate(newImages);
-            if (response.affected_rows === imageFiles.length) {
-              setIsLoading(false);
-              alert('앨범이 생성되었습니다.');
-              refetch().then((data) => {
-                const img = new Image();
-                img.src = data?.data[0].images[0].path || '';
-                router.push(`/album/${albumId}`);
-              });
+            if (newImages.length === imageFiles.length) {
+              const response = await trpcClient.insertImages.mutate(newImages);
+              if (response.affected_rows === imageFiles.length) {
+                setIsLoading(false);
+                alert('앨범이 생성되었습니다.');
+                refetch().then((data) => {
+                  const img = new Image();
+                  img.src = data?.data[0].images[0].path || '';
+                  router.push(`/album/${albumId}`);
+                });
+              }
             }
-          }
-        });
+          });
       }
     } catch (error) {
       setIsLoading(false);
@@ -240,16 +258,18 @@ const AlbumCreate = () => {
         <input id="images" type="file" multiple accept="image/*" onChange={handleImages} />
         {imageFiles && (
           <AlbumImageWrapper>
-            {Array.from(imageFiles).map((image) => (
-              <ImageWrapper key={image.name}>
-                <img src={URL.createObjectURL(image)} alt="album" />
-                <CancelButtonWrapper>
-                  <CancelButton type="button" onClick={() => handleCancelImage(image.name)}>
-                    <X color="#001C30" size={24} />
-                  </CancelButton>
-                </CancelButtonWrapper>
-              </ImageWrapper>
-            ))}
+            {Array.from(imageFiles)
+              .sort()
+              .map((image) => (
+                <ImageWrapper key={image.name}>
+                  <img src={URL.createObjectURL(image)} alt="album" />
+                  <CancelButtonWrapper>
+                    <CancelButton type="button" onClick={() => handleCancelImage(image.name)}>
+                      <X color="#001C30" size={24} />
+                    </CancelButton>
+                  </CancelButtonWrapper>
+                </ImageWrapper>
+              ))}
           </AlbumImageWrapper>
         )}
       </form>
