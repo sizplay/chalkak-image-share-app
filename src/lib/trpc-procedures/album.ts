@@ -2,8 +2,8 @@
 /* eslint-disable camelcase */
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
-import { Album_Insert_Input, Album_Set_Input } from '@/gql/graphql';
-import { albumListProps, ctxProps, getAlbumImageListProps } from '@/types/image';
+import { Album, Album_Insert_Input, Album_Set_Input, Image } from '@/gql/graphql';
+import { ctxProps, getAlbumImageListProps } from '@/types/image';
 import getAlbums from '../hasura-client/get-albums';
 import getAlbum from '../hasura-client/get-album';
 import insertAlbum from '../hasura-client/insert-album';
@@ -22,11 +22,11 @@ export const albumProcedure = {
     const cdn = process.env.CDN_URL;
 
     if (cdn) {
-      const newResponse = res.map((item: albumListProps) => {
+      const newResponse = res.map((item: Album) => {
         return {
           ...item,
           background: item.background ? `${cdn}${item.background}` : '',
-          images: item.images.map((image: getAlbumImageListProps) => ({
+          images: item.images.map((image: Image) => ({
             ...image,
             path: `${cdn}/${item?.upload_path}${image.path}`,
           })),
@@ -98,7 +98,8 @@ export const albumProcedure = {
     )
     .mutation(async ({ ctx, input }: ctxProps) => {
       const object: Album_Set_Input = {};
-
+      const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
+      const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
       if (input?.title) {
         object.title = input.title;
       }
@@ -113,8 +114,6 @@ export const albumProcedure = {
         object.background = input.backgroundImage;
       }
 
-      const token = ctx.req.headers.cookie.split('next-auth.session-token=')[1];
-      const userId = ctx?.req?.headers?.['x-hasura-user-id'] ?? undefined;
       const res = await updateAlbum({ album_id: input.albumId, _set: object }, token, userId);
 
       return res;

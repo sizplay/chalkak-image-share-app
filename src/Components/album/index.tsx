@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';
 import { Album } from '@/gql/graphql';
 import { useEffect, useState } from 'react';
+import LazyLoad from 'react-lazyload';
 
 const AlbumComponent = () => {
   const router = useRouter();
@@ -29,8 +30,13 @@ const AlbumComponent = () => {
             return (
               <AlbumItem key={item.created_at} width={width}>
                 <button type="button" onClick={() => onClickToggle(item.album_id)}>
-                  {item.images?.[0]?.path ? <img src={item.images[0].path} alt="background" /> : <div />}
-
+                  {item.images?.[0]?.path ? (
+                    <LazyLoad height={178}>
+                      <img src={item.images[0].path} alt="background" />
+                    </LazyLoad>
+                  ) : (
+                    <div />
+                  )}
                   <p>{item.title}</p>
                   <p>{item.created_at.split('T')[0]}</p>
                 </button>

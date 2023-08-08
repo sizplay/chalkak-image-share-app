@@ -4,6 +4,7 @@ import { Smile, Image as LucideImage } from 'lucide-react';
 
 interface AlbumHeaderProps {
   onIconModalOpen?: () => void;
+  // eslint-disable-next-line no-unused-vars
   onChangeImage?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteImage?: () => void;
   backgroundImage: string | null;
@@ -30,9 +31,6 @@ const AlbumHeader = ({
           <img src={backgroundImage} alt="cover" />
           <CoverButtonWrapper>
             {showEditButton && (
-              // <button type="button" onClick={onChangeImage}>
-              //   커버 변경
-              // </button>
               <div>
                 <label htmlFor="files">커버 변경</label>
                 <input id="files" type="file" multiple accept="image/*" onChange={onChangeImage} />
