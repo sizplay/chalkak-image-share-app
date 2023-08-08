@@ -34,12 +34,4 @@ const S3Upload = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '8mb', // Set desired value here
-    },
-  },
-};
-
 export default S3Upload;
