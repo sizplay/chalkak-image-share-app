@@ -88,6 +88,24 @@ const ImageList = (props: ImageListProps) => {
 
   const handleDeleteAlbum = async () => {
     try {
+      const keys = [];
+      data.album.forEach((image: ImagesArrayProps) => {
+        keys.push({ Key: `${image.src.split('.run/')[1]}` });
+      });
+      if (data?.backgroundImage) {
+        keys.push({ Key: `${data.backgroundImage.split('.run/')[1]}` });
+      }
+      await axios
+        .post('/api/delete', {
+          data: { keys },
+        })
+        .then(async () => {
+          data.album.forEach(async (image: ImagesArrayProps) => {
+            await axios.get(`${image.src}?dispose=1`);
+          });
+          await axios.get(`${data?.backgroundImage}?dispose=1`);
+        });
+
       Promise.all([
         deleteAlbumMutation.mutate(Number(router.query.id)),
         deleteImagesMutation.mutate(Number(router.query.id)),
