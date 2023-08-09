@@ -3,7 +3,7 @@
 import NavBar from '@/Components/NavBar';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import ReactModal from 'react-modal';
 import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
@@ -12,6 +12,7 @@ import axios from 'axios';
 import { imageProps } from '@/pages/create';
 import debounce from 'lodash/debounce';
 import { useSession } from 'next-auth/react';
+import { reactModalStyles } from '@/types/type';
 import AlbumHeader from '../AlbumHeader';
 import EmojiPickerComponent from '../EmojiPicker';
 import { convertURLtoFile } from '../utils/convertURLtoFile';
@@ -36,6 +37,7 @@ interface EditAlbumProps {
     }[];
     icon: string;
     backgroundImage: string;
+    uploadPath: string;
   };
   albumRefetch: () => void;
   isAlbumLoading: boolean;
@@ -46,7 +48,7 @@ interface DeleteImageProps {
 }
 
 const EditAlbum = ({
-  albumData: { title, description, icon, backgroundImage, album, albumId },
+  albumData: { title, description, icon, backgroundImage, album, albumId, uploadPath },
   albumRefetch,
   isAlbumLoading,
 }: EditAlbumProps) => {
@@ -59,28 +61,13 @@ const EditAlbum = ({
   const [isIconModalOpen, setIsIconModalOpen] = useState<boolean>(false);
   const [backfroundFile, setBackfroundFile] = useState<FileList | null>(null);
   const [isFileResized, setIsFileResized] = useState<boolean>(false);
-
-  useEffect(() => {
-    setBackground(backgroundImage);
-    setAlbumName(title);
-    setAlbumDescription(description);
-    setIconUrl(icon);
-  }, [backgroundImage, description, icon, title]);
-
-  const { resizedImageFiles } = useResize(updatingImages || undefined);
-
-  useEffect(() => {
-    if (!isFileResized && resizedImageFiles) {
-      setUpdatingImages(resizedImageFiles);
-      setIsFileResized(true);
-    }
-  }, [isFileResized, resizedImageFiles]);
-
-  const router = useRouter();
-  const userInfo = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
+  const { resizedImageFiles } = useResize(updatingImages || undefined);
+
+  const router = useRouter();
+  const userInfo = useSession();
   const utils = trpc.useContext();
 
   const { refetch: getAlbumListRefetch } = trpcReactClient.getAlbumList.useQuery();
@@ -98,12 +85,18 @@ const EditAlbum = ({
       albumRefetch();
       getAlbumListRefetch();
     },
+    onError: () => {
+      alert('이미지 업로드에 실패했습니다.');
+    },
   });
 
   const updateAlbumMutation = trpcReactClient.updateAlbum.useMutation({
     onSuccess: () => {
       albumRefetch();
       getAlbumListRefetch();
+    },
+    onError: () => {
+      alert('앨범 수정에 실패했습니다.');
     },
   });
 
@@ -112,7 +105,24 @@ const EditAlbum = ({
       albumRefetch();
       getAlbumListRefetch();
     },
+    onError: () => {
+      alert('이미지 삭제에 실패했습니다.');
+    },
   });
+
+  useEffect(() => {
+    setBackground(backgroundImage);
+    setAlbumName(title);
+    setAlbumDescription(description);
+    setIconUrl(icon);
+  }, [backgroundImage, description, icon, title]);
+
+  useEffect(() => {
+    if (!isFileResized && resizedImageFiles) {
+      setUpdatingImages(resizedImageFiles);
+      setIsFileResized(true);
+    }
+  }, [isFileResized, resizedImageFiles]);
 
   useEffect(() => {
     if (album && album.length > 0) {
@@ -151,42 +161,16 @@ const EditAlbum = ({
     setBackground('');
   };
 
+  const handleIconModalOpen = () => {
+    setIsIconModalOpen(true);
+  };
+
   const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAlbumName(e.target.value);
   };
 
   const handleAlbumDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAlbumDescription(e.target.value);
-  };
-
-  const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    setUpdatingImages(files);
-    setImages((prev) => {
-      if (prev) {
-        const dataTranster = new DataTransfer();
-        Array.from(prev)
-          .sort()
-          .forEach((image) => {
-            dataTranster.items.add(image);
-          });
-        if (files) {
-          Array.from(files)
-            .sort()
-            .forEach((image) => {
-              dataTranster.items.add(image);
-            });
-
-          return dataTranster.files;
-        }
-      }
-      return e.target.files;
-    });
-    setIsScrolling(true);
-  };
-
-  const handleIconModalOpen = () => {
-    setIsIconModalOpen(true);
   };
 
   const handleEmojiClick = (emojiObject: EmojiClickData) => {
@@ -199,37 +183,63 @@ const EditAlbum = ({
     setIsIconModalOpen(false);
   };
 
-  const handleCancelImage = async (imageName: string) => {
-    const dataTranster = new DataTransfer();
-    const keys: DeleteImageProps[] = [];
-    if (images) {
-      Array.from(images)
-        .sort()
-        .filter((image) => {
-          if (imageName === image.name) {
-            keys.push({ key: image.name });
-          }
-          return imageName !== image.name;
-        })
-        .forEach((image) => {
+  const handleImages = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    setUpdatingImages(files);
+    setImages((prev) => {
+      if (prev) {
+        const dataTranster = new DataTransfer();
+        Array.from(prev).forEach((image) => {
           dataTranster.items.add(image);
         });
-      if (keys.length > 0) {
-        const res = await axios.post('/api/delete', {
-          data: { keys },
-        });
-        if (res.status === 200) {
-          const deletedImage = album.find((image) => image.src.includes(imageName));
-          if (deletedImage) {
-            deleteImageMutation.mutate(deletedImage.imageId);
+        if (files) {
+          Array.from(files).forEach((image) => {
+            dataTranster.items.add(image);
+          });
+
+          return dataTranster.files;
+        }
+      }
+      return e.target.files;
+    });
+    setIsScrolling(true);
+  }, []);
+
+  const handleCancelImage = useCallback(
+    async (imageName: string) => {
+      const dataTranster = new DataTransfer();
+      const keys: DeleteImageProps[] = [];
+      if (images) {
+        Array.from(images)
+          .filter((image) => {
+            if (imageName === image.name) {
+              keys.push({ key: `${uploadPath}${image.name}` });
+            }
+            return imageName !== image.name;
+          })
+          .forEach((image) => {
+            dataTranster.items.add(image);
+          });
+
+        if (keys.length > 0) {
+          const res = await axios.post('/api/delete', {
+            data: { keys },
+          });
+          if (res.status === 200) {
+            const deletedImage = album.find((image) => image.src.includes(imageName));
+            axios.get(`${deletedImage?.src}?dispose=1`);
+            if (deletedImage) {
+              deleteImageMutation.mutate(deletedImage.imageId);
+            }
           }
         }
       }
-    }
-    setImages(dataTranster.files);
-  };
+      setImages(dataTranster.files);
+    },
+    [album, deleteImageMutation, images, uploadPath],
+  );
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!images) {
       alert('이미지를 선택해주세요.');
       return;
@@ -266,88 +276,68 @@ const EditAlbum = ({
       // 2-1. 신규 이미지 업로드
       if (updatingImages && updatingImages?.length > 0) {
         const date = getDate();
-        Array.from(updatingImages)
-          .sort()
-          .forEach(async (imageFile) => {
-            // width height 구하기
-            const fileAsDataURL = window.URL.createObjectURL(imageFile);
-            const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
-            const { width, height } = dimension;
+        Array.from(updatingImages).forEach(async (imageFile) => {
+          // width height 구하기
+          const fileAsDataURL = window.URL.createObjectURL(imageFile);
+          const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
+          const { width, height } = dimension;
 
-            const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
-              imageFile.name
-            }~${new Date().getTime()}`;
+          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+            imageFile.name
+          }~${new Date().getTime()}`;
 
-            // 이미지 파일 s3에 업로드
-            const s3uploadData = await axios.post('/api/upload', {
-              name: imageName,
-              body: imageFile,
-              type: imageFile.type,
-            });
-            const { url } = s3uploadData.data;
-            await axios.put(url, imageFile, {
-              headers: {
-                'Content-Type': imageFile.type,
-                'Access-Control-Allow-Origin': '*',
-              },
-            });
-            const newUrl = new URL(url);
-
-            // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
-            const imageData = {
-              album_id: albumId,
-              path: `${newUrl.origin}${newUrl.pathname}`,
-              width: width || 0,
-              height: height || 0,
-              size: imageFile.size || 0,
-            };
-            newImages.push(imageData);
-
-            if (newImages.length === updatingImages.length) {
-              insertImagesMutation.mutate(newImages);
-            }
+          // 이미지 파일 s3에 업로드
+          const s3uploadData = await axios.post('/api/upload', {
+            name: imageName,
+            body: imageFile,
+            type: imageFile.type,
           });
-      }
-
-      // 기존 앨범에서 삭제된 이미지가 있는지 확인
-      const currentImages = Array.from(images)
-        .sort()
-        .map((image) => image.name);
-      const currentAlbum = album.map((image) => {
-        return {
-          src: image?.src?.slice(image.src.lastIndexOf('/') + 1),
-          imageId: image.imageId,
-        };
-      });
-
-      const deletedImages = currentAlbum.filter((image) => {
-        return !currentImages.includes(image.src);
-      });
-
-      if (deletedImages.length > 0) {
-        setIsLoading(false);
-        await Promise.all(
-          deletedImages.map(async (image) => {
-            deleteImageMutation.mutate(image.imageId);
-          }),
-        ).then(() => {
-          utils.getAlbumList.invalidate();
-          getAlbumListRefetch().then(() => {
-            alert('앨범이 수정되었습니다.');
-            router.push(`/album/${albumId}`);
+          const { url } = s3uploadData.data;
+          await axios.put(url, imageFile, {
+            headers: {
+              'Content-Type': imageFile.type,
+              'Access-Control-Allow-Origin': '*',
+            },
           });
+          const newUrl = new URL(url);
+
+          // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
+          const imageData = {
+            album_id: albumId,
+            path: `${newUrl.origin}${newUrl.pathname}`,
+            width: width || 0,
+            height: height || 0,
+            size: imageFile.size || 0,
+          };
+          newImages.push(imageData);
+
+          if (newImages.length === updatingImages.length) {
+            insertImagesMutation.mutate(newImages);
+          }
         });
-      } else {
-        setIsLoading(false);
-        alert('앨범이 수정되었습니다.');
-        router.push(`/album/${albumId}`);
       }
+
+      setIsLoading(false);
+      alert('앨범이 수정되었습니다.');
+      router.push(`/album/${albumId}`);
     } catch (e) {
       setIsLoading(false);
       console.log(e);
       alert('앨범 수정에 실패했습니다.');
     }
-  };
+  }, [
+    albumDescription,
+    albumId,
+    albumName,
+    backfroundFile,
+    iconUrl,
+    images,
+    insertImagesMutation,
+    router,
+    updateAlbumMutation,
+    updatingImages,
+    userInfo?.data?.user?.id,
+  ]);
 
   if (isLoading) {
     return <Spinner />;
@@ -381,7 +371,7 @@ const EditAlbum = ({
         {images && (
           <AlbumImageWrapper id="albumImageWrapper">
             {Array.from(images)
-              .sort()
+              .sort((a, b) => a.name.localeCompare(b.name))
               .map((image) => (
                 <ImageWrapper key={image.name}>
                   <img src={URL.createObjectURL(image)} alt="album" />
@@ -404,24 +394,7 @@ const EditAlbum = ({
         isOpen={isIconModalOpen}
         onRequestClose={handleIconModalClose}
         ariaHideApp={false}
-        style={{
-          overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 100,
-          },
-          content: {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            background: 'none',
-            padding: 0,
-            margin: 0,
-          },
-        }}
+        style={reactModalStyles}
       >
         <EmojiPickerComponent
           onEmojiClick={handleEmojiClick}

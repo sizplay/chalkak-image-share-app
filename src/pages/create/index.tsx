@@ -18,6 +18,7 @@ import Spinner from '@/Components/utils/spinner';
 import { useSession } from 'next-auth/react';
 import backgroundS3Upload from '@/Components/utils/backgroundS3Upload';
 import useResize from '@/Components/hooks/useResize';
+import { reactModalStyles } from '@/types/type';
 
 export interface imageProps {
   album_id: number;
@@ -72,17 +73,13 @@ const AlbumCreate = () => {
     setImageFiles((prev) => {
       if (prev) {
         const dataTranster = new DataTransfer();
-        Array.from(prev)
-          .sort()
-          .forEach((image) => {
+        Array.from(prev).forEach((image) => {
+          dataTranster.items.add(image);
+        });
+        if (files) {
+          Array.from(files).forEach((image) => {
             dataTranster.items.add(image);
           });
-        if (files) {
-          Array.from(files)
-            .sort()
-            .forEach((image) => {
-              dataTranster.items.add(image);
-            });
           return dataTranster.files;
         }
       }
@@ -103,7 +100,6 @@ const AlbumCreate = () => {
     const dataTranster = new DataTransfer();
     if (imageFiles) {
       Array.from(imageFiles)
-        .sort()
         .filter((image) => {
           return imageName !== image.name;
         })
@@ -171,55 +167,53 @@ const AlbumCreate = () => {
       if (albumId !== 0 && imageFiles) {
         const date = getDate();
 
-        Array.from(imageFiles)
-          .sort()
-          .forEach(async (imageFile: File) => {
-            const fileAsDataURL = window.URL.createObjectURL(imageFile);
-            const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
-            const { width, height } = dimension;
+        Array.from(imageFiles).forEach(async (imageFile: File) => {
+          const fileAsDataURL = window.URL.createObjectURL(imageFile);
+          const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
+          const { width, height } = dimension;
 
-            const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
-              imageFile.name
-            }~${new Date().getTime()}`;
+          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+            imageFile.name
+          }~${new Date().getTime()}`;
 
-            // 이미지 파일 s3에 업로드
-            const s3uploadData = await axios.post('/api/upload', {
-              name: imageName,
-              body: imageFile,
-              type: imageFile.type,
-            });
-            const { url } = s3uploadData.data;
-            await axios.put(url, imageFile, {
-              headers: {
-                'Content-Type': imageFile.type,
-                'Access-Control-Allow-Origin': '*',
-              },
-            });
-            const newUrl = new URL(url);
-
-            // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
-            const imageData = {
-              album_id: albumId,
-              path: `${newUrl.origin}${newUrl.pathname}`,
-              width: width || 0,
-              height: height || 0,
-              size: imageFile.size || 0,
-            };
-            newImages.push(imageData);
-
-            if (newImages.length === imageFiles.length) {
-              const response = await trpcClient.insertImages.mutate(newImages);
-              if (response.affected_rows === imageFiles.length) {
-                setIsLoading(false);
-                alert('앨범이 생성되었습니다.');
-                refetch().then((data) => {
-                  const img = new Image();
-                  img.src = data?.data[0].images[0].path || '';
-                  router.push(`/album/${albumId}`);
-                });
-              }
-            }
+          // 이미지 파일 s3에 업로드
+          const s3uploadData = await axios.post('/api/upload', {
+            name: imageName,
+            body: imageFile,
+            type: imageFile.type,
           });
+          const { url } = s3uploadData.data;
+          await axios.put(url, imageFile, {
+            headers: {
+              'Content-Type': imageFile.type,
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+          const newUrl = new URL(url);
+
+          // 3. 업로드된 이미지 url, width, height 받아서 이미지 디비에 저장
+          const imageData = {
+            album_id: albumId,
+            path: `${newUrl.origin}${newUrl.pathname}`,
+            width: width || 0,
+            height: height || 0,
+            size: imageFile.size || 0,
+          };
+          newImages.push(imageData);
+
+          if (newImages.length === imageFiles.length) {
+            const response = await trpcClient.insertImages.mutate(newImages);
+            if (response.affected_rows === imageFiles.length) {
+              setIsLoading(false);
+              alert('앨범이 생성되었습니다.');
+              refetch().then((data) => {
+                const img = new Image();
+                img.src = data?.data[0].images[0].path || '';
+                router.push(`/album/${albumId}`);
+              });
+            }
+          }
+        });
       }
     } catch (error) {
       setIsLoading(false);
@@ -259,7 +253,7 @@ const AlbumCreate = () => {
         {imageFiles && (
           <AlbumImageWrapper>
             {Array.from(imageFiles)
-              .sort()
+              .sort((a, b) => a.name.localeCompare(b.name))
               .map((image) => (
                 <ImageWrapper key={image.name}>
                   <img src={URL.createObjectURL(image)} alt="album" />
@@ -282,24 +276,7 @@ const AlbumCreate = () => {
         isOpen={isIconModalOpen}
         onRequestClose={handleIconModalClose}
         ariaHideApp={false}
-        style={{
-          overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 100,
-          },
-          content: {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            background: 'none',
-            padding: 0,
-            margin: 0,
-          },
-        }}
+        style={reactModalStyles}
       >
         <EmojiPickerComponent
           onEmojiClick={handleEmojiClick}

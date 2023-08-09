@@ -3,7 +3,7 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 import { Album, Album_Insert_Input, Album_Set_Input, Image } from '@/gql/graphql';
-import { ctxProps, getAlbumImageListProps } from '@/types/image';
+import { ctxProps, getAlbumImageListProps } from '@/types/type';
 import getAlbums from '../hasura-client/get-albums';
 import getAlbum from '../hasura-client/get-album';
 import insertAlbum from '../hasura-client/insert-album';
