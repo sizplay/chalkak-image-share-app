@@ -7,6 +7,7 @@ import { Gallery } from 'react-grid-gallery';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import debounce from 'lodash/debounce';
+import axios from 'axios';
 import AlbumHeader from './AlbumHeader';
 
 interface ImageListProps {
@@ -62,7 +63,13 @@ const ImageList = (props: ImageListProps) => {
       refetch();
     },
   });
-  const deleteImagesMutation = trpcReactClient.deleteAllAlbumImages.useMutation();
+  const deleteImagesMutation = trpcReactClient.deleteAllAlbumImages.useMutation({
+    onSuccess: () => {
+      images.forEach(async (image: ImagesArrayProps) => {
+        await axios.get(`${image.src}?dispose=1`);
+      });
+    },
+  });
 
   const currentImage = originalImages[index];
   const nextIndex = (index + 1) % originalImages.length;

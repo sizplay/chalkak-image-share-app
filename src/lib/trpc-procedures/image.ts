@@ -1,6 +1,6 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
-import { ctxProps, getAlbumImageListProps } from '@/types/image';
+import { ctxProps, getAlbumImageListProps } from '@/types/type';
 import getImages from '../hasura-client/get-images';
 import deleteImageById from '../hasura-client/delete-image-by-id';
 import deleteImageByAlbumId from '../hasura-client/delete-image-by-album';

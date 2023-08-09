@@ -27,6 +27,7 @@ const EditAlbumPage = () => {
     album: newImages || [],
     icon: albumDetail?.icon || '',
     backgroundImage: albumDetail?.background || '',
+    uploadPath: albumDetail?.upload_path || '',
   };
 
   return <EditAlbum albumData={albumData} albumRefetch={albumRefetch} isAlbumLoading={isLoading} />;
