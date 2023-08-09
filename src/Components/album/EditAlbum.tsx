@@ -19,7 +19,6 @@ import { convertURLtoFile } from '../utils/convertURLtoFile';
 import { getDate } from '../utils/getDate';
 import { getHeightAndWidthFromDataUrl } from '../utils/getHeightAndWidthFromDataUrl';
 import Spinner from '../utils/spinner';
-import { trpc } from '../utils/trpc';
 import backgroundS3Upload from '../utils/backgroundS3Upload';
 import useResize from '../hooks/useResize';
 
@@ -48,7 +47,7 @@ interface DeleteImageProps {
 }
 
 const EditAlbum = ({
-  albumData: { title, description, icon, backgroundImage, album, albumId, uploadPath },
+  albumData: { title, description, icon, backgroundImage, album, albumId },
   albumRefetch,
   isAlbumLoading,
 }: EditAlbumProps) => {
@@ -68,7 +67,6 @@ const EditAlbum = ({
 
   const router = useRouter();
   const userInfo = useSession();
-  const utils = trpc.useContext();
 
   const { refetch: getAlbumListRefetch } = trpcReactClient.getAlbumList.useQuery();
 
@@ -213,20 +211,20 @@ const EditAlbum = ({
         Array.from(images)
           .filter((image) => {
             if (imageName === image.name) {
-              keys.push({ key: `${uploadPath}${image.name}` });
+              keys.push({ key: image.name });
             }
             return imageName !== image.name;
           })
           .forEach((image) => {
             dataTranster.items.add(image);
           });
+        const deletedImage = album.find((image) => image.src.includes(imageName));
 
         if (keys.length > 0) {
           const res = await axios.post('/api/delete', {
-            data: { keys },
+            data: { keys: [{ Key: `${deletedImage?.src.split('run/')[1]}` }] },
           });
           if (res.status === 200) {
-            const deletedImage = album.find((image) => image.src.includes(imageName));
             axios.get(`${deletedImage?.src}?dispose=1`);
             if (deletedImage) {
               deleteImageMutation.mutate(deletedImage.imageId);
@@ -236,7 +234,7 @@ const EditAlbum = ({
       }
       setImages(dataTranster.files);
     },
-    [album, deleteImageMutation, images, uploadPath],
+    [album, deleteImageMutation, images],
   );
 
   const handleSubmit = useCallback(async () => {
