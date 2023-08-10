@@ -147,21 +147,25 @@ const AlbumCreate = () => {
     }
     try {
       setIsLoading(true);
-      // 0. 백그라운드 이미지 s3 업로드
-      let backgroundPath = '';
-      if (backfroundFile) {
-        backgroundPath = await backgroundS3Upload(backfroundFile[0], albumName, userInfo?.data?.user?.id || '');
-      }
 
       // 1. 앨범 생성
       const returnedAlbumData = await trpcClient.insertAlbum.mutate({
         title: albumName,
         subtitle: albumDescription,
         icon,
-        backgroundImage: backgroundPath,
       });
       const albumId = returnedAlbumData?.album_id;
       const newImages: imageProps[] = [];
+
+      let backgroundPath = '';
+      if (backfroundFile) {
+        backgroundPath = await backgroundS3Upload(backfroundFile[0], albumId, userInfo?.data?.user?.id || '');
+      }
+
+      await trpcClient.updateAlbum.mutate({
+        albumId,
+        backgroundImage: backgroundPath,
+      });
 
       // 2. 이미지 업로드
       if (albumId !== 0 && imageFiles) {
@@ -172,7 +176,7 @@ const AlbumCreate = () => {
           const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
           const { width, height } = dimension;
 
-          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+          const imageName = `${userInfo?.data?.user?.id || ''}/${albumId}/${date}/${
             imageFile.name
           }~${new Date().getTime()}`;
 
