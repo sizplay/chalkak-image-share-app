@@ -256,7 +256,7 @@ const EditAlbum = ({
       // 0. 백그라운드 이미지 s3 업로드
       let backgroundPath = '';
       if (backfroundFile) {
-        backgroundPath = await backgroundS3Upload(backfroundFile[0], albumName, userInfo?.data?.user?.id || '');
+        backgroundPath = await backgroundS3Upload(backfroundFile[0], albumId, userInfo?.data?.user?.id || '');
       }
 
       // 1. 앨범 수정
@@ -280,7 +280,7 @@ const EditAlbum = ({
           const dimension = await getHeightAndWidthFromDataUrl(fileAsDataURL);
           const { width, height } = dimension;
 
-          const imageName = `${userInfo?.data?.user?.id || ''}/${albumName}/${date}/${
+          const imageName = `${userInfo?.data?.user?.id || ''}/${albumId}/${date}/${
             imageFile.name
           }~${new Date().getTime()}`;
 

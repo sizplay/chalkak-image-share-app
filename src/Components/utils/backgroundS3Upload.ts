@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { getDate } from './getDate';
 
-const backgroundS3Upload = async (file: File, albumName: string, userId: string) => {
+const backgroundS3Upload = async (file: File, albumId: number, userId: string) => {
   const date = getDate();
-  const imageName = `${userId || ''}/${albumName}/${date}/${file.name}~${new Date().getTime()}`;
+  const imageName = `${userId || ''}/${albumId}/${date}/${file.name}~${new Date().getTime()}`;
 
   const s3uploadData = await axios.post('/api/upload', {
     name: imageName,
