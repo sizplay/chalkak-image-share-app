@@ -419,6 +419,8 @@ const StyledAlbumCreate = styled.main`
     height: 50px;
     border: none;
     border-bottom: 1px solid #755bb4;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     margin-bottom: 16px;
     background: none;
     font-size: 18px;
