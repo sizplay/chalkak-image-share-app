@@ -13,8 +13,6 @@ const S3Delete = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { data } = req.body;
 
-      console.log(data.keys);
-
       s3.deleteObjects(
         {
           Bucket: process.env.S3_UPLOAD_BUCKET!,
