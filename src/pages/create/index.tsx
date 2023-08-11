@@ -243,7 +243,14 @@ const AlbumCreate = () => {
         showDeleteButton={true}
       />
       <form>
-        <input type="text" placeholder="앨범 이름을 입력해주세요." value={albumName} onChange={handleAlbumName} />
+        <input
+          type="text"
+          placeholder="앨범 이름을 입력해주세요."
+          value={albumName}
+          onChange={handleAlbumName}
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus={true}
+        />
         <input
           type="text"
           placeholder="앨범 설명을 입력해주세요."
