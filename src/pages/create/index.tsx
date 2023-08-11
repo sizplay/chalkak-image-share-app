@@ -165,6 +165,7 @@ const AlbumCreate = () => {
       await trpcClient.updateAlbum.mutate({
         albumId,
         backgroundImage: backgroundPath,
+        uploadPath: `${userInfo?.data?.user?.id || ''}/${albumId}/`,
       });
 
       // 2. 이미지 업로드

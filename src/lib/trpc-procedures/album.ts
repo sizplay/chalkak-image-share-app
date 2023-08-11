@@ -72,7 +72,6 @@ export const albumProcedure = {
       }
       if (userId) {
         object.created_by = input.userId;
-        object.upload_path = `${userId}/${input.title}/`;
       }
       if (input?.icon) {
         object.icon = input.icon;
@@ -91,7 +90,7 @@ export const albumProcedure = {
         albumId: z.number(),
         title: z.string().optional(),
         subtitle: z.string().optional(),
-        mainImageId: z.number().optional(),
+        uploadPath: z.string().optional(),
         icon: z.string().optional(),
         backgroundImage: z.string().optional(),
       }),
@@ -105,6 +104,10 @@ export const albumProcedure = {
       }
       if (input?.subtitle) {
         object.subtitle = input.subtitle;
+      }
+
+      if (input?.uploadPath) {
+        object.upload_path = input.uploadPath;
       }
 
       if (input?.icon) {
