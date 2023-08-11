@@ -32,7 +32,7 @@ const AlbumComponent = () => {
                 <button type="button" onClick={() => onClickToggle(item.album_id)}>
                   {item.images?.[0]?.path ? (
                     <LazyLoad height={178}>
-                      <img src={item.images[0].path} alt="background" />
+                      <img src={item.images[0].path} alt={item.images[0].image_id.toString()} />
                     </LazyLoad>
                   ) : (
                     <div />
