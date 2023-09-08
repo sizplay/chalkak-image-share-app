@@ -3,41 +3,35 @@ import NavBar from '@/Components/NavBar';
 import Album from '@/Components/album';
 import { useRouter } from 'next/router';
 import { PlusCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@/lib/auth/auth-provider';
-
-const MAX_WIDTH = 768;
+import { MAX_WIDTH } from '@/Components/utils/statics';
+import useWidth from '@/Components/hooks/useWidth';
 
 interface FloatingButtonWrapperProps {
   width: number;
 }
 
 const Home = () => {
-  const router = useRouter();
-  const [width, setWidth] = useState(0);
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const width = window.innerWidth;
-    setWidth(width);
-  }, []);
+  const windowWidth = useWidth();
+  const userInfo = useAuth();
+  const router = useRouter();
 
   const handleClick = () => {
     router.push('/create');
   };
-
-  const data = useAuth();
 
   return (
     <MobileContainer>
       <NavBar />
       <HomeContainer>
         <Album />
-        <FloatingButtonWrapper width={width}>
-          {data?.initialized && (
+        <FloatingButtonWrapper width={windowWidth}>
+          {userInfo?.initialized && (
             <FloatingAddButton>
               <Input onClick={handleClick} />
               <PlusCircle color="#755bb4" size={50} />

@@ -46,3 +46,9 @@ export const reactModalStyles: Styles = {
     margin: 0,
   },
 };
+export interface imageProps {
+  album_id: number;
+  path: string;
+  height: number;
+  size: number;
+}

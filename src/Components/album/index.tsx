@@ -2,21 +2,17 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';
 import { Album } from '@/gql/graphql';
-import { useEffect, useState } from 'react';
 import LazyLoad from 'react-lazyload';
+import { Suspense } from 'react';
+import Spinner from '@/Components/utils/spinner';
+import useWidth from '../hooks/useWidth';
 
 const AlbumComponent = () => {
+  const { data } = trpcReactClient.getAlbumList.useQuery();
+  const windowWidth = useWidth();
   const router = useRouter();
 
-  const { data } = trpcReactClient.getAlbumList.useQuery();
-  const [width, setWidth] = useState(0);
-
-  useEffect(() => {
-    const width = window.innerWidth;
-    setWidth(width);
-  }, []);
-
-  const onClickToggle = (id: number) => {
+  const handleClickToggle = (id: number) => {
     router.push({
       pathname: `/album/${id}`,
     });
@@ -24,32 +20,34 @@ const AlbumComponent = () => {
 
   return (
     <Container>
-      <StyledAlbum width={width}>
-        <AlbumList>
-          {data?.map((item: Album) => {
-            return (
-              <AlbumItem key={item.created_at} width={width}>
-                <button type="button" onClick={() => onClickToggle(item.album_id)}>
-                  {item.images?.[0]?.path ? (
-                    <LazyLoad height={178}>
-                      <img src={item.images[0].path} alt={item.images[0].image_id.toString()} />
-                    </LazyLoad>
-                  ) : (
-                    <div />
-                  )}
-                  <p>{item.title}</p>
-                  <p>{item.created_at.split('T')[0]}</p>
-                </button>
-              </AlbumItem>
-            );
-          })}
-        </AlbumList>
-        {data?.length === 0 && (
-          <EmptyAlbum>
-            <p>앨범이 없습니다.</p>
-            <p>앨범을 추가해주세요.</p>
-          </EmptyAlbum>
-        )}
+      <StyledAlbum width={windowWidth}>
+        <Suspense fallback={<Spinner />}>
+          <AlbumList>
+            {data?.map((item: Album) => {
+              return (
+                <AlbumItem key={item.created_at} width={windowWidth}>
+                  <button type="button" onClick={() => handleClickToggle(item.album_id)}>
+                    {item.images?.[0]?.path ? (
+                      <LazyLoad height={178}>
+                        <img src={item.images[0].path} alt={item.images[0].image_id.toString()} />
+                      </LazyLoad>
+                    ) : (
+                      <div />
+                    )}
+                    <p>{item.title}</p>
+                    <p>{item.created_at.split('T')[0]}</p>
+                  </button>
+                </AlbumItem>
+              );
+            })}
+          </AlbumList>
+          {data?.length === 0 && (
+            <EmptyAlbum>
+              <p>앨범이 없습니다.</p>
+              <p>앨범을 추가해주세요.</p>
+            </EmptyAlbum>
+          )}
+        </Suspense>
       </StyledAlbum>
     </Container>
   );

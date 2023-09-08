@@ -13,11 +13,23 @@ const NavBar = ({ leftArrow }: NavBarProps) => {
   const router = useRouter();
   const userInfo = useAuth();
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
+  const handleGoHome = () => {
+    router.push('/');
+  };
+
+  const handleGoLogin = () => {
+    signOut({ callbackUrl: '/login' });
+  };
+
   return (
     <StyledNavigationBar>
       {userInfo?.initialized && leftArrow ? (
         <LeftSideWrapper>
-          <button type="button" onClick={() => router.back()}>
+          <button type="button" onClick={handleGoBack}>
             <MoveLeft size={24} color="#FFF" />
           </button>
         </LeftSideWrapper>
@@ -27,12 +39,12 @@ const NavBar = ({ leftArrow }: NavBarProps) => {
         </LeftSideWrapper>
       )}
       <CenterWrapper>
-        <button type="button" onClick={() => router.push('/')}>
+        <button type="button" onClick={handleGoHome}>
           <Image src="/icon/logo-no-background.svg" alt="logo" width={160} height={40} priority={true} />
         </button>
       </CenterWrapper>
       <RightSideWrapper>
-        <button type="button" onClick={() => signOut({ callbackUrl: '/login' })}>
+        <button type="button" onClick={handleGoLogin}>
           {userInfo?.initialized ? <LogOut color="#FFF" size={24} /> : <UserCircle color="#FFF" size={24} />}
         </button>
       </RightSideWrapper>

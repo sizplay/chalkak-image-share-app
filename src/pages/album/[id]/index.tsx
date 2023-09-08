@@ -5,38 +5,41 @@ import { Image } from '@/gql/graphql';
 import { useRouter } from 'next/router';
 import { trpcReactClient } from '@/lib/trpc-client';
 
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
+import Spinner from '@/Components/utils/spinner';
 
 const OneAlbum = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: albumDetail, isLoading: isAlbumDetailLoading } = trpcReactClient.getAlbum.useQuery(Number(id));
+  const { data: albumDetails, isLoading: isAlbumDetailLoading } = trpcReactClient.getAlbum.useQuery(Number(id), {
+    suspense: true,
+  });
 
   const userInfo = useSession();
 
   const newImages = useMemo(() => {
-    return albumDetail?.images?.map((image: Image) => ({
+    return albumDetails?.images?.map((image: Image) => ({
       original: image.path,
       src: image.path,
       imageId: image.image_id,
       width: image.width,
       height: image.height,
     }));
-  }, [albumDetail?.images]);
+  }, [albumDetails?.images]);
 
   const albumData = {
-    title: albumDetail?.title || '',
-    description: albumDetail?.subtitle || '',
-    albumId: albumDetail?.album_id || 0,
+    title: albumDetails?.title || '',
+    description: albumDetails?.subtitle || '',
+    albumId: albumDetails?.album_id || 0,
     album: newImages || [],
-    icon: albumDetail?.icon || '',
-    backgroundImage: albumDetail?.background || '',
-    createdby: albumDetail?.created_by || '',
+    icon: albumDetails?.icon || '',
+    backgroundImage: albumDetails?.background || '',
+    createdby: albumDetails?.created_by || '',
   };
 
-  if (albumDetail === null && !isAlbumDetailLoading) {
+  if (albumDetails === null && !isAlbumDetailLoading) {
     router.replace('/');
   }
 
@@ -44,11 +47,13 @@ const OneAlbum = () => {
     <AlbumContainer>
       <NavBar leftArrow={true} />
       <ImageListContainer>
-        <ImageList
-          data={albumData}
-          isLoading={isAlbumDetailLoading}
-          isAuthenticatedUser={albumData.createdby === userInfo?.data?.user?.id}
-        />
+        <Suspense fallback={<Spinner />}>
+          <ImageList
+            data={albumData}
+            isLoading={isAlbumDetailLoading}
+            isAuthenticatedUser={albumData.createdby === userInfo?.data?.user?.id}
+          />
+        </Suspense>
       </ImageListContainer>
     </AlbumContainer>
   );
