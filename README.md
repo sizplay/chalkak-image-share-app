@@ -4,7 +4,7 @@
 
 회사 워크샵 이후 사진을 원하는 그룹의 사람들과 공유 하고 싶은데 마땅한 플렛폼이 없어 간단한 토이 프로젝트로 만들었습니다.
 
-(chalkak-image-share.vercel.app)[chalkak-image-share.vercel.app/login]
+[chalkak-image-share.vercel.app](chalkak-image-share.vercel.app/login)
 
 ## 시작하기
 
